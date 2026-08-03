@@ -5,6 +5,25 @@
 
 Before feeding raw data into machine learning algorithms (K-Means/DBSCAN clustering and XGBoost risk classification), we conducted an extensive Exploratory Data Analysis (EDA) and data cleaning pipeline on the official SAPS quarterly contact crime dataset (`2025-2026_-_4th_Quarter_WEB`).
 
+
+## 🌐 Data Source & Scope
+
+This project utilizes official quarterly contact crime data published by the **South African Police Service (SAPS)**, focusing on gender-based violence and femicide (GBVF) metrics across South Africa.
+
+* **Primary Sources:**
+  * Official Portal: [SAPS Crime Statistics](https://www.saps.gov.za/services/crimestats.php)
+  * Visualisation Partner: [GBVF Response Fund Dashboard](https://www.gbvfresponsefund1.org/dashboards/saps-data-visualisation/)
+* **Granularity:** Police Station, District, Province, and National levels.
+* **Target GBVF Crime Categories:**
+  * Rape
+  * Sexual Offences
+  * Sexual Offences detected as a result of police action
+  * Sexual Assault
+  * Attempted Sexual Offences
+  * Contact Sexual Offences
+
+---
+
 ### Key Preprocessing Steps Completed:
 
 1. **Dataset Ingestion & Metadata Cleaning:**

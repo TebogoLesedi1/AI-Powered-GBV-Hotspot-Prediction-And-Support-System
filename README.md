@@ -13,7 +13,8 @@ This project utilizes official quarterly contact crime data published by the **S
 * **Primary Sources:**
   * Official Portal: [SAPS Crime Statistics](https://www.saps.gov.za/services/crimestats.php)
   * Visualisation Partner: [GBVF Response Fund Dashboard](https://www.gbvfresponsefund1.org/dashboards/saps-data-visualisation/)
-  * Conflict-Related (CRSV) or Political-Related Sexual Violence Data:  https://data.humdata.org/dataset/conflict-related-sexual-violence
+  * Conflict-Related (CRSV) or Political-Related Sexual Violence Data:  [Conflict-Related (CRSV)](https://data.humdata.org/dataset/conflict-related-sexual-violence)
+  * 
 * **Granularity:** Police Station, District, Province, and National levels.
 * **Target GBVF Crime Categories:**
   * Rape

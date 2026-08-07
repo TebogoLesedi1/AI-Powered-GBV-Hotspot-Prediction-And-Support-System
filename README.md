@@ -1,6 +1,33 @@
 # AI-Powered-GBV-Hotspot-Prediction-And-Support-System
 
 
+Project Overview
+
+
+An Al-powered system that predicts Gender-Based Violence
+(GBV) hotspot areas in South Africa and provides real-time support through an intelligent chatbot.
+
+* What It Does
+
+• Predicts GBV high-risk zones using clustering algorithms
+
+• Classifies locations into Low, Medium, or High risk levels
+
+• Chatbot offers emotional support, guidance, and resource recommendations.
+
+Ethics & Safety
+• Privacy-first approach
+• No personal data stored without consent
+• Not a replacement for professional/legal advice
+• Bias-aware modeling
+
+Deliverables
+• Source code + report
+• Model evaluation metrics
+• Interactive visualizations
+• Working demo
+
+
 ## 🧹 Data Preprocessing & Exploratory Data Analysis (EDA)
 
 Before feeding raw data into machine learning algorithms (K-Means/DBSCAN clustering and XGBoost risk classification), we conducted an extensive Exploratory Data Analysis (EDA) and data cleaning pipeline on the official SAPS quarterly contact crime dataset (`2025-2026_-_4th_Quarter_WEB`).

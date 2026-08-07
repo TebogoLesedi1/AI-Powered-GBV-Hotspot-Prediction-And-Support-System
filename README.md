@@ -1,7 +1,7 @@
 # AI-Powered-GBV-Hotspot-Prediction-And-Support-System
 
 
-Project Overview
+**Project Overview**
 
 
 An Al-powered system that predicts Gender-Based Violence
@@ -16,16 +16,26 @@ An Al-powered system that predicts Gender-Based Violence
 • Chatbot offers emotional support, guidance, and resource recommendations.
 
 Ethics & Safety
+
 • Privacy-first approach
+
 • No personal data stored without consent
+
 • Not a replacement for professional/legal advice
+
 • Bias-aware modeling
 
+
 Deliverables
+
 • Source code + report
+
 • Model evaluation metrics
+
 • Interactive visualizations
+
 • Working demo
+
 
 
 ## 🧹 Data Preprocessing & Exploratory Data Analysis (EDA)

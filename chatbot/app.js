@@ -1,5 +1,5 @@
-const REPORT_URL = 'datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt';
-const STATION_URL = 'extracted_datasets/GBV Dataset.csv';
+const REPORT_URL = '../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt';
+const STATION_URL = '../extracted_datasets/GBV Dataset.csv';
 const state = { records: [], stations: [], ready: false };
 const messages = document.querySelector('#messages');
 const question = document.querySelector('#question');

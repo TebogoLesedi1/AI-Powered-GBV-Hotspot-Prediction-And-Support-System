@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GBV hotspot map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="page-header">
+      <div><span class="eyebrow">Ubuntu / GBV research view</span><h1>Station hotspot map</h1><p>Explore reported station totals across South Africa by year and risk level.</p></div>
+      <a href="../chatbot/">Open assistant <span aria-hidden="true">↗</span></a>
+    </header>
+    <section class="controls" aria-label="Map filters">
+      <label>Province<select id="province-filter"><option value="all">All provinces</option></select></label>
+      <label>Cases shown<select id="year-filter"><option value="TOTAL">Total · 2022–2026</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select></label>
+      <div class="stats"><strong id="visible-count">—</strong><span>stations</span><strong id="visible-cases">—</strong><span>cases</span></div>
+    </section>
+    <section class="map-wrap"><div id="station-map" aria-label="Interactive map showing GBV station risk levels"></div><button id="map-reset" type="button" title="Fit map to visible stations">⌖</button><div class="legend"><span><i class="high"></i>High risk</span><span><i class="medium"></i>Medium-high risk</span></div></section>
+    <footer>Source: extracted GBV station dataset · Research visualization, not an individual risk prediction.</footer>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>

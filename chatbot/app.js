@@ -1,6 +1,6 @@
 const REPORT_URL = '../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt';
 const STATION_URL = '../extracted_datasets/GBV Dataset.csv';
-const state = { records: [], stations: [], ready: false };
+const state = { records: [], stations: [], ready: false, map: null, markers: [], visibleStations: [] };
 const messages = document.querySelector('#messages');
 const question = document.querySelector('#question');
 const emotional_support_model = {
@@ -40,6 +40,7 @@ function parseDelimited(text, delimiter = ';') {
 
 function clean(value) { return value.replaceAll('_', ' ').toLowerCase(); }
 function formatIndicator(value) { return value.replaceAll('_', ' ').toLowerCase().replace(/(^| )\S/g, letter => letter.toUpperCase()); }
+function escapeHTML(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]); }
 
 function answerFor(input) {
   const normalized = clean(input);
@@ -82,10 +83,31 @@ async function loadReport() {
 
 function renderStations() {
   const filter = document.querySelector('#province-filter');
+  const yearFilter = document.querySelector('#year-filter');
+  if (!state.map) {
+    state.map = L.map('station-map', { zoomControl: false, scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
+    L.control.zoom({ position: 'bottomright' }).addTo(state.map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(state.map);
+  }
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   filter.innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option value="${province}">${province}</option>`).join('');
-  const draw = () => { const selected = filter.value; const stations = state.stations.filter(station => station.Station && (selected === 'all' || station.Province === selected)).sort((a, b) => Number(b.TOTAL || 0) - Number(a.TOTAL || 0)).slice(0, 5); document.querySelector('#station-list').innerHTML = stations.map(station => `<div class="station-row"><span class="legend-dot ${station.Risk === 'High' ? 'high' : 'medium'}"></span><span class="station-name">${station.Station}<small>${station.Province}</small></span><b>${Number(station.TOTAL || 0).toLocaleString()}</b></div>`).join('') || '<span class="loading-copy">No station records for this province.</span>'; };
-  filter.addEventListener('change', draw); draw();
+  const draw = () => {
+    const selected = filter.value;
+    const year = yearFilter.value;
+    const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (selected === 'all' || station.Province === selected)).sort((a, b) => Number(b[year] || 0) - Number(a[year] || 0));
+    state.visibleStations = stations;
+    state.markers.forEach(marker => marker.remove()); state.markers = [];
+    stations.forEach(station => {
+      const riskColor = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
+      const marker = L.circleMarker([Number(station.Latitude.replace('=', '')), Number(station.Longitude.replace('=', ''))], { radius: 8, color: '#fff', weight: 2, fillColor: riskColor, fillOpacity: .92 }).addTo(state.map);
+      marker.bindPopup(`<strong>${escapeHTML(station.Station)}</strong><br>${escapeHTML(station.Province)} · ${escapeHTML(station.Risk)}<br><b>${Number(station[year] || 0).toLocaleString()}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`); state.markers.push(marker);
+    });
+    document.querySelector('#station-list').innerHTML = stations.slice(0, 5).map(station => `<div class="station-row"><span class="legend-dot ${station.Risk === 'High' ? 'high' : 'medium'}"></span><span class="station-name">${escapeHTML(station.Station)}<small>${escapeHTML(station.Province)}</small></span><b>${Number(station[year] || 0).toLocaleString()}</b></div>`).join('') || '<span class="loading-copy">No station records for this province.</span>';
+    document.querySelector('#visible-count').textContent = stations.length;
+    document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
+    if (stations.length) state.map.fitBounds(L.latLngBounds(state.markers.map(marker => marker.getLatLng())), { padding: [22, 22], maxZoom: 8 });
+  };
+  filter.addEventListener('change', draw); yearFilter.addEventListener('change', draw); document.querySelector('#map-reset').addEventListener('click', draw); draw(); window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
 function submit(text) { if (!text.trim()) return; addMessage(text.trim(), 'user'); const result = state.ready ? answerFor(text) : { text: 'The report is still loading. Please try that question again in a moment.', matches: [] }; window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }

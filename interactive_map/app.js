@@ -51,9 +51,13 @@ function drawFallbackMap(stations, year) {
 }
 
 async function init() {
-  const response = await fetch(DATA_URL);
-  if (!response.ok) throw new Error('Station dataset unavailable');
-  state.stations = parseDelimited(await response.text());
+  if (Array.isArray(window.GBV_STATIONS) && window.GBV_STATIONS.length) {
+    state.stations = window.GBV_STATIONS;
+  } else {
+    const response = await fetch(DATA_URL);
+    if (!response.ok) throw new Error('Station dataset unavailable');
+    state.stations = parseDelimited(await response.text());
+  }
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   document.querySelector('#province-filter').innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option>${escapeHTML(province)}</option>`).join('');
   document.querySelector('#province-filter').addEventListener('change', drawMap);

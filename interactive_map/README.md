@@ -22,11 +22,12 @@ The `interactive_map` folder contains a standalone browser interface for explori
 | --- | --- |
 | `index.html` | Page structure, controls, map container, and external Leaflet assets |
 | `styles.css` | Responsive layout, map presentation, filters, statistics, and legend styles |
-| `app.js` | Dataset loading, semicolon-delimited CSV parsing, marker rendering, filtering, and popups |
+| `app.js` | Dataset loading, CSV parsing, marker rendering, filtering, and popups |
+| `data.js` | Local copy of the 30 usable station records for downloaded/offline HTML use |
 
 ## Data source
 
-The map loads the dataset at:
+When served from the repository, the map loads the dataset at:
 
 ```text
 ../extracted_datasets/GBV Dataset.csv
@@ -46,9 +47,11 @@ The CSV uses semicolons as delimiters and contains these fields:
 
 Rows without a station name or usable latitude and longitude are excluded from the map. Province summary rows and the national total are therefore not plotted as station markers.
 
+`data.js` contains the same usable station records so the downloaded HTML file can still display the map without requesting a sibling CSV file. Update both `data.js` and the source CSV when the dataset changes.
+
 ## Run locally
 
-Because the page uses `fetch()` to load the CSV, run it through a local web server instead of opening `index.html` directly from the filesystem.
+For the latest repository data, run the page through a local web server. A downloaded copy also includes `data.js`, so it can display station records when opened directly from the filesystem.
 
 From the repository root:
 
@@ -92,7 +95,7 @@ The marker color represents the source dataset's risk label. The selected year c
 
 ### The map is blank
 
-Confirm that the server was started from the repository root and that the URL includes `/interactive_map/`. Opening the HTML file directly with a `file://` URL prevents the browser from loading the CSV through `fetch()`.
+Refresh the downloaded HTML and confirm that `data.js` is in the same folder as `index.html`, `styles.css`, and `app.js`. If using the repository version, start the server from the repository root and open `/interactive_map/`.
 
 ### The station data does not load
 

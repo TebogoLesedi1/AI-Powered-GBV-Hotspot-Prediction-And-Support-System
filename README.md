@@ -1,133 +1,299 @@
-# AI-Powered-GBV-Hotspot-Prediction-And-Support-System
+# AI-Powered GBV Hotspot Prediction and Support System
 
+An exploratory research project for collecting, preprocessing, analyzing, and visualizing publicly available gender-based violence (GBV) data in South Africa. The project combines machine-learning notebooks with two browser interfaces:
 
-##Project Overview
+- An interactive station hotspot map for geographic exploration
+- A grounded GBV information and emotional-support chatbot
 
+The project is intended for research, education, and prototype demonstration. It is not an emergency service, a clinical tool, a law-enforcement decision system, or an individual risk predictor.
 
-An Al-powered system that predicts Gender-Based Violence
-(GBV) hotspot areas in South Africa and provides real-time support through an intelligent chatbot.
+## Project objectives
 
-* What It Does
+1. Collect and analyze publicly available GBV-related datasets.
+2. Clean and prepare station, geographic, yearly-count, and report data.
+3. Engineer features for clustering and supervised learning.
+4. Explore hotspot detection using geographic and historical case features.
+5. Explore risk classification using supervised machine-learning models.
+6. Provide a user-friendly interface for map visualization and report exploration.
+7. Present safety resources without storing user conversations.
 
-• Predicts GBV high-risk zones using clustering algorithms
+## Repository structure
 
-• Classifies locations into Low, Medium, or High risk levels
+```text
+.
+├── chatbot/
+│   ├── index.html       # Integrated chatbot and station-risk dashboard
+│   ├── styles.css       # Chatbot and dashboard styling
+│   ├── app.js           # Report search, support signals, and embedded map logic
+│   └── README.md        # Chatbot and dashboard documentation
+├── interactive_map/
+│   ├── index.html       # Standalone map page
+│   ├── styles.css       # Standalone map styling
+│   ├── app.js           # Standalone map logic and embedded station data
+│   └── README.md        # Standalone map documentation
+├── datasets/
+│   ├── 2020-2026-political-related-sexual-violence-incident-data (2).csv
+│   └── full-report-the-first-south-african-national-gender-based-violence-study-2022.txt
+├── extracted_datasets/
+│   ├── 2025-2026_-_4th_Quarter_WEB.xlsx - Prov TOP30 stations.csv
+│   ├── GBV Dataset.csv
+│   └── gbv_data.xlsx - Sheet1.csv
+├── python_notebooks/
+│   ├── classification.ipynb
+│   ├── emotional_support.ipynb
+│   ├── GBV Model (3).ipynb
+│   └── hotspot_detection.ipynb
+└── iris_dataset_for_data_science_pratice.ipynb
+```
 
-• Chatbot offers emotional support, guidance, and resource recommendations.
+## Data sources and scope
 
-Ethics & Safety
+The project uses publicly available sources related to GBV, sexual violence, and South African crime statistics. The main sources include:
 
-• Privacy-first approach
+- [South African Police Service crime statistics](https://www.saps.gov.za/services/crimestats.php)
+- [GBVF Response Fund SAPS data visualization](https://www.gbvfresponsefund1.org/dashboards/saps-data-visualisation/)
+- [Conflict-related sexual violence data](https://data.humdata.org/dataset/conflict-related-sexual-violence)
+- The First South African National Gender-Based Violence Study, 2022
 
-• No personal data stored without consent
+The repository contains both source files and extracted/working CSV files. The current station map uses `extracted_datasets/GBV Dataset.csv`, a semicolon-delimited dataset with these fields:
 
-• Not a replacement for professional/legal advice
+| Field | Description |
+| --- | --- |
+| `Province` | South African province |
+| `Station` | Police station name |
+| `Latitude`, `Longitude` | Station coordinates |
+| `Risk` | Source risk label, currently `High` or `Med-high` |
+| `2022`–`2026` | Reported case count for each year |
+| `TOTAL` | Combined count for the available years |
 
-• Bias-aware modeling
+The map currently contains 30 usable station records. Province summary rows and national totals do not have station coordinates, so they are excluded from plotted markers.
 
+## Data preprocessing and feature engineering
 
-Deliverables
+The project preprocessing work includes:
 
-• Source code + report
+1. Removing report banners, metadata rows, empty layout columns, structural headers, and footer rows from exported SAPS tables.
+2. Standardizing column names by stripping whitespace, converting to lowercase, and replacing spaces with underscores.
+3. Removing duplicate records and rows without critical province or station values.
+4. Converting comma-formatted strings into numeric case counts.
+5. Coercing invalid or missing numeric values to usable values, with missing crime counts represented as zero where appropriate.
+6. Cleaning latitude and longitude fields, including removal of stray `=` characters.
+7. Reshaping yearly counts between wide and long formats for analysis and visualization.
+8. Scaling numerical features with `StandardScaler` for distance-based clustering and model inputs.
+9. Creating an ordinal risk target with quantile-based levels such as `Low Risk`, `Medium Risk`, and `High Risk` in the hotspot notebook.
+10. Encoding categorical targets with `LabelEncoder` for supervised learning experiments.
 
-• Model evaluation metrics
+The report-classification notebook additionally creates:
 
-• Interactive visualizations
+- A cleaned `notes` field
+- A numeric representation of report values
+- A combined text field from indicators and notes
+- TF-IDF text features
+- Imputed and scaled numerical features
+- A combined feature matrix for a Random Forest classifier
 
-• Working demo
+## Machine-learning work
 
+### Hotspot detection and clustering
 
+`python_notebooks/hotspot_detection.ipynb` prepares station-level historical crime-period features for clustering and supervised experiments. The workflow includes data cleaning, feature scaling, quantile-based risk tiers, and train/test preparation for future K-Means, DBSCAN, and related analysis.
 
-## 🧹 Data Preprocessing & Exploratory Data Analysis (EDA)
+The current web map is a visualization of station records. It does not claim to generate live clustering predictions. Clustering outputs should be interpreted alongside the notebook preprocessing and evaluation work.
 
-Before feeding raw data into machine learning algorithms (K-Means/DBSCAN clustering and XGBoost risk classification), we conducted an extensive Exploratory Data Analysis (EDA) and data cleaning pipeline on the official SAPS quarterly contact crime dataset (`2025-2026_-_4th_Quarter_WEB`).
+### Risk classification
 
+`python_notebooks/GBV Model (3).ipynb` explores supervised classification of station risk labels using geographic coordinates and reported totals. The notebook compares models including:
 
-## 🌐 Data Source & Scope
+- Logistic Regression
+- K-Nearest Neighbours
+- Decision Tree
+- Random Forest
+- Support Vector Machine
+- Gaussian Naive Bayes
+- Gradient Boosting
+- Multi-layer Perceptron
 
-This project utilizes official quarterly contact crime data published by the **South African Police Service (SAPS)**, focusing on gender-based violence and femicide (GBVF) metrics across South Africa.
+It includes train/test splitting, feature scaling, model training, predictions, accuracy, precision, recall, F1 score, and comparison plots.
 
-* **Primary Sources:**
-  * Official Portal: [SAPS Crime Statistics](https://www.saps.gov.za/services/crimestats.php)
-  * Visualisation Partner: [GBVF Response Fund Dashboard](https://www.gbvfresponsefund1.org/dashboards/saps-data-visualisation/)
-  * Conflict-Related (CRSV) or Political-Related Sexual Violence Data:  [Conflict-Related (CRSV)](https://data.humdata.org/dataset/conflict-related-sexual-violence)
-  * 
-* **Granularity:** Police Station, District, Province, and National levels.
-* **Target GBVF Crime Categories:**
-  * Rape
-  * Sexual Offences
-  * Sexual Offences detected as a result of police action
-  * Sexual Assault
-  * Attempted Sexual Offences
-  * Contact Sexual Offences
+`python_notebooks/classification.ipynb` focuses on classifying sections of the national GBV study from text and numerical report content. It uses TF-IDF features, numeric imputation, scaling, a combined feature matrix, and a Random Forest demonstration.
 
----
+## Browser interfaces
 
-### Key Preprocessing Steps Completed:
+### 1. Standalone interactive map
 
-1. **Dataset Ingestion & Metadata Cleaning:**
-   * Stripped official SAPS banner and layout rows (skipping raw metadata headers) to align police station entries correctly.
-   * Extracted station-level granular observations from the `Province TOP 30 stations` sheet to support spatial hotspot mapping.
+The standalone map is in `interactive_map/` and is the recommended download for map demonstrations. It provides:
 
-2. **Column Standardisation & Feature Cleansing:**
-   * Standardised all column headers into clean, lower-case, programmatic names (e.g., `january_2026_to_march_2026`, `province`, `station`).
-   * Automated the removal of Excel layout spacer columns (`Unnamed: 0`, `Unnamed: 1`, `Unnamed: 14`, `Unnamed: 15`).
-   * Removed secondary structural SAPS code header rows (`P1`, `P2`, `Prov`).
+- Interactive station markers across South Africa
+- High-risk and medium-high-risk marker colors
+- Province filtering
+- Year filtering for `2022` through `2026` and combined `TOTAL`
+- Clickable station details
+- Active station and case totals
+- A reset control to refit the visible stations
+- Responsive desktop and mobile layout
 
-3. **Data Type Conversion & Handling Missing Values:**
-   * Processed string-formatted numerical fields by stripping commas (e.g., converting `"2,653"` to integer `2653`).
-   * Addressed missing values by dropping non-informative structural footer rows and coercing missing crime metrics to `0`.
-   * Verified data integrity and removed duplicate station entries.
+The standalone package is intentionally portable. `index.html`, `styles.css`, and `app.js` are sufficient to display the station records when downloaded together. The station records are embedded in `app.js`, so the page does not depend on a repository-relative CSV when opened directly from disk. When served from the repository, the source CSV remains available for data maintenance and comparison.
 
-4. **Feature Engineering & Target Categorisation:**
-   * Formatted historical period features (`2022` through `2026`) to analyze quarter-on-quarter crime trajectories.
-   * Engineered an ordinal target variable (`risk_level`) using quantile-based stratification (`Low Risk`, `Medium Risk`, `High Risk`) based on the latest quarterly crime volume.
-   * Encoded categorical labels using `LabelEncoder` (`0`, `1`, `2`) for downstream supervised classification.
+### 2. Ubuntu / GBV chatbot dashboard
 
-5. **Feature Scaling & Dataset Partitioning:**
-   * Applied `StandardScaler` ($\mu=0, \sigma=1$) across all numeric crime features to prepare normalized distance vectors required for **K-Means** and **DBSCAN** spatial clustering.
-   * Partitioned the dataset using stratified 80/20 train/test splitting (`train_test_split`) to evaluate baseline models without data leakage.
+The `chatbot/` interface combines:
 
----
+- Report question lookup
+- Evidence matches from the loaded report
+- Basic keyword-based intent detection
+- Basic emotion-signal detection
+- Emergency escalation responses
+- Support-resource signposting
+- An embedded station-risk view
+- Links to the standalone map
 
-### ⏸️ Preprocessing Status: **PAUSED**
-> **Current State:** The dataset has been fully cleaned, transformed, scaled, and split (`X_train`, `X_test`, `y_train`, `y_test`). The preprocessed data is saved and ready for **Step 4: Model Implementation & Hotspot Clustering (K-Means / DBSCAN / XGBoost Classifier)**.
+The assistant is a transparent browser-side baseline. It searches report fields and returns matching findings; it is not connected to a hosted large language model and should not be treated as professional advice.
 
+## Run locally
 
+Use a local web server so the browser can load the report and CSV files with `fetch()`. From the repository root:
 
+```bash
+python3 -m http.server 4173
+```
 
-# GBV Study Data Classification Notebook
+Open the chatbot dashboard:
 
-## Project Overview
-This notebook processes data from a Gender-Based Violence (GBV) study report, aiming to classify different sections of the report based on their textual and numerical content. The primary goal is to build a machine learning model that can predict the 'section' (e.g., 'PREVALENCE', 'INJURIES', 'RECOMMENDATIONS') of an entry within the report.
+```text
+http://localhost:4173/chatbot/
+```
 
-## Data Source
-The data is loaded from a CSV file: `/content/drive/MyDrive/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt`.
+Open the standalone map:
 
-## Methodology
-The process involves several key stages:
+```text
+http://localhost:4173/interactive_map/
+```
 
-1.  **Data Loading and Initial Inspection**: The raw data is loaded into a Pandas DataFrame, and initial checks are performed to understand its structure, data types, and missing values.
+Stop the server with `Ctrl+C`.
 
-2.  **Data Preprocessing and Cleaning**: 
-    *   Missing `notes` values are filled with empty strings.
-    *   A `value_numeric` column is created by extracting numerical information from the `value` column, handling percentages and text-embedded numbers (e.g., "7,310,389 women"). Non-convertible values are coerced to `NaN`.
-    *   A combined `text` column is generated from `indicator` and `notes` for natural language processing.
+### Downloaded standalone map
 
-3.  **Feature Engineering**: 
-    *   The `section` column is transformed into a numerical target variable (`y_encoded`) using `LabelEncoder`.
-    *   Textual features (`X_text`) are created using `TfidfVectorizer`.
-    *   Numerical features (`X_numeric_scaled`) are derived from `value_numeric`, with `SimpleImputer` handling `NaN`s (imputing with 0) and `StandardScaler` standardizing the values.
-    *   All features are combined into a single feature matrix `X` using `hstack`. Robust type conversion and a final `SimpleImputer` step ensure `X` is a dense, NaN-free `float` NumPy array.
+To run the standalone map on another computer:
 
-4.  **Data Splitting**: The data is split into training (70%), validation (15%), and testing (15%) sets. Special handling is implemented to address rare classes during splitting to avoid issues with `stratify` parameters.
+1. Download `interactive_map/index.html`, `interactive_map/styles.css`, and `interactive_map/app.js`.
+2. Put the three files in the same folder.
+3. Open `index.html` in a browser.
 
-5.  **Model Training**: 
-    *   A `RandomForestClassifier` is initialized and trained on the `X_train` and `y_train` data.
-    *   Extensive debug checks were added during the process to ensure `X_train` is free of `NaN`s and is of the correct data type (`float` NumPy array) before model fitting.
+The downloaded map includes embedded station data and a fallback renderer. Internet access improves the experience by loading Leaflet and OpenStreetMap tiles, but the station view remains available if those external resources are blocked. For the latest repository CSV rather than the embedded snapshot, run the project through the local server.
 
-## Current Status
-*   Data has been successfully loaded, cleaned, and features engineered.
-*   The data has been split into training, validation, and test sets.
-*   A `RandomForestClassifier` model has been trained on the processed training data without encountering `NaN` errors.
-*   The cleaned DataFrame `df_clean` has been saved to `gbv_data_cleaned.csv`.
+## Interface connections
+
+### Chatbot dashboard
+
+```text
+chatbot/index.html
+    ├── styles.css
+    └── app.js
+         ├── ../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt
+         └── ../extracted_datasets/GBV Dataset.csv
+```
+
+### Standalone map
+
+```text
+interactive_map/index.html
+    ├── styles.css
+    └── app.js
+         └── embedded station records
+```
+
+## Safety and ethics
+
+The project follows a privacy-first prototype approach:
+
+- No chat conversation is saved by the browser interface.
+- The map displays aggregated station-level records, not personal information.
+- The map is not an individual risk assessment.
+- Report figures describe study populations and should not be generalized to every person.
+- Model outputs may contain bias, uncertainty, and source-data limitations.
+- Crime statistics may reflect reporting, recording, geographic, and temporal differences.
+
+The interface provides these South African contacts for basic signposting:
+
+- Police or emergency: `10111` or `112`
+- GBV Command Centre: `0800 428 428`
+- SMS / Please Call Me: `*120*7867#`
+
+In an immediate emergency, contact local emergency services or move to a safer place if possible.
+
+## External dependencies
+
+The browser interfaces use:
+
+- Leaflet `1.9.4` for map rendering when available
+- OpenStreetMap tiles for the map background
+- Google Fonts for interface typography
+- The browser Fetch API for server-based data loading
+
+No JavaScript package manager or build step is required. Python 3 is only needed for the recommended local static server. The notebooks require a Python environment with their referenced data-science libraries.
+
+## Validation completed
+
+The interfaces have been checked with:
+
+```bash
+node --check chatbot/app.js
+node --check interactive_map/app.js
+git diff --check
+```
+
+The map package has also been checked for:
+
+- Correct local HTML-to-CSS and HTML-to-JavaScript references
+- Reachable server-based dataset paths
+- 30 embedded station records
+- Valid station coordinates
+- A fallback rendering path when Leaflet cannot initialize
+- Clean editor error checks for the HTML, CSS, JavaScript, and README files
+
+## Troubleshooting
+
+### The map is blank when opening a downloaded file
+
+Confirm that the three files are in the same folder and that the downloaded copy includes the latest `app.js`. The current standalone version embeds station data and should not need the repository CSV to render. Refresh the browser after replacing the files.
+
+### The map tiles do not appear
+
+Leaflet and OpenStreetMap tiles are external resources. Check the computer's internet connection or browser network restrictions. The fallback renderer can still show station markers without map tiles.
+
+### The chatbot cannot load its report or station data
+
+Start the server from the repository root, not from inside `chatbot/`:
+
+```bash
+python3 -m http.server 4173
+```
+
+Then use `http://localhost:4173/chatbot/` rather than opening the HTML with a `file://` URL.
+
+### The CSV has been updated
+
+Update the source CSV and refresh the server-based map. If the standalone downloaded map must contain the new records, update the embedded station records in `interactive_map/app.js` as well.
+
+## Project status
+
+Completed prototype work includes:
+
+- Public dataset collection and repository organization
+- Data cleaning and feature-engineering notebooks
+- Baseline hotspot and risk-classification workflows
+- Browser chatbot interface with safety-oriented responses
+- Integrated station-risk dashboard view
+- Standalone interactive map
+- Download-compatible embedded station data
+- Responsive HTML/CSS/JavaScript interfaces
+- Documentation for the chatbot and map components
+- GitHub publication on the `main` branch
+
+The next development stage is to connect evaluated clustering and classification outputs to the interface, add model uncertainty and evaluation reporting, and improve reproducibility with a formal environment specification and automated tests.
+
+## Related documentation
+
+- [`chatbot/README.md`](chatbot/README.md) - chatbot and dashboard details
+- [`interactive_map/README.md`](interactive_map/README.md) - standalone map details
+- [`python_notebooks/`](python_notebooks/) - analysis and modeling notebooks

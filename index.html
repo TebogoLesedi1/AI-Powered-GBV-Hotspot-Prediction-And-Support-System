@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A grounded GBV information assistant for the South African National Gender-Based Violence Study.">
+  <title>Ubuntu / GBV information assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .risk-heading{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:13px}.prototype-badge{font:8px 'DM Mono',monospace;color:#f27762;border:1px solid #f2b2a7;padding:4px 5px}.risk-copy{font-size:10px;line-height:1.5;color:#6e7b7c;margin:9px 0 15px}.select-label{font:9px 'DM Mono',monospace;text-transform:uppercase;color:#6e7b7c;display:block;margin-bottom:5px}.insight-panel select{width:100%;border:1px solid #dfe4df;background:#fff;padding:8px;font-size:11px;color:#172529}.station-list{margin-top:12px;border-top:1px solid #dfe4df}.station-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid #dfe4df;font-size:10px}.station-row b{margin-left:auto;font:10px 'DM Mono',monospace}.station-name{line-height:1.2}.station-name small{display:block;color:#6e7b7c;font-size:8px;margin-top:3px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}.legend-dot.high{background:#f27762}.legend-dot.medium{background:#e2bb48}.risk-legend{display:flex;gap:14px;color:#6e7b7c;font:9px 'DM Mono',monospace;margin-top:10px}.risk-legend .legend-dot{margin-right:4px}.loading-copy{display:block;color:#6e7b7c;font-size:10px;padding:12px 0}.at-glance-heading{margin-top:32px}.signal-row{display:flex;gap:12px;color:#83908e;font:9px 'DM Mono',monospace;border-top:1px solid #dfe4df;padding-top:9px;margin-top:13px}.signal-row b{color:#172529;font-weight:500}
+      :root{--ink:#24152f;--muted:#76677f;--paper:#f8f3fa;--panel:#fff;--lime:#e7c8ff;--coral:#8b3fb3;--line:#e7dce9}.brand-mark{background:#d7a7f3}.brand-slash,h1 em{color:#8b3fb3}.source-card{background:#351644}.source-label{color:#e7c8ff}.safety-card{border-color:#b34d8e}.send-button{background:#351644;color:#e7c8ff}.insight-note{background:#e7c8ff}.live-line{background:#b34d8e}.bar i{background:#351644}.risk-heading{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:13px}.prototype-badge{font:8px 'DM Mono',monospace;color:#8b3fb3;border:1px solid #d7a7f3;padding:4px 5px}.risk-copy{font-size:10px;line-height:1.5;color:#76677f;margin:9px 0 15px}.select-label{font:9px 'DM Mono',monospace;text-transform:uppercase;color:#76677f;display:block;margin-bottom:5px}.insight-panel select{width:100%;border:1px solid #e7dce9;background:#fff;padding:8px;font-size:11px;color:#24152f}.station-list{margin-top:12px;border-top:1px solid #e7dce9}.station-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid #e7dce9;font-size:10px}.station-row b{margin-left:auto;font:10px 'DM Mono',monospace}.station-name{line-height:1.2}.station-name small{display:block;color:#76677f;font-size:8px;margin-top:3px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}.legend-dot.high{background:#b34d8e}.legend-dot.medium{background:#d7a7f3}.risk-legend{display:flex;gap:14px;color:#76677f;font:9px 'DM Mono',monospace;margin-top:10px}.risk-legend .legend-dot{margin-right:4px}.loading-copy{display:block;color:#76677f;font-size:10px;padding:12px 0}.at-glance-heading{margin-top:32px}.signal-row{display:flex;gap:12px;color:#76677f;font:9px 'DM Mono',monospace;border-top:1px solid #e7dce9;padding-top:9px;margin-top:13px}.signal-row b{color:#24152f;font-weight:500}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Ubuntu home"><span class="brand-mark">U</span><span>ubuntu<span class="brand-slash">/</span>GBV</span></a>
+        <div class="topbar-meta"><span class="status-dot"></span><span>Research assistant</span><span class="topbar-divider"></span><span id="record-count">Loading report</span><span class="topbar-divider"></span><span id="model-status">NLP model loading</span></div>
+      <button class="icon-button" id="clear-chat" type="button" title="Start a new conversation" aria-label="Start a new conversation">↗</button>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <div class="sidebar-intro">
+          <span class="eyebrow">A grounded companion</span>
+          <h1>Ask the<br><em>report.</em></h1>
+          <p>Explore findings from South Africa’s first national gender-based violence study in plain language.</p>
+        </div>
+        <div class="source-card">
+          <div class="source-label"><span class="source-pulse"></span> Current source</div>
+          <strong>First South African National GBV Study</strong>
+          <span class="source-detail">Baseline survey · 2022–2024</span>
+          <div class="source-stats"><span><b id="section-count">—</b> sections</span><span><b id="row-count">—</b> findings</span></div>
+        </div>
+        <div class="safety-card">
+          <span class="eyebrow">Need help now?</span>
+          <p>If you are in immediate danger, move somewhere safer and contact emergency services.</p>
+          <div class="hotline"><span>Police / emergency</span><b>10111 · 112</b></div>
+          <div class="hotline"><span>GBV Command Centre</span><b>0800 428 428</b></div>
+          <div class="hotline"><span>SMS / please call me</span><b>*120*7867#</b></div>
+        </div>
+        <div class="sidebar-foot">Private by design · Nothing is saved</div>
+      </aside>
+
+      <section class="chat-panel" aria-label="Chat with the report assistant">
+        <div class="chat-header"><div><span class="eyebrow">Conversation</span><h2>What would you like to understand?</h2></div><span class="grounded-badge">● Grounded in report</span></div>
+        <div class="messages" id="messages" aria-live="polite">
+          <article class="message assistant-message welcome-message"><div class="avatar">U</div><div class="message-body"><span class="message-label">Ubuntu assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question, or start with one of these:</p><div class="quick-prompts"><button type="button" data-prompt="What are the main findings about violence against women?">Main findings <span>→</span></button><button type="button" data-prompt="What does the study say about help-seeking?">Help-seeking <span>→</span></button><button type="button" data-prompt="What are the study's recommendations?">Recommendations <span>→</span></button></div></div></article>
+        </div>
+        <form class="composer" id="chat-form"><div class="composer-inner"><textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question"></textarea><button class="send-button" type="submit" aria-label="Send question" title="Send question">↑</button></div><div class="composer-foot"><span>Answers are based on the loaded report</span><span>Enter to send · Shift + Enter for a new line</span></div></form>
+      </section>
+
+      <aside class="insight-panel">
+        <div class="insight-heading"><span class="eyebrow">Prediction engine</span><span class="live-line"></span></div>
+        <div class="risk-heading"><strong>Station risk view</strong><span class="prototype-badge">PROTOTYPE</span></div>
+        <p class="risk-copy">Explore reported serious-crime totals by station. This is a research view, not an individual risk prediction.</p>
+        <label class="select-label" for="province-filter">Province</label><select id="province-filter"><option value="all">All provinces</option></select>
+        <div class="station-list" id="station-list"><span class="loading-copy">Loading station data…</span></div>
+        <div class="risk-legend"><span><i class="legend-dot high"></i>High</span><span><i class="legend-dot medium"></i>Med-high</span></div>
+        <div class="insight-heading at-glance-heading"><span class="eyebrow">At a glance</span><span class="live-line"></span></div>
+        <div class="big-stat"><span class="stat-value">35.5%</span><span class="stat-copy">of surveyed women reported physical and/or sexual violence in their lifetime.</span><span class="stat-source">WOMEN_ALL_LIFETIME</span></div>
+        <div class="mini-chart" aria-label="Selected report statistics"><div class="chart-row"><span>Lifetime violence</span><div class="bar"><i style="width: 35.5%"></i></div><b>35.5%</b></div><div class="chart-row"><span>Recent violence</span><div class="bar"><i style="width: 7%"></i></div><b>7.0%</b></div><div class="chart-row"><span>Controlling behaviour</span><div class="bar"><i style="width: 57.6%"></i></div><b>57.6%</b></div></div>
+        <div class="insight-note"><span class="note-icon">i</span><p>Figures describe survey participants and should not be treated as a measure of an individual’s risk.</p></div>
+        <div class="topic-list"><span class="eyebrow">Explore a topic</span><button type="button" data-prompt="Tell me about the study methodology">Methodology <span>↗</span></button><button type="button" data-prompt="What factors are associated with GBV in the study?">Risk factors <span>↗</span></button><button type="button" data-prompt="What laws and policies are discussed?">Laws & policy <span>↗</span></button></div>
+      </aside>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

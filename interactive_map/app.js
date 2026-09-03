@@ -51,10 +51,6 @@ function drawFallbackMap(stations, year) {
 }
 
 async function init() {
-  if (typeof L !== 'undefined') {
-    state.map = L.map('station-map', { scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(state.map);
-  }
   const response = await fetch(DATA_URL);
   if (!response.ok) throw new Error('Station dataset unavailable');
   state.stations = parseDelimited(await response.text());
@@ -63,8 +59,16 @@ async function init() {
   document.querySelector('#province-filter').addEventListener('change', drawMap);
   document.querySelector('#year-filter').addEventListener('change', drawMap);
   document.querySelector('#map-reset').addEventListener('click', drawMap);
+  if (typeof L !== 'undefined') {
+    try {
+      state.map = L.map('station-map', { scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(state.map);
+    } catch (error) {
+      state.map = null;
+    }
+  }
   drawMap();
-  window.setTimeout(() => state.map.invalidateSize(), 0);
+  if (state.map) window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
 init().catch(error => { document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });

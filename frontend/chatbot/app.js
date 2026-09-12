@@ -3,6 +3,8 @@ const STATION_URL = '../data/GBV Dataset.csv';
 const state = { records: [], stations: [], ready: false, map: null, markers: [], visibleStations: [] };
 const messages = document.querySelector('#messages');
 const question = document.querySelector('#question');
+const sendButton = document.querySelector('.send-button');
+const chatStatus = document.querySelector('#chat-status');
 const emotional_support_model = {
   intents: { emergency: ['danger', 'unsafe', 'threat', 'hurt', 'assault', 'rape', 'kill', 'suicid', 'emergency', 'help me now'], emotional_support: ['scared', 'afraid', 'anxious', 'sad', 'alone', 'ashamed', 'overwhelmed', 'stressed', 'feel', 'support'], resources: ['resource', 'shelter', 'clinic', 'ngo', 'police', 'contact', 'hotline', 'where can'], report_lookup: ['report', 'study', 'percentage', 'prevalence', 'factor', 'recommend', 'method', 'law', 'violence'] },
   emotions: { fear: ['scared', 'afraid', 'unsafe', 'threat', 'danger'], distress: ['sad', 'alone', 'ashamed', 'overwhelmed', 'hurt', 'cry'], anxiety: ['anxious', 'worried', 'stress', 'panic'] }
@@ -74,7 +76,7 @@ function addMessage(text, type, result) {
 }
 
 async function loadReport() {
-  try { const [reportResponse, stationResponse] = await Promise.all([fetch(REPORT_URL), fetch(STATION_URL)]); if (!reportResponse.ok || !stationResponse.ok) throw new Error('Data unavailable'); state.records = parseCSV(await reportResponse.text()); state.stations = parseDelimited(await stationResponse.text()); state.ready = true; renderStations(); } catch (error) { state.records = []; state.stations = []; }
+  try { const [reportResponse, stationResponse] = await Promise.all([fetch(REPORT_URL), fetch(STATION_URL)]); if (!reportResponse.ok || !stationResponse.ok) throw new Error('Data unavailable'); state.records = parseCSV(await reportResponse.text()); state.stations = parseDelimited(await stationResponse.text()); state.ready = true; renderStations(); chatStatus.textContent = 'Assistant ready.'; chatStatus.className = 'app-status is-ready'; question.disabled = false; sendButton.disabled = false; messages.setAttribute('aria-busy', 'false'); } catch (error) { state.records = []; state.stations = []; chatStatus.textContent = 'The assistant is offline. Check your connection and reload to try again.'; chatStatus.className = 'app-status is-error'; messages.setAttribute('aria-busy', 'false'); }
   document.querySelector('#record-count').textContent = state.ready ? 'Report online' : 'Report unavailable';
   document.querySelector('#model-status').textContent = 'NLP baseline online';
   document.querySelector('#row-count').textContent = state.records.length || '—';
@@ -110,7 +112,7 @@ function renderStations() {
   filter.addEventListener('change', draw); yearFilter.addEventListener('change', draw); document.querySelector('#map-reset').addEventListener('click', draw); draw(); window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
-function submit(text) { if (!text.trim()) return; addMessage(text.trim(), 'user'); const result = state.ready ? answerFor(text) : { text: 'The report is still loading. Please try that question again in a moment.', matches: [] }; window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
+function submit(text) { if (!text.trim() || !state.ready) return; addMessage(text.trim(), 'user'); const result = answerFor(text); window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
 document.querySelector('#chat-form').addEventListener('submit', event => { event.preventDefault(); submit(question.value); });
 question.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(question.value); } });
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });

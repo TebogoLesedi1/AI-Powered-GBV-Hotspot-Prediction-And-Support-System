@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="South African GBV emergency, health, shelter and support resources.">
+    <title>Resources | SafeSouth Africa</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="resources.css">
+    <link rel="stylesheet" href="app-accessibility.css">
+</head>
+<body class="resources-page">
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+    <header class="header">
+        <a href="index.html" class="logo">Safe<span>South Africa</span></a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+            <a href="index.html">Home</a>
+            <a href="hotspot.html">Hotspots</a>
+            <a href="resources.html" aria-current="page">Resources</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Ubuntu Assistant</a>
+        </nav>
+        <a href="contact.html" class="help-button">Open Ubuntu</a>
+        <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-controls="sideMenu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <aside class="side-menu" id="sideMenu" aria-label="Mobile navigation">
+        <div class="menu-header"><h2>Menu</h2><button class="close-menu" id="closeMenu" type="button" aria-label="Close menu">&times;</button></div>
+        <nav class="mobile-navigation" aria-label="Mobile navigation links">
+            <a href="index.html">Home</a>
+            <a href="hotspot.html">Station Hotspot Map</a>
+            <a href="resources.html" aria-current="page">Resources</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Ubuntu Assistant</a>
+        </nav>
+    </aside>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <main class="resources-wrap">
+        <p class="location">SUPPORT DIRECTORY · SOUTH AFRICA</p>
+        <h1>Find the right support.</h1>
+        <p class="resources-lead">Use these trusted starting points for immediate safety, health care, shelter, legal support and reporting. Services and hours can change, so call ahead where possible.</p>
+
+        <section class="emergency-panel resources-emergency" aria-labelledby="urgent-title">
+            <div><strong id="urgent-title">If you are in immediate danger</strong><span>Move somewhere safer if you can, then contact emergency services.</span></div>
+            <div class="emergency-actions"><a href="tel:10111">Police 10111</a><a href="tel:112">Mobile emergency 112</a><a href="tel:0800428428">GBV Command Centre 0800 428 428</a></div>
+        </section>
+
+        <div class="resource-grid">
+            <article class="resource-card">
+                <p class="resource-type">24-hour help</p>
+                <h2>GBV Command Centre</h2>
+                <p>Confidential support, counselling, referrals and help with safety planning.</p>
+                <a class="resource-link" href="tel:0800428428">Call 0800 428 428</a>
+                <a class="resource-link" href="sms:1207867">SMS *120*7867#</a>
+            </article>
+            <article class="resource-card">
+                <p class="resource-type">Police and reporting</p>
+                <h2>South African Police Service</h2>
+                <p>Report a crime or ask for immediate police assistance. You can also visit your nearest police station.</p>
+                <a class="resource-link" href="tel:10111">Call 10111</a>
+                <a class="resource-link" href="tel:112">Mobile emergency 112</a>
+            </article>
+            <article class="resource-card">
+                <p class="resource-type">Health care</p>
+                <h2>Clinic or hospital</h2>
+                <p>Visit your nearest public clinic or hospital for medical care, a medical examination and referral to support services.</p>
+                <a class="resource-link" href="https://www.health.gov.za/" target="_blank" rel="noopener">Find health information ↗</a>
+            </article>
+            <article class="resource-card">
+                <p class="resource-type">Shelter and safety</p>
+                <h2>Temporary safe accommodation</h2>
+                <p>The GBV Command Centre can connect survivors to shelters and local organisations based on their location and needs.</p>
+                <a class="resource-link" href="tel:0800428428">Request a shelter referral</a>
+            </article>
+            <article class="resource-card">
+                <p class="resource-type">Legal support</p>
+                <h2>Legal Aid South Africa</h2>
+                <p>Access legal advice and assistance, including help related to protection orders and criminal matters.</p>
+                <a class="resource-link" href="https://legal-aid.co.za/" target="_blank" rel="noopener">Visit Legal Aid South Africa ↗</a>
+            </article>
+            <article class="resource-card">
+                <p class="resource-type">Community organisations</p>
+                <h2>Local NGOs and social workers</h2>
+                <p>Ask the GBV Command Centre, a clinic or a police station for a referral to a verified local NGO or social worker.</p>
+                <a class="resource-link" href="tel:0800428428">Ask for a local referral</a>
+            </article>
+        </div>
+
+        <p class="resources-note"><strong>Privacy note:</strong> Do not share sensitive personal information in public spaces. The hotspot map shows research patterns and does not predict an individual's risk.</p>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

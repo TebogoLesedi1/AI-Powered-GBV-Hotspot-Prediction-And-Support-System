@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sideMenu.classList.add("active");
         menuOverlay.classList.add("active");
         document.body.classList.add("menu-open");
+        hamburger.setAttribute("aria-expanded", "true");
 
     });
 
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
             sideMenu.classList.remove("active");
             menuOverlay.classList.remove("active");
             document.body.classList.remove("menu-open");
+            hamburger.setAttribute("aria-expanded", "false");
 
         });
 
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sideMenu.classList.remove("active");
         menuOverlay.classList.remove("active");
         document.body.classList.remove("menu-open");
+        hamburger.setAttribute("aria-expanded", "false");
 
     });
 
@@ -73,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
             sideMenu.classList.remove("active");
             menuOverlay.classList.remove("active");
             document.body.classList.remove("menu-open");
+            hamburger.setAttribute("aria-expanded", "false");
 
         });
 

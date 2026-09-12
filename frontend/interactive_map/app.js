@@ -1,5 +1,6 @@
 const DATA_URL = '../data/GBV Dataset.csv';
 const state = { stations: [], map: null, markers: [] };
+const mapStatus = document.querySelector('#map-status');
 const EMBEDDED_STATIONS = [
   ['Free State','Park Road',-29.11994,26.21159,'High',1903,1982,1933,1806,1682,9306],
   ['Gauteng','Midrand',-25.997,28.128,'High',1420,1765,1764,1736,1679,8364],['Gauteng','Honeydew',-26.0732,27.9201,'High',2149,1717,1838,1644,1665,9013],['Gauteng','Roodepoort',-26.17733,27.97173,'High',1367,1806,1858,1603,1558,8192],['Gauteng','JHB Central',-26.20676,28.03141,'High',2021,2231,1954,1556,1505,9267],['Gauteng','Ivory park',-25.99001,28.20162,'Med-high',1342,1411,1408,1273,1407,6841],['Gauteng','Tembisa',-26.00749,28.22014,'High',1473,1553,1423,1314,1397,7160],['Gauteng','Brooklyn',-25.75555,28.23751,'High',1631,1489,1521,1427,1359,7427],['Gauteng','Sandton',-26.08026,28.0615,'Med-high',1320,1268,1530,1536,1329,6983],
@@ -79,7 +80,9 @@ async function init() {
     }
   }
   drawMap();
+  mapStatus.textContent = 'Map ready. Use Tab to reach filters and station controls.';
+  mapStatus.className = 'app-status is-ready';
   if (state.map) window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
-init().catch(error => { document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });
+init().catch(error => { mapStatus.textContent = 'The map is offline. Check your connection and reload to try again.'; mapStatus.className = 'app-status is-error'; document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });

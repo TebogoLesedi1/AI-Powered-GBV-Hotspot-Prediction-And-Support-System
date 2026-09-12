@@ -1,0 +1,84 @@
+
+/* Shared focus and status styles for the embedded research tools. */
+:focus-visible {
+  outline: 3px solid #f2b134;
+  outline-offset: 3px;
+}
+
+.app-status {
+  padding: 10px 14px;
+  border: 1px solid #dfe4df;
+  background: #fff;
+  color: #6e7b7c;
+  font: 11px 'DM Mono', monospace;
+}
+
+.app-status.is-ready {
+  border-color: #b7d8bd;
+  background: #f2faf3;
+  color: #2e6c3c;
+}
+
+.app-status.is-error {
+  border-color: #e2aaa0;
+  background: #fff4f1;
+  color: #8c3023;
+}
+
+.emergency-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: baseline;
+  padding: 14px 16px;
+  margin: 18px 0;
+  border-left: 4px solid #b34d8e;
+  background: #fff4f1;
+  color: #24152f;
+}
+
+.emergency-panel span {
+  color: #6e7b7c;
+  font-size: 13px;
+}
+
+.emergency-panel a {
+  color: #8b3fb3;
+  font-weight: 800;
+}
+
+.safety-card h2 {
+  margin: 7px 0 8px;
+  font-size: 18px;
+}
+
+.safety-card .hotline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.safety-card .hotline a {
+  color: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.safety-note {
+  margin-top: 12px;
+  font-size: 11px;
+}
+
+#station-map:focus-visible {
+  outline: 3px solid #f2b134;
+  outline-offset: -3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

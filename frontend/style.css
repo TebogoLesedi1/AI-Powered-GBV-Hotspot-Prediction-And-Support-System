@@ -1,3 +1,12 @@
+.integrated-map {
+    display: block;
+    width: min(1400px, 100%);
+    height: min(760px, 78vh);
+    min-height: 560px;
+    border: 0;
+    margin: 0 auto 32px;
+    background: #f8f3fa;
+}
 /* =========================================
    GENERAL SETTINGS
 ========================================= */

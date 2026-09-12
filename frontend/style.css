@@ -703,3 +703,29 @@ body.menu-open {
     }
 
 }
+
+
+/* Shared typography with the map and chatbot tools. */
+body,
+button,
+input,
+textarea,
+select {
+    font-family: 'Manrope', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Manrope', sans-serif;
+}
+
+.location,
+.eyebrow,
+.feature-number,
+.team-role {
+    font-family: 'DM Mono', monospace;
+}

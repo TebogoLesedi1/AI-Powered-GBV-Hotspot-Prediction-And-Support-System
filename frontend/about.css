@@ -270,3 +270,11 @@
     }
 
 }
+
+.about-wrap h1,
+.about-wrap h2,
+.about-wrap h3,
+.about-wrap h4,
+.about-cta p {
+    font-family: 'Manrope', sans-serif;
+}

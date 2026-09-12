@@ -43,7 +43,7 @@ The project is intended for research, education, and prototype demonstration. It
 │   ├── emotional_support.ipynb
 │   ├── GBV Model (3).ipynb
 │   └── hotspot_detection.ipynb
-└── iris_dataset_for_data_science_pratice.ipynb
+└── 
 ```
 
 ## Data sources and scope

@@ -89,7 +89,7 @@ function renderStations() {
   if (!state.map) {
     state.map = L.map('station-map', { zoomControl: false, scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
     L.control.zoom({ position: 'bottomright' }).addTo(state.map);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: 'abcd', maxZoom: 20 }).addTo(state.map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(state.map);
   }
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   filter.innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option value="${province}">${province}</option>`).join('');
@@ -118,9 +118,4 @@ question.addEventListener('keydown', event => { if (event.key === 'Enter' && !ev
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));
 document.querySelector('#clear-chat').addEventListener('click', () => { messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
-document.querySelectorAll('.message-label').forEach(label => { label.textContent = label.textContent.replace('Ubuntu assistant', 'S.H.E assistant'); });
-document.querySelectorAll('.assistant-message .avatar').forEach(avatar => { avatar.textContent = 'S'; });
-const assistantMeta = document.querySelector('.topbar-meta span:nth-child(2)');
-if (assistantMeta) assistantMeta.textContent = 'Safety Help Empowerment';
-new MutationObserver(() => { document.querySelectorAll('.message-label').forEach(label => { label.textContent = label.textContent.replace('Ubuntu assistant', 'S.H.E assistant'); }); document.querySelectorAll('.assistant-message .avatar').forEach(avatar => { avatar.textContent = 'S'; }); }).observe(messages, { childList: true, subtree: true });
 loadReport();

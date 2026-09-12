@@ -8,6 +8,7 @@
     background: #f8f3fa;
     border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
 }
 /* =========================================
    GENERAL SETTINGS
@@ -533,7 +534,7 @@ body.menu-open {
 
     text-decoration: none;
 
-    border-radius: 12px;
+    border-radius: 35px;
 
     font-size: 16px;
 

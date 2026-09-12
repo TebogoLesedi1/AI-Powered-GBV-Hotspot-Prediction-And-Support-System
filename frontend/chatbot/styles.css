@@ -56,16 +56,24 @@ h1 em,
 	background: var(--lime);
 }
 
+.app-shell {
+	overflow: hidden;
+}
+
+.source-card,
+.safety-card,
+.insight-note,
 .quick-prompts button,
 .topic-list button,
 .send-button,
 .map-reset,
 .insight-panel select,
-.composer-inner {
-	border-radius: 8px;
+.composer-inner,
+.map-frame {
+	border-radius: 12px;
 }
 
-.app-shell {
+.map-frame {
 	overflow: hidden;
 }
 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contact Us | SafeSouth Africa</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="contact.css">
+
+</head>
+
+<body class="chat-page">
+
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <a href="index.html" class="logo">
+            Safe<span>South Africa</span>
+        </a>
+
+        <nav class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="hotspots.html">Hotspots</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+        </nav>
+
+        <a href="contact.html" class="help-button">
+            ☎ Get Help
+        </a>
+
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </header>
+
+
+    <!-- ================= SIDE MENU ================= -->
+
+    <aside class="side-menu" id="sideMenu">
+
+        <div class="menu-header">
+            <h2>Menu</h2>
+            <button class="close-menu" id="closeMenu" aria-label="Close menu">&times;</button>
+        </div>
+
+        <nav class="mobile-navigation">
+            <a href="index.html">Home</a>
+            <a href="hotspots.html">Station Hotspot Map</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Ways to Contact Us</a>
+            <a href="donate.html">Donate Now</a>
+        </nav>
+
+    </aside>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+
+    <!-- ================= CONTACT + CHATBOT ================= -->
+
+    <main class="chat-container">
+
+        <!-- Intro -->
+        <div class="chat-intro">
+            <p class="location">CONTACT US · UBUNTU ASSISTANT</p>
+            <h1>Talk to us. <em>Ask the report.</em></h1>
+            <p class="description">
+                Have a question about gender-based violence in South Africa?
+                Ask Ubuntu — a grounded assistant that answers using the
+                first South African National GBV Study. Nothing you type is saved.
+            </p>
+        </div>
+
+
+        <!-- Chat panel -->
+        <section class="chat-panel" aria-label="Chat with the report assistant">
+
+            <div class="chat-header">
+                <div>
+                    <span class="eyebrow">Conversation</span>
+                    <h2>What would you like to understand?</h2>
+                </div>
+                <div class="header-right">
+                    <span class="grounded-badge">● Grounded in report</span>
+                    <button class="icon-button" id="clear-chat" type="button"
+                            title="Start a new conversation"
+                            aria-label="Start a new conversation">↗</button>
+                </div>
+            </div>
+
+            <div class="messages" id="messages" aria-live="polite">
+
+                <article class="message assistant-message welcome-message">
+                    <div class="avatar">U</div>
+                    <div class="message-body">
+                        <span class="message-label">Ubuntu assistant <time>now</time></span>
+                        <p>Hello. I can help you explore the study's findings, methodology, risk factors, help-seeking patterns, and recommendations.</p>
+                        <p>Ask me a question, or start with one of these:</p>
+                        <div class="quick-prompts">
+                            <button type="button" data-prompt="What are the main findings about violence against women?">Main findings <span>→</span></button>
+                            <button type="button" data-prompt="What does the study say about help-seeking?">Help-seeking <span>→</span></button>
+                            <button type="button" data-prompt="What are the study's recommendations?">Recommendations <span>→</span></button>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+            <form class="composer" id="chat-form">
+                <div class="composer-inner">
+                    <textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question"></textarea>
+                    <button class="send-button" type="submit" aria-label="Send question" title="Send question">↑</button>
+                </div>
+                <div class="composer-foot">
+                    <span>Answers are based on the loaded report</span>
+                    <span>Enter to send · Shift + Enter for a new line</span>
+                </div>
+            </form>
+
+        </section>
+
+
+        <!-- Safety card -->
+        <section class="safety-card-chat">
+
+            <span class="eyebrow">Need help now?</span>
+
+            <p>If you are in immediate danger, move somewhere safer and contact emergency services.</p>
+
+            <div class="hotline"><span>Police / emergency</span><b>10111 · 112</b></div>
+            <div class="hotline"><span>GBV Command Centre</span><b>0800 428 428</b></div>
+            <div class="hotline"><span>SMS / please call me</span><b>*120*7867#</b></div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script>
+
+</body>
+
+</html>

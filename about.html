@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About Us | SafeSouth Africa</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="about.css">
+
+</head>
+
+<body class="about-page">
+
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <a href="index.html" class="logo">
+            Safe<span>South Africa</span>
+        </a>
+
+        <nav class="desktop-nav">
+            <a href="index.html">Home</a>
+            <a href="hotspots.html">Hotspots</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Contact Us</a>
+        </nav>
+
+        <a href="contact.html" class="help-button">
+            ☎ Get Help
+        </a>
+
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </header>
+
+
+    <!-- ================= SIDE MENU ================= -->
+
+    <aside class="side-menu" id="sideMenu">
+
+        <div class="menu-header">
+            <h2>Menu</h2>
+            <button class="close-menu" id="closeMenu" aria-label="Close menu">&times;</button>
+        </div>
+
+        <nav class="mobile-navigation">
+            <a href="index.html">Home</a>
+            <a href="hotspots.html">Station Hotspot Map</a>
+            <a href="about.html">About Us</a>
+            <a href="contact.html">Ways to Contact Us</a>
+            <a href="donate.html">Donate Now</a>
+        </nav>
+
+    </aside>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+
+    <!-- ================= ABOUT HERO ================= -->
+
+    <main class="about-wrap">
+
+        <h1 class="about-title">About Us</h1>
+
+        <div class="about-divider"></div>
+
+        <p class="about-lead">
+            SafeSouth Africa is an AI-powered Gender-Based Violence
+            Hotspot Prediction and Support System. We combine machine
+            learning with an intelligent chatbot to identify high-risk
+            areas across South Africa and connect people to the help
+            they need — in real time.
+        </p>
+
+
+        <!-- ================= MISSION / VISION / VALUES ================= -->
+
+        <section class="about-cards">
+
+            <div class="about-card">
+                <h3>Our Mission</h3>
+                <p>
+                    To predict GBV hotspot areas, classify location risk,
+                    and provide chatbot-based support alongside nearby
+                    resources — so that no one faces violence without
+                    knowing where to turn.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <h3>Our Vision</h3>
+                <p>
+                    A South Africa where data, technology and community
+                    work together to break the silence around gender-based
+                    violence and make support reachable for every person.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <h3>Our Values</h3>
+                <p>
+                    Privacy, dignity and safety come first. Our predictions
+                    are decision-support signals — never proof of danger —
+                    and our chatbot is a guide, not a replacement for
+                    professional or legal advice.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- ================= WHAT WE DO ================= -->
+
+        <section class="about-section">
+
+            <h2 class="section-title">What We Do</h2>
+
+            <p class="section-copy">
+                Our system is built around three integrated components:
+                a data layer, a prediction engine, and a chatbot module.
+                Together they turn public crime and demographic data into
+                clear, actionable insight for communities and support
+                organisations.
+            </p>
+
+            <div class="feature-grid">
+
+                <div class="feature">
+                    <span class="feature-number">01</span>
+                    <h4>Data Layer</h4>
+                    <p>
+                        We collect, clean and engineer public GBV, crime,
+                        demographic and location-related data from trusted
+                        South African sources.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-number">02</span>
+                    <h4>Prediction Engine</h4>
+                    <p>
+                        K-Means clustering detects hotspots, while an XGBoost
+                        classifier labels each area as Low, Medium or High
+                        risk based on engineered features.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <span class="feature-number">03</span>
+                    <h4>Chatbot Module</h4>
+                    <p>
+                        A grounded NLP assistant recognises intent, detects
+                        signals of distress, and recommends nearby police
+                        stations, clinics and NGOs.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ETHICS ================= -->
+
+        <section class="about-section ethics-section">
+
+            <h2 class="section-title">Ethics &amp; Limitations</h2>
+
+            <p class="section-copy">
+                GBV data is sensitive, and historical records can reflect
+                underreporting and reporting bias rather than true incidence.
+                We treat every prediction as advisory. We do not store
+                sensitive personal data without consent, and we state
+                clearly that our chatbot does not replace professional or
+                legal advice.
+            </p>
+
+        </section>
+
+
+        <!-- ================= TEAM ================= -->
+
+        <section class="about-section team-section">
+
+            <h2 class="section-title">The Team</h2>
+
+            <p class="section-copy">
+                SafeSouth Africa is designed and built by a small team
+                combining data science, engineering and design.
+            </p>
+
+            <div class="team-grid">
+
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="images/Audrey.jpg" alt="Audrey">
+                    </div>
+                    <h4>Audrey</h4>
+                    <span class="team-role">Project Leader</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="images/kagiso.jpg" alt="Kagiso">
+                    </div>
+                    <h4>Kagiso</h4>
+                    <span class="team-role">Data Scientist</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="images/kgaogelo.jpg" alt="Kgaogelo">
+                    </div>
+                    <h4>Kgaogelo</h4>
+                    <span class="team-role">ML Engineer</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="images/siyamthanda.jpg" alt="Siyamthanda">
+                    </div>
+                    <h4>Siyamthanda</h4>
+                    <span class="team-role">UI / UX Designer</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="images/Tebogo.jpg" alt="Tebogo">
+                    </div>
+                    <h4>Tebogo</h4>
+                    <span class="team-role">NLP &amp; Chatbot</span>
+                </div>
+
+                <div class="team-member">
+                    <div class="team-photo">
+                        <img src="images/Tumelo.jpg" alt="Tumelo">
+                    </div>
+                    <h4>Tumelo</h4>
+                    <span class="team-role">Frontend Developer</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= CTA ================= -->
+
+        <section class="about-cta">
+
+            <p>
+                Want to help us build a safer South Africa?
+            </p>
+
+            <div class="about-cta-buttons">
+                <a href="donate.html" class="cta-button">
+                    Donate Now <span>→</span>
+                </a>
+                <a href="contact.html" class="cta-button outline">
+                    Talk to Us <span>→</span>
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>

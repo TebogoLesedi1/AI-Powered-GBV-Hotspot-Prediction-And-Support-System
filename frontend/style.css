@@ -677,6 +677,12 @@ body.menu-open {
 
     }
 
+    .integrated-map {
+        width: 100%;
+        height: 70vh;
+        min-height: 420px;
+    }
+
 }
 
 

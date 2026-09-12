@@ -118,4 +118,9 @@ question.addEventListener('keydown', event => { if (event.key === 'Enter' && !ev
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));
 document.querySelector('#clear-chat').addEventListener('click', () => { messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
+document.querySelectorAll('.message-label').forEach(label => { label.textContent = label.textContent.replace('Ubuntu assistant', 'S.H.E assistant'); });
+document.querySelectorAll('.assistant-message .avatar').forEach(avatar => { avatar.textContent = 'S'; });
+const assistantMeta = document.querySelector('.topbar-meta span:nth-child(2)');
+if (assistantMeta) assistantMeta.textContent = 'Safety Help Empowerment';
+new MutationObserver(() => { document.querySelectorAll('.message-label').forEach(label => { label.textContent = label.textContent.replace('Ubuntu assistant', 'S.H.E assistant'); }); document.querySelectorAll('.assistant-message .avatar').forEach(avatar => { avatar.textContent = 'S'; }); }).observe(messages, { childList: true, subtree: true });
 loadReport();

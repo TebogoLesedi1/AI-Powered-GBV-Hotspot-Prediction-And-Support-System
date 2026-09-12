@@ -56,6 +56,10 @@ h1 em,
 	background: var(--lime);
 }
 
+.leaflet-control-attribution {
+	display: block;
+}
+
 @media (max-width: 900px) {
 	.workspace {
 		grid-template-columns: minmax(210px, .75fr) minmax(0, 1fr);

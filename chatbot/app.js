@@ -90,7 +90,7 @@ function renderStations() {
   if (!state.map) {
     state.map = L.map('station-map', { zoomControl: false, scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
     L.control.zoom({ position: 'bottomright' }).addTo(state.map);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(state.map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: 'abcd', maxZoom: 20 }).addTo(state.map);
   }
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   filter.innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option value="${province}">${province}</option>`).join('');

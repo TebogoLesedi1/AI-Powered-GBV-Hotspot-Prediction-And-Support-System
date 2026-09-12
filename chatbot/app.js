@@ -42,6 +42,8 @@ function clean(value) { return value.replaceAll('_', ' ').toLowerCase(); }
 function formatIndicator(value) { return value.replaceAll('_', ' ').toLowerCase().replace(/(^| )\S/g, letter => letter.toUpperCase()); }
 function escapeHTML(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]); }
 
+function coordinate(value) { return Number(String(value).replace('=', '')); }
+
 function answerFor(input) {
   const normalized = clean(input);
   const signals = predictSupportSignals(input);
@@ -84,6 +86,7 @@ async function loadReport() {
 function renderStations() {
   const filter = document.querySelector('#province-filter');
   const yearFilter = document.querySelector('#year-filter');
+  if (typeof L === 'undefined') return;
   if (!state.map) {
     state.map = L.map('station-map', { zoomControl: false, scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
     L.control.zoom({ position: 'bottomright' }).addTo(state.map);

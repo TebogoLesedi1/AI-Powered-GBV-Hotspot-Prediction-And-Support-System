@@ -19,6 +19,10 @@ function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]);
 }
 
+function coordinate(value) {
+  return Number(String(value).replace('=', ''));
+}
+
 function drawMap() {
   const province = document.querySelector('#province-filter').value;
   const year = document.querySelector('#year-filter').value;
@@ -29,8 +33,8 @@ function drawMap() {
   }
   state.markers.forEach(marker => marker.remove());
   state.markers = stations.map(station => {
-    const latitude = Number(station.Latitude.replace('=', ''));
-    const longitude = Number(station.Longitude.replace('=', ''));
+    const latitude = coordinate(station.Latitude);
+    const longitude = coordinate(station.Longitude);
     const color = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
     const marker = L.circleMarker([latitude, longitude], { radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
     marker.bindPopup(`<strong>${escapeHTML(station.Station)}</strong><br>${escapeHTML(station.Province)} · ${escapeHTML(station.Risk)}<br><b>${Number(station[year] || 0).toLocaleString()}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`);
@@ -44,8 +48,8 @@ function drawMap() {
 function drawFallbackMap(stations, year) {
   const mapElement = document.querySelector('#station-map');
   mapElement.innerHTML = `<div class="fallback-map"><div class="fallback-label">South Africa · station records</div><div class="fallback-grid"></div>${stations.map(station => {
-    const latitude = Number(station.Latitude.replace('=', ''));
-    const longitude = Number(station.Longitude.replace('=', ''));
+    const latitude = coordinate(station.Latitude);
+    const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, ((longitude - 16) / 18) * 100));
     const top = Math.max(5, Math.min(95, ((-latitude - 22) / 14) * 100));
     const colorClass = station.Risk === 'High' ? 'high' : 'medium';
@@ -80,9 +84,11 @@ async function init() {
     }
   }
   drawMap();
-  mapStatus.textContent = 'Map ready. Use Tab to reach filters and station controls.';
-  mapStatus.className = 'app-status is-ready';
+  if (mapStatus) {
+    mapStatus.textContent = 'Map ready. Use Tab to reach filters and station controls.';
+    mapStatus.className = 'app-status is-ready';
+  }
   if (state.map) window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
-init().catch(error => { mapStatus.textContent = 'The map is offline. Check your connection and reload to try again.'; mapStatus.className = 'app-status is-error'; document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });
+init().catch(error => { if (mapStatus) { mapStatus.textContent = 'The map is offline. Check your connection and reload to try again.'; mapStatus.className = 'app-status is-error'; } document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });

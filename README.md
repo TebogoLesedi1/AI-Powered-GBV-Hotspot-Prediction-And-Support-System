@@ -149,6 +149,24 @@ The `chatbot/` interface combines:
 
 The assistant is a transparent browser-side baseline. It searches report fields and returns matching findings; it is not connected to a hosted large language model and should not be treated as professional advice.
 
+## Screenshots
+
+The following screenshots show the chatbot dashboard and the interactive hotspot map in different views.
+
+### Chatbot dashboard
+
+![Chatbot report conversation](screenshots/chatbot_2.png)
+
+![Chatbot dashboard](screenshots/chatbot_snapshoot.png)
+
+### Interactive hotspot map
+
+![KwaZulu-Natal hotspot map](screenshots/hotspot_map_KZN.png)
+
+![Station hotspot map](screenshots/station%20hotspot%20map1.png)
+
+![Filtered station hotspot map](screenshots/station_hotspot_map2.png)
+
 ## Run locally
 
 Use a local web server so the browser can load the report and CSV files with `fetch()`. From the repository root:

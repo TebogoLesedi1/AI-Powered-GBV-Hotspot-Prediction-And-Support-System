@@ -38,3 +38,10 @@
 .leaflet-control-attribution {
 	display: block;
 }
+
+.map-wrap,
+.controls select,
+#map-reset,
+.page-header a {
+	border-radius: 10px;
+}

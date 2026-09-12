@@ -6,6 +6,8 @@
     border: 0;
     margin: 0 auto;
     background: #f8f3fa;
+    border-radius: 16px;
+    overflow: hidden;
 }
 
 /* Keep the assistant wrapper on the homepage palette. */

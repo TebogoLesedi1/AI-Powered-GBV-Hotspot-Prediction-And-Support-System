@@ -56,6 +56,19 @@ h1 em,
 	background: var(--lime);
 }
 
+.quick-prompts button,
+.topic-list button,
+.send-button,
+.map-reset,
+.insight-panel select,
+.composer-inner {
+	border-radius: 8px;
+}
+
+.app-shell {
+	overflow: hidden;
+}
+
 .leaflet-control-attribution {
 	display: block;
 }

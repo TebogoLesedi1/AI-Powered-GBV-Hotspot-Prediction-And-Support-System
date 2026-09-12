@@ -7,6 +7,24 @@
     margin: 0 auto;
     background: #f8f3fa;
 }
+
+/* Keep the assistant wrapper on the homepage palette. */
+.chat-intro h1 em,
+.grounded-badge,
+.quick-prompts span,
+.sources strong {
+    color: #8fd3e8;
+}
+
+.avatar,
+.send-button {
+    background: #1e7795;
+}
+
+.user-message .avatar,
+.safety-card-chat {
+    background-color: #7b3544;
+}
 /* =========================================
    CONTACT PAGE — UBUNTU CHATBOT
 ========================================= */

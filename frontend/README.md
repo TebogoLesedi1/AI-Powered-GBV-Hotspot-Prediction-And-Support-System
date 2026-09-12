@@ -1,0 +1,55 @@
+# SafeSouth Africa Frontend
+
+This folder contains the static web frontend for the SafeSouth Africa GBV hotspot prediction and support system.
+
+## What Is Included
+
+- `index.html`: Homepage with project overview and links to the main tools.
+- `hotspot.html`: Hotspot map page that embeds the interactive map.
+- `contact.html`: Ubuntu GBV assistant page that embeds the chatbot.
+- `resources.html`: GBV support resources and emergency contacts.
+- `about.html`: Project purpose, methodology, and limitations.
+- `chatbot/`: Chatbot interface and client-side report lookup logic.
+- `interactive_map/`: Interactive station hotspot map and filters.
+- `data/`: Report and station data loaded by the embedded tools.
+- `style.css`, `contact.css`, `about.css`, and `resources.css`: Page styling.
+- `script.js`: Shared responsive navigation menu behavior.
+- `app-accessibility.css`: Accessibility states and focus styling.
+
+## Main Features
+
+- Responsive navigation with a desktop menu and mobile hamburger menu.
+- Homepage links to the chatbot and GBV hotspot map.
+- Chatbot answers questions using the loaded GBV study report and provides safety-focused responses.
+- Hotspot map displays station locations, risk levels, province filters, year filters, station totals, and map markers.
+- Emergency support details are shown throughout the relevant pages.
+- The map uses Leaflet and a public basemap provider; attribution must remain visible when changing map tiles.
+
+## Run Locally
+
+Because the chatbot and map load local data with `fetch`, serve this folder through a local HTTP server instead of opening the HTML files directly.
+
+From the repository root:
+
+```bash
+python3 -m http.server 8000 --directory frontend
+```
+
+Open the homepage at:
+
+```text
+http://localhost:8000/
+```
+
+Useful pages:
+
+- `http://localhost:8000/hotspot.html`
+- `http://localhost:8000/contact.html`
+- `http://localhost:8000/chatbot/`
+- `http://localhost:8000/interactive_map/`
+
+## Data Notes
+
+The chatbot loads the report from `data/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt` and station data from `data/GBV Dataset.csv`. Keep these relative paths intact when moving files or deploying the frontend.
+
+The map is a research visualization of reported station totals. It is not an individual risk prediction and should not be used as a substitute for emergency or professional support.

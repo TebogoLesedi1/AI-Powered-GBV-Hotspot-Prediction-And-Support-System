@@ -110,3 +110,35 @@ h1 em,
 		box-shadow: none;
 	}
 }
+
+.assistant-disclaimer,
+.data-disclaimer {
+	margin-top: 14px;
+	padding: 10px;
+	border-left: 3px solid var(--coral);
+	color: var(--muted);
+	font-size: 10px;
+	line-height: 1.5;
+}
+
+.answer-key {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 16px;
+	padding: 10px 18px;
+	border-bottom: 1px solid var(--line);
+	color: var(--muted);
+	font: 9px var(--mono);
+}
+
+.answer-key b {
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	margin-right: 5px;
+	border-radius: 50%;
+}
+
+.key-general { background: #43866b; }
+.key-data { background: var(--ink); }
+.key-emergency { background: var(--coral); }

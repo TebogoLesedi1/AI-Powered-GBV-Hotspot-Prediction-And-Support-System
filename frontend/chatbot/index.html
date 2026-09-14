@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="A grounded GBV information assistant for the South African National Gender-Based Violence Study.">
-  <title>S.H.E / GBV information assistant</title>
+  <title>S.H.E Assistant | SafeSouth Africa</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="S.H.E home"><span class="brand-mark">S</span><span>S.H.E<span class="brand-slash">/</span>GBV</span></a>
+      <a class="brand" href="../index.html" aria-label="Return to SafeSouth Africa home"><span class="brand-mark">S</span><span>S.H.E<span class="brand-slash">/</span>Assistant</span></a>
         <div class="topbar-meta"><span class="status-dot"></span><span>Research assistant</span><span class="topbar-divider"></span><span id="record-count">Loading report</span><span class="topbar-divider"></span><span id="model-status">NLP model loading</span></div>
       <button class="icon-button" id="clear-chat" type="button" title="Start a new conversation" aria-label="Start a new conversation">↗</button>
     </header>
@@ -45,16 +45,19 @@
           <div class="hotline"><span>GBV Command Centre</span><a href="tel:0800428428">0800 428 428</a></div>
           <div class="hotline"><span>SMS / please call me</span><a href="sms:1207867">*120*7867#</a></div>
           <p class="safety-note">You can call these services without using the assistant.</p>
+          <p class="assistant-disclaimer"><strong>Important:</strong> S.H.E Assistant is not a replacement for emergency services or professional counselling.</p>
         </div>
         <div class="sidebar-foot">Private by design · Nothing is saved</div>
       </aside>
 
       <section class="chat-panel" aria-label="Chat with the report assistant">
-        <div class="chat-header"><div><span class="eyebrow">Conversation</span><h2>What would you like to understand?</h2></div><span class="grounded-badge">● Grounded in report</span></div>
+        <div class="chat-header"><div><span class="eyebrow">S.H.E Assistant · Conversation</span><h2>What would you like to understand?</h2></div><span class="grounded-badge">● Grounded in report</span></div>
+        <div class="answer-key" aria-label="Answer types"><span><b class="key-general"></b>General information</span><span><b class="key-data"></b>Data-based answers</span><span><b class="key-emergency"></b>Emergency assistance</span></div>
         <div class="messages" id="messages" aria-live="polite" aria-busy="true">
-          <article class="message assistant-message welcome-message"><div class="avatar">U</div><div class="message-body"><span class="message-label">Ubuntu assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question, or start with one of these:</p><div class="quick-prompts"><button type="button" data-prompt="What are the main findings about violence against women?">Main findings <span>→</span></button><button type="button" data-prompt="What does the study say about help-seeking?">Help-seeking <span>→</span></button><button type="button" data-prompt="What are the study's recommendations?">Recommendations <span>→</span></button></div></div></article>
+          <article class="message assistant-message welcome-message"><div class="avatar">S</div><div class="message-body"><span class="message-label">S.H.E Assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question, or start with one of these:</p><div class="quick-prompts"><button type="button" data-prompt="What support is available near me?">Support near me <span>→</span></button><button type="button" data-prompt="What does this hotspot score mean?">Hotspot score <span>→</span></button><button type="button" data-prompt="How can I report GBV?">How to report GBV <span>→</span></button></div></div></article>
         </div>
         <div class="app-status" id="chat-status" role="status" aria-live="polite">Loading the report and station data…</div>
+        <p class="data-disclaimer"><strong>Data-based answers:</strong> Responses use the loaded report and may not reflect every situation. For immediate danger, use the emergency contacts.</p>
         <form class="composer" id="chat-form"><div class="composer-inner"><textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question" disabled></textarea><button class="send-button" type="submit" aria-label="Send question" title="Send question" disabled>↑</button></div><div class="composer-foot"><span>Answers are based on the loaded report</span><span>Enter to send · Shift + Enter for a new line</span></div></form>
       </section>
 

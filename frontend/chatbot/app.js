@@ -71,7 +71,7 @@ function addMessage(text, type, result) {
   const article = document.createElement('article'); article.className = `message ${type}-message`;
   const sourceHTML = result?.matches?.length ? `<div class="sources"><strong>Report evidence</strong>${result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('')}</div>` : '';
   const signalHTML = result?.intent ? `<div class="signal-row"><span>Intent: <b>${result.intent}</b></span><span>Tone: <b>${result.tone}</b></span>${result.confidence ? `<span>Confidence: <b>${Math.round(result.confidence * 100)}%</b></span>` : ''}</div>` : '';
-  article.innerHTML = `<div class="avatar">${type === 'user' ? 'Y' : 'U'}</div><div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'Ubuntu assistant'} <time>just now</time></span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
+  article.innerHTML = `<div class="avatar">${type === 'user' ? 'Y' : 'S'}</div><div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'} <time>just now</time></span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
   messages.append(article); messages.scrollTop = messages.scrollHeight;
 }
 

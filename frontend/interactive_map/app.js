@@ -25,8 +25,10 @@ function coordinate(value) {
 
 function drawMap() {
   const province = document.querySelector('#province-filter').value;
+  const stationQuery = document.querySelector('#station-filter').value.trim().toLowerCase();
+  const risk = document.querySelector('#risk-filter').value;
   const year = document.querySelector('#year-filter').value;
-  const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (province === 'all' || station.Province === province));
+  const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (province === 'all' || station.Province === province) && (!stationQuery || station.Station.toLowerCase().includes(stationQuery)) && (risk === 'all' || station.Risk === risk));
   if (!state.map) {
     drawFallbackMap(stations, year);
     return;
@@ -35,14 +37,18 @@ function drawMap() {
   state.markers = stations.map(station => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
-    const color = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
+    const color = station.Risk === 'High' ? '#7b3544' : station.Risk === 'Low' ? '#43866b' : '#c28728';
     const marker = L.circleMarker([latitude, longitude], { radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
     marker.bindPopup(`<strong>${escapeHTML(station.Station)}</strong><br>${escapeHTML(station.Province)} · ${escapeHTML(station.Risk)}<br><b>${Number(station[year] || 0).toLocaleString()}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`);
+    marker.bindTooltip(`${station.Station}, ${station.Province}, ${station.Risk} risk`);
+    marker.on('add', () => { const path = marker.getElement(); if (path) { path.setAttribute('tabindex', '0'); path.setAttribute('role', 'button'); path.setAttribute('aria-label', `${station.Station}, ${station.Province}, ${station.Risk} risk`); path.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); marker.openPopup(); } }); } });
     return marker;
   });
   document.querySelector('#visible-count').textContent = stations.length;
   document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
+  const status = document.querySelector('#map-status');
   if (state.markers.length) state.map.fitBounds(L.latLngBounds(state.markers.map(marker => marker.getLatLng())), { padding: [30, 30], maxZoom: 8 });
+  if (status) status.textContent = stations.length ? `${stations.length} station${stations.length === 1 ? '' : 's'} shown.` : 'No stations match these filters.';
 }
 
 function drawFallbackMap(stations, year) {
@@ -52,14 +58,15 @@ function drawFallbackMap(stations, year) {
     const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, ((longitude - 16) / 18) * 100));
     const top = Math.max(5, Math.min(95, ((-latitude - 22) / 14) * 100));
-    const colorClass = station.Risk === 'High' ? 'high' : 'medium';
-    return `<button class="fallback-marker ${colorClass}" style="left:${left}%;top:${top}%" title="${escapeHTML(station.Station)}" data-station="${escapeHTML(station.Station)}" data-province="${escapeHTML(station.Province)}" data-risk="${escapeHTML(station.Risk)}" data-cases="${Number(station[year] || 0).toLocaleString()}"></button>`;
-  }).join('')}<div class="fallback-info" id="fallback-info">Select a station marker for details.</div></div>`;
+    const colorClass = station.Risk === 'High' ? 'high' : station.Risk === 'Low' ? 'low' : 'medium';
+    return `<button class="fallback-marker ${colorClass}" style="left:${left}%;top:${top}%" title="${escapeHTML(station.Station)}" aria-label="${escapeHTML(station.Station)}, ${escapeHTML(station.Province)}, ${escapeHTML(station.Risk)} risk" data-station="${escapeHTML(station.Station)}" data-province="${escapeHTML(station.Province)}" data-risk="${escapeHTML(station.Risk)}" data-cases="${Number(station[year] || 0).toLocaleString()}"></button>`;
+  }).join('')}<div class="fallback-info" id="fallback-info">${stations.length ? 'Select a station marker for details.' : 'No stations match these filters.'}</div></div>`;
   mapElement.querySelectorAll('.fallback-marker').forEach(marker => marker.addEventListener('click', () => {
     mapElement.querySelector('#fallback-info').innerHTML = `<strong>${marker.dataset.station}</strong><br>${marker.dataset.province} · ${marker.dataset.risk}<br><b>${marker.dataset.cases}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`;
   }));
   document.querySelector('#visible-count').textContent = stations.length;
   document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
+  if (mapStatus) mapStatus.textContent = stations.length ? `${stations.length} station${stations.length === 1 ? '' : 's'} shown.` : 'No stations match these filters.';
 }
 
 async function init() {
@@ -73,6 +80,9 @@ async function init() {
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   document.querySelector('#province-filter').innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option>${escapeHTML(province)}</option>`).join('');
   document.querySelector('#province-filter').addEventListener('change', drawMap);
+  document.querySelector('#station-filter').addEventListener('input', drawMap);
+  document.querySelector('#risk-filter').addEventListener('change', drawMap);
+  document.querySelector('#incident-filter').addEventListener('change', drawMap);
   document.querySelector('#year-filter').addEventListener('change', drawMap);
   document.querySelector('#map-reset').addEventListener('click', drawMap);
   if (typeof L !== 'undefined') {

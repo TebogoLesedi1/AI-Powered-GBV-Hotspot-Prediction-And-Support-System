@@ -34,3 +34,24 @@
 		margin: 4px 0 0;
 	}
 }
+
+.controls input {
+	min-width: 210px;
+	padding: 12px 14px;
+	border: 1px solid var(--line);
+	background: #fff;
+	color: var(--ink);
+	font: 12px var(--sans);
+}
+
+.low { background: #43866b; }
+.map-explanation { max-width: 850px; padding: 18px 0 4px; line-height: 1.55; }
+.journey-links { display: flex; flex-wrap: wrap; gap: 14px; padding: 18px 0 4px; }
+.journey-links a { color: var(--ink); font-weight: 800; }
+.fallback-marker.low { background: #43866b; }
+.map-error, .fallback-info { color: var(--ink); }
+
+@media (max-width: 680px) {
+	.controls { grid-template-columns: 1fr; }
+	.controls input { min-width: 0; width: 100%; }
+}

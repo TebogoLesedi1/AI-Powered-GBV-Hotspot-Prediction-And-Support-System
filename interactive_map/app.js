@@ -77,7 +77,7 @@ async function init() {
   if (typeof L !== 'undefined') {
     try {
       state.map = L.map('station-map', { scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: 'abcd', maxZoom: 20 }).addTo(state.map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(state.map);
     } catch (error) {
       state.map = null;
     }

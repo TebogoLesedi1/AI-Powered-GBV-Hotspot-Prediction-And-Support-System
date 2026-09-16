@@ -1,6 +1,10 @@
 const DATA_URL = '../data/GBV Dataset.csv';
 const state = { stations: [], map: null, markers: [] };
 const mapStatus = document.querySelector('#map-status');
+const SOUTH_AFRICA_RINGS = [
+  [[31.521,-29.257],[30.902,-29.91],[30.056,-31.14],[28.926,-32.172],[27.465,-33.227],[26.419,-33.615],[25.781,-33.945],[24.678,-33.987],[23.594,-33.794],[22.574,-33.864],[21.543,-34.259],[20.071,-34.795],[19.193,-34.463],[18.425,-33.998],[18.25,-33.281],[17.925,-32.611],[18.248,-32.43],[18.222,-31.662],[17.567,-30.726],[17.065,-29.879],[16.345,-28.577],[16.824,-28.082],[17.219,-28.356],[17.388,-28.784],[18.465,-29.045],[19.002,-28.972],[19.895,-28.462],[19.896,-24.768],[20.166,-24.918],[20.759,-25.868],[20.666,-26.477],[20.89,-26.829],[21.606,-26.727],[22.106,-26.28],[22.58,-25.979],[22.824,-25.5],[23.312,-25.269],[23.734,-25.39],[24.211,-25.67],[25.025,-25.72],[25.665,-25.487],[25.766,-25.175],[25.942,-24.696],[26.486,-24.616],[26.786,-24.241],[27.119,-23.574],[28.017,-22.828],[29.432,-22.091],[30.323,-22.272],[30.66,-22.152],[31.191,-22.252],[31.67,-23.659],[31.931,-24.369],[31.752,-25.484],[31.838,-25.843],[31.333,-25.66],[31.044,-25.731],[30.95,-26.023],[30.677,-26.398],[30.686,-26.744],[31.283,-27.286],[31.868,-27.178],[32.072,-26.734],[32.83,-26.742],[32.58,-27.471],[32.462,-28.301],[32.203,-28.752],[31.521,-29.257]],
+  [[28.978,-28.956],[28.542,-28.648],[28.075,-28.852],[27.533,-29.243],[27,-29.876],[27.749,-30.645],[28.107,-30.546],[28.292,-30.226],[28.848,-30.07],[29.018,-29.744],[29.325,-29.257],[28.978,-28.956]]
+];
 const EMBEDDED_STATIONS = [
   ['Free State','Park Road',-29.11994,26.21159,'High',1903,1982,1933,1806,1682,9306],
   ['Gauteng','Midrand',-25.997,28.128,'High',1420,1765,1764,1736,1679,8364],['Gauteng','Honeydew',-26.0732,27.9201,'High',2149,1717,1838,1644,1665,9013],['Gauteng','Roodepoort',-26.17733,27.97173,'High',1367,1806,1858,1603,1558,8192],['Gauteng','JHB Central',-26.20676,28.03141,'High',2021,2231,1954,1556,1505,9267],['Gauteng','Ivory park',-25.99001,28.20162,'Med-high',1342,1411,1408,1273,1407,6841],['Gauteng','Tembisa',-26.00749,28.22014,'High',1473,1553,1423,1314,1397,7160],['Gauteng','Brooklyn',-25.75555,28.23751,'High',1631,1489,1521,1427,1359,7427],['Gauteng','Sandton',-26.08026,28.0615,'Med-high',1320,1268,1530,1536,1329,6983],
@@ -21,6 +25,14 @@ function escapeHTML(value) {
 
 function coordinate(value) {
   return Number(String(value).replace('=', ''));
+}
+
+function projectPoint([longitude, latitude]) {
+  return [((longitude - 16) / 18) * 1000, ((-latitude - 22) / 14) * 720];
+}
+
+function southAfricaPath() {
+  return SOUTH_AFRICA_RINGS.map(ring => `${ring.map((point, index) => `${index ? 'L' : 'M'}${projectPoint(point).map(value => value.toFixed(1)).join(' ')}`).join(' ')}Z`).join(' ');
 }
 
 function drawMap() {
@@ -54,7 +66,7 @@ function drawMap() {
 function drawFallbackMap(stations, year) {
   const mapElement = document.querySelector('#station-map');
   const maxCases = Math.max(...stations.map(station => Number(station[year] || 0)), 1);
-  mapElement.innerHTML = `<div class="fallback-map"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="M260 86 418 74 557 111 681 166 795 260 760 347 815 416 757 511 670 568 598 664 487 632 422 574 326 574 255 504 218 396 247 301 215 205Z" /><path class="fallback-border" d="M260 86 418 74 557 111 681 166 795 260 760 347 815 416 757 511 670 568 598 664 487 632 422 574 326 574 255 504 218 396 247 301 215 205Z" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map(station => {
+    mapElement.innerHTML = `<div class="fallback-map"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="${southAfricaPath()}" fill-rule="evenodd" /><path class="fallback-border" d="${southAfricaPath()}" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map(station => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, ((longitude - 16) / 18) * 100));
@@ -87,20 +99,11 @@ async function init() {
   document.querySelector('#incident-filter').addEventListener('change', drawMap);
   document.querySelector('#year-filter').addEventListener('change', drawMap);
   document.querySelector('#map-reset').addEventListener('click', drawMap);
-  if (typeof L !== 'undefined') {
-    try {
-      state.map = L.map('station-map', { scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(state.map);
-    } catch (error) {
-      state.map = null;
-    }
-  }
   drawMap();
   if (mapStatus) {
     mapStatus.textContent = 'Map ready. Use Tab to reach filters and station controls.';
     mapStatus.className = 'app-status is-ready';
   }
-  if (state.map) window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
 init().catch(error => { if (mapStatus) { mapStatus.textContent = 'The map is offline. Check your connection and reload to try again.'; mapStatus.className = 'app-status is-error'; } document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });

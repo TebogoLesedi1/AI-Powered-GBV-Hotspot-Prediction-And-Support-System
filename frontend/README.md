@@ -23,7 +23,7 @@ This folder contains the static web frontend for the SafeSouth Africa GBV hotspo
 - Chatbot answers questions using the loaded GBV study report and provides safety-focused responses.
 - Hotspot map displays station locations, risk levels, province filters, year filters, station totals, and map markers.
 - Emergency support details are shown throughout the relevant pages.
-- The map uses Leaflet and a public basemap provider; attribution must remain visible when changing map tiles.
+- The map uses a self-contained geographic SVG renderer and does not depend on third-party map tiles.
 
 ## Run Locally
 
@@ -53,12 +53,12 @@ Useful pages:
 1. Prepare the semicolon-delimited `data/GBV Dataset.csv` with province, station, coordinates, risk, yearly counts, and total fields.
 2. Keep valid station coordinates and embed the current station snapshot in `interactive_map/app.js` for downloaded, offline-friendly use.
 3. Create the controls and map container in `interactive_map/index.html`.
-4. Populate filters and render Leaflet circle markers from the station records in `drawMap()`.
+4. Populate filters and render accessible HTML markers over the local geographic SVG in `drawMap()`.
 5. Use the selected year for totals and popups, and refit the map to the visible markers after filtering.
-6. Use the built-in geographic fallback renderer when Leaflet or its tile service is unavailable.
+6. Keep the renderer local so the map remains visual when external tile servers are blocked.
 7. Serve the frontend over HTTP and test `hotspot.html` plus the standalone `/interactive_map/` page.
 
-The map uses the Leaflet JavaScript API `1.9.4` from unpkg for map interaction, OpenStreetMap tiles for the basemap, and the browser Fetch API for the local CSV. Google Fonts supplies the interface fonts. No API key, backend, build tool, or live crime-data API is used; the map is driven by the repository dataset and embedded station snapshot.
+The map uses browser SVG and DOM APIs for its geographic visualization and the browser Fetch API for the local CSV. Google Fonts supplies the interface fonts. No tile server, API key, backend, build tool, or live crime-data API is used; the map is driven by the repository dataset and embedded station snapshot.
 
 ## Data Notes
 

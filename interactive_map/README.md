@@ -6,7 +6,7 @@ The `interactive_map` folder contains a standalone browser interface for explori
 
 ## Features
 
-- Interactive Leaflet map centered on South Africa
+- Self-contained geographic map centered on South Africa
 - Risk-colored markers for stations classified as `High` or `Med-high`
 - Province filter for narrowing the visible stations
 - Year filter for `2022`, `2023`, `2024`, `2025`, `2026`, or the combined `TOTAL`
@@ -20,7 +20,7 @@ The `interactive_map` folder contains a standalone browser interface for explori
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Page structure, controls, map container, and external Leaflet assets |
+| `index.html` | Page structure, controls, map container, and local map assets |
 | `styles.css` | Responsive layout, map presentation, filters, statistics, and legend styles |
 | `app.js` | Dataset loading, CSV parsing, marker rendering, filtering, and popups |
 
@@ -84,11 +84,11 @@ The marker color represents the source dataset's risk label. The selected year c
 
 ## Technical notes
 
-- The page uses Leaflet `1.9.4` from the unpkg CDN and OpenStreetMap tiles.
+- The page uses browser SVG and DOM APIs for its geographic backdrop and markers, so it does not depend on remote map tiles.
 - No build tool, package manager, or backend service is required.
 - The app parses the semicolon-delimited CSV in the browser.
 - Popup values are HTML-escaped before being inserted into the page.
-- Internet access is required for Leaflet assets and map tiles. The station CSV is served locally by the Python server.
+- Internet access is not required for the map visualization. The station CSV is served locally by the Python server when the embedded snapshot is replaced with file loading.
 
 ## Troubleshooting
 
@@ -100,9 +100,9 @@ Refresh the downloaded HTML and confirm that `index.html`, `styles.css`, and `ap
 
 Check that `extracted_datasets/GBV Dataset.csv` exists and that its path has not changed. The browser developer console will show `Station dataset unavailable` when the CSV request fails.
 
-### The background map tiles do not appear
+### The geographic map does not appear
 
-Check the browser's internet connection. Leaflet and OpenStreetMap tiles are external resources, while the station data itself is local.
+Refresh the page and confirm that `styles.css` and `app.js` are in the same folder. The geographic backdrop and station markers are rendered locally without remote map tiles.
 
 ## Scope and limitations
 

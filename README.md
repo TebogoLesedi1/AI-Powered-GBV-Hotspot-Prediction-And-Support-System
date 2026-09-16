@@ -196,10 +196,10 @@ Follow these steps to reproduce the map from the repository:
 1. Prepare `extracted_datasets/GBV Dataset.csv` as a semicolon-delimited file with station name, province, latitude, longitude, source risk label, yearly counts, and `TOTAL`.
 2. Keep only rows with a station name and usable coordinates for plotting. The province summary and national total rows remain in the source data but are not map markers.
 3. Embed the current 30 station records in `interactive_map/app.js` so the downloaded three-file map can render without a local CSV request.
-4. Build `interactive_map/index.html` with filter controls, totals, a map container, a risk legend, and the Leaflet stylesheet/script references.
+4. Build `interactive_map/index.html` with filter controls, totals, a map container, and a risk legend.
 5. Load the records in the browser, populate the province filter, and filter by province and year in `drawMap()`.
-6. Render each station as a Leaflet circle marker. Marker color comes from the source `Risk` field and the popup shows the selected year's cases.
-7. Fit the Leaflet viewport to the visible markers after every filter change. If Leaflet or its tiles cannot load, render the self-contained geographic fallback with case-scaled markers instead.
+6. Render each station as an accessible HTML marker over a local geographic SVG. Marker color comes from the source `Risk` field and the detail panel shows the selected year's cases.
+7. Scale each marker by the selected case total and redraw the local visualization after every filter change.
 8. Embed the map at `frontend/hotspot.html` with an iframe. The frontend copy at `frontend/interactive_map/` uses the same rendering approach and also adds station search, risk filtering, and accessible status messaging.
 9. Serve the repository over HTTP and test both `/interactive_map/` and `/frontend/hotspot.html`; opening the files directly can prevent browser data requests from working.
 
@@ -207,12 +207,11 @@ Follow these steps to reproduce the map from the repository:
 
 | API or service | How the map uses it | Required? |
 | --- | --- | --- |
-| Leaflet JavaScript API `1.9.4` | Creates the interactive map, circle markers, popups, tooltips, panning, zooming, and bounds fitting. Loaded from unpkg. | Optional; the fallback renderer works without it |
-| OpenStreetMap tile service | Supplies the geographic basemap through `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`. | Optional; tiles require internet access |
+| Browser SVG and DOM APIs | Draw the geographic backdrop, station markers, filters, selection details, and case totals locally in the browser. | Required |
 | Browser Fetch API | Loads the semicolon-delimited CSV when the map is served from the repository. | Used for server-based data maintenance |
 | Google Fonts CSS API | Loads Manrope and DM Mono for the map interface. | Optional; local fallback fonts apply |
 
-There is no application backend, API key, package manager, or live SAPS API connection in the hotspot map. The displayed values come from the repository dataset or the embedded snapshot. OpenStreetMap attribution supplied by Leaflet must remain visible when changing the tile provider.
+There is no application backend, API key, package manager, third-party tile server, or live SAPS API connection in the hotspot map. The displayed values come from the repository dataset or the embedded snapshot.
 
 ### Downloaded standalone map
 
@@ -222,7 +221,7 @@ To run the standalone map on another computer:
 2. Put the three files in the same folder.
 3. Open `index.html` in a browser.
 
-The downloaded map includes embedded station data and a fallback renderer. Internet access improves the experience by loading Leaflet and OpenStreetMap tiles, but the station view remains available if those external resources are blocked. For the latest repository CSV rather than the embedded snapshot, run the project through the local server.
+The downloaded map includes embedded station data and a self-contained geographic renderer. It does not require external map tiles. For the latest repository CSV rather than the embedded snapshot, run the project through the local server.
 
 ## Interface connections
 
@@ -268,8 +267,7 @@ In an immediate emergency, contact local emergency services or move to a safer p
 
 The browser interfaces use:
 
-- Leaflet `1.9.4` for map rendering when available
-- OpenStreetMap tiles for the map background
+- Browser SVG and DOM APIs for map rendering
 - Google Fonts for interface typography
 - The browser Fetch API for server-based data loading
 
@@ -291,7 +289,7 @@ The map package has also been checked for:
 - Reachable server-based dataset paths
 - 30 embedded station records
 - Valid station coordinates
-- A fallback rendering path when Leaflet cannot initialize
+- A self-contained rendering path that does not depend on remote tile servers
 - Clean editor error checks for the HTML, CSS, JavaScript, and README files
 
 ## Troubleshooting

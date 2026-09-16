@@ -53,6 +53,7 @@
 .map-error, .fallback-info { color: var(--ink); }
 
 .fallback-map { position: relative; height: 100%; min-height: 420px; overflow: hidden; background: #b9d8d9; color: var(--ink); }
+.fallback-layer { position: absolute; inset: 0; transform: translate(var(--province-shift-x), var(--province-shift-y)) scale(var(--province-scale)); transform-origin: center; transition: transform .35s ease; }
 .fallback-geography { position: absolute; inset: 0; width: 100%; height: 100%; }
 .fallback-country { fill: #dceceb; stroke: none; }
 .fallback-border { fill: none; stroke: rgba(36, 21, 47, .3); stroke-width: 5; stroke-linejoin: round; }

@@ -31,7 +31,7 @@ function drawMap() {
   const year = document.querySelector('#year-filter').value;
   const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (province === 'all' || station.Province === province));
   if (!state.map) {
-    drawFallbackMap(stations, year);
+    drawFallbackMap(stations, year, province);
     return;
   }
   state.markers.forEach(marker => marker.remove());
@@ -48,10 +48,16 @@ function drawMap() {
   if (state.markers.length) state.map.fitBounds(L.latLngBounds(state.markers.map(marker => marker.getLatLng())), { padding: [30, 30], maxZoom: 8 });
 }
 
-function drawFallbackMap(stations, year) {
+function drawFallbackMap(stations, year, province) {
   const mapElement = document.querySelector('#station-map');
   const maxCases = Math.max(...stations.map(station => Number(station[year] || 0)), 1);
-    mapElement.innerHTML = `<div class="fallback-map"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="${southAfricaPath()}" fill-rule="evenodd" /><path class="fallback-border" d="${southAfricaPath()}" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map(station => {
+  const projected = stations.map(station => projectPoint([coordinate(station.Longitude), coordinate(station.Latitude)]));
+  const center = projected.length ? projected.reduce((totals, point) => [totals[0] + point[0], totals[1] + point[1]], [0, 0]).map(value => value / projected.length) : [500, 360];
+  const zoomed = province !== 'all' && stations.length;
+  const scale = zoomed ? 1.8 : 1;
+  const shiftX = zoomed ? `${(500 - center[0]) / 10}%` : '0%';
+  const shiftY = zoomed ? `${(360 - center[1]) / 7.2}%` : '0%';
+  mapElement.innerHTML = `<div class="fallback-map"><div class="fallback-layer" style="--province-scale:${scale};--province-shift-x:${shiftX};--province-shift-y:${shiftY}"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="${southAfricaPath()}" fill-rule="evenodd" /><path class="fallback-border" d="${southAfricaPath()}" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map(station => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, ((longitude - 16) / 18) * 100));
@@ -59,7 +65,7 @@ function drawFallbackMap(stations, year) {
     const colorClass = station.Risk === 'High' ? 'high' : 'medium';
     const size = 12 + Math.round((Number(station[year] || 0) / maxCases) * 24);
     return `<button class="fallback-marker ${colorClass}" style="left:${left}%;top:${top}%;width:${size}px;height:${size}px" title="${escapeHTML(station.Station)}" aria-label="${escapeHTML(station.Station)}, ${escapeHTML(station.Province)}, ${escapeHTML(station.Risk)} risk" data-station="${escapeHTML(station.Station)}" data-province="${escapeHTML(station.Province)}" data-risk="${escapeHTML(station.Risk)}" data-cases="${Number(station[year] || 0).toLocaleString()}"></button>`;
-  }).join('')}<div class="fallback-info" id="fallback-info">Select a station marker for details.</div></div>`;
+  }).join('')}</div><div class="fallback-info" id="fallback-info">Select a station marker for details.</div></div>`;
   mapElement.querySelectorAll('.fallback-marker').forEach(marker => marker.addEventListener('click', () => {
     mapElement.querySelector('#fallback-info').innerHTML = `<strong>${marker.dataset.station}</strong><br>${marker.dataset.province} · ${marker.dataset.risk}<br><b>${marker.dataset.cases}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`;
   }));

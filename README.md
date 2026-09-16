@@ -156,10 +156,11 @@ The assistant is a transparent browser-side baseline. It searches report fields 
 3. Use the browser Fetch API to load both local data files and parse them into JavaScript records.
 4. Normalize user questions and score keyword-based intent/emotion signals before searching report fields.
 5. Return emergency-first responses for urgent language, resource referrals for support requests, and evidence-based answers for report questions.
-6. Keep the last eight user turns in browser memory so greetings, thanks, and follow-up questions such as `tell me more` are conversational; no conversation is persisted.
-7. Render report evidence, confidence metadata, station totals, and filtered station markers through the JavaScript DOM API.
-8. Render the standalone map with browser SVG/DOM APIs, verified South Africa GeoJSON-derived boundary coordinates, province zooming, collision-aware markers, wheel/button zoom, and drag panning.
-9. Serve the repository with Python `http.server`, open the chatbot and map URLs, and test data loading, emergency responses, follow-ups, filters, map zoom, panning, reset, and mobile layout.
+6. Load `text_data.txt` as the assistant's conversational example data. It contains intents, sample prompts, context states, natural responses, follow-up prompts, and action flags.
+7. Keep the last eight user turns in browser memory so greetings, thanks, and follow-up questions such as `tell me more` are conversational; no conversation is persisted.
+8. Render report evidence, confidence metadata, station totals, and filtered station markers through the JavaScript DOM API.
+9. Render the standalone map with browser SVG/DOM APIs, verified South Africa GeoJSON-derived boundary coordinates, province zooming, collision-aware markers, wheel/button zoom, and drag panning.
+10. Serve the repository with Python `http.server`, open the chatbot and map URLs, and test data loading, emergency responses, follow-ups, filters, map zoom, panning, reset, and mobile layout.
 
 ### Tools and APIs used
 
@@ -167,6 +168,7 @@ The assistant is a transparent browser-side baseline. It searches report fields 
 | --- | --- | --- |
 | Browser Fetch API | Loads the local report and station CSV files. | Yes for server mode |
 | JavaScript DOM API | Conversation state, message rendering, controls, filters, zoom, pan, and marker interaction. | Yes |
+| `text_data.txt` | Browser-loaded conversational examples used before report search fallback. | Yes |
 | Browser SVG API | Draws the offline South Africa boundary and map grid. | Yes for standalone map |
 | Leaflet `1.9.4` | Legacy embedded map in the chatbot dashboard. | Only for embedded dashboard |
 | OpenStreetMap tiles | Legacy embedded chatbot basemap. | Optional and network-dependent |
@@ -175,6 +177,56 @@ The assistant is a transparent browser-side baseline. It searches report fields 
 | Git/GitHub | Version control and publishing the static project. | Development tool |
 
 There is no backend service, API key, hosted AI model, or live SAPS API connection. The assistant uses a transparent keyword baseline and the map uses repository data plus a local geographic renderer.
+
+## Questions you can ask the chatbot
+
+You can ask the chatbot questions in plain language, including:
+
+### Conversation and orientation
+
+- Hi there! How are you doing today?
+- What can you help me with?
+- What is this system used for?
+- Can you tell me more about that?
+- I do not know what to do next.
+
+### Study findings and context
+
+- What are the main findings about violence against women?
+- What does the study say about help-seeking?
+- What factors are associated with GBV in the study?
+- What are the study's recommendations?
+- Tell me about the study methodology.
+- What laws and policies are discussed?
+- Can you explain that finding in simpler language?
+- Why does that finding matter?
+
+### Hotspot and station data
+
+- Which police station has the highest reported cases?
+- Which province has the highest number of reported cases?
+- Can you show me the station totals by year?
+- What does the hotspot map show?
+- Should I filter the map to high-risk stations?
+
+### Safety and support
+
+- I am feeling overwhelmed and scared right now.
+- I need help immediately.
+- Can you show me support resources?
+- What emergency numbers can I call in South Africa?
+- I am not in immediate danger, but I need someone to talk to.
+
+### Follow-up questions
+
+- Tell me more about that.
+- What does that mean?
+- Why is that important?
+- How does that relate to the study?
+- What about the recommendations?
+- Thank you, that helps.
+
+For emergencies, contact the police on `10111` or `112` from a mobile, or contact the GBV Command Centre on `0800 428 428` or SMS `*120*7867#`. The chatbot is an information and support guide, not an emergency dispatcher or replacement for professional services.
 
 ## Screenshots
 

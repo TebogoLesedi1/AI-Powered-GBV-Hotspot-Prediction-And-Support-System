@@ -1,6 +1,7 @@
 const REPORT_URL = '../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt';
 const STATION_URL = '../extracted_datasets/GBV Dataset.csv';
-const state = { records: [], stations: [], ready: false, map: null, markers: [], visibleStations: [], conversation: [] };
+const CONVERSATION_DATA_URL = '../text_data.txt';
+const state = { records: [], stations: [], conversationExamples: [], ready: false, map: null, markers: [], visibleStations: [], conversation: [] };
 const messages = document.querySelector('#messages');
 const question = document.querySelector('#question');
 const emotional_support_model = {
@@ -46,7 +47,21 @@ function coordinate(value) { return Number(String(value).replace('=', '')); }
 
 function isGreeting(input) { return /^(hi|hello|hey|good morning|good afternoon|good evening)\b/i.test(input.trim()); }
 function isThanks(input) { return /^(thanks|thank you|thx|that helps|great)\b/i.test(input.trim()); }
-function isFollowUp(input) { return /\b(tell me more|more about that|what about|why is that|can you explain|and the|how does that relate)\b/i.test(input); }
+function isFollowUp(input) { return /\b(tell me more|more about that|what about|why is that|can you explain|and the|how does that relate|what does that mean|why does that matter|how does it relate)\b/i.test(input); }
+function isGeneralConversation(input) {
+  return /\b(who are you|what can you do|how can you help|can you help me|i need help|what should i do|help me|what do you know|can we talk)\b/i.test(input) || /^(hi|hello|hey|good morning|good afternoon|good evening|hey there|hi there)$/i.test(input.trim());
+}
+
+function conversationExampleFor(input) {
+  const words = clean(input).split(/[^a-z0-9]+/).filter(word => word.length > 2);
+  return state.conversationExamples.map(example => {
+    const prompt = clean(example.user_prompt || '');
+    const promptWords = prompt.split(/[^a-z0-9]+/).filter(word => word.length > 2);
+    const overlap = words.filter(word => promptWords.includes(word)).length;
+    const phraseMatch = prompt && clean(input).includes(prompt) ? 5 : 0;
+    return { example, score: overlap + phraseMatch };
+  }).sort((a, b) => b.score - a.score)[0];
+}
 
 function answerFor(input) {
   const previous = state.conversation.at(-1);
@@ -54,8 +69,20 @@ function answerFor(input) {
   const normalized = clean(followUp ? `${previous.input} ${input}` : input);
   const signals = predictSupportSignals(input);
   const urgent = signals.intent === 'emergency';
-  if (isGreeting(input)) return { text: 'Hello. I am here with you. We can explore the study, look at reported station patterns, or find support contacts. What would you like to start with?', matches: [], intent: 'Conversation', tone: 'Welcoming', confidence: .98 };
-  if (isThanks(input)) return { text: 'You are welcome. I can explain that finding in simpler language, look at a related topic, or help you find support. What would be most useful next?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .96 };
+    if (urgent) return { text: 'Your safety matters more than finding an answer in the report. If you are in immediate danger, move to a safer place if you can and contact the police on 10111 or 112 from a mobile. The GBV Command Centre is available on 0800 428 428, or SMS *120*7867#.', matches: [], intent: 'Immediate support', tone: `${signals.emotion} · safety-first`, confidence: signals.confidence };
+    const exampleMatch = conversationExampleFor(input);
+    if (exampleMatch?.score >= 2) {
+      const example = exampleMatch.example;
+      const followUp = example.follow_up_prompt ? ` ${example.follow_up_prompt}` : '';
+      return { text: `${example.bot_response}${followUp}`, matches: [], intent: formatIndicator(example.intent_category), tone: 'Conversational', confidence: Math.min(.96, .7 + exampleMatch.score * .06), followUp: example.follow_up_prompt, action: example.action_flag };
+    }
+  if (isGreeting(input)) return { text: 'Hello. I am here with you. I can explain the study, talk through a pattern in plain language, or help you find support. What would you like to start with?', matches: [], intent: 'Conversation', tone: 'Welcoming', confidence: .98 };
+  if (isGeneralConversation(input)) return { text: 'I can help in a few ways: explain the GBV study in plain language, look at hotspot patterns, or guide you to safe support resources. What would be most useful to you right now?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .97 };
+  if (isThanks(input)) return { text: 'You are welcome. I can simplify that finding, explain the wider context, or help you find support. What would help most next?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .96 };
+  if (followUp && previous?.result?.text) {
+    const previousSummary = previous.result.text.replace(/\s+Would you like.*$/i, '').replace(/\s+I found .*? evidence set\.?$/i, '');
+    return { text: `I can go a bit deeper on that. ${previousSummary} In plain language, the main point is that the evidence points to a pattern that matters for prevention and support. Would you like me to explain the finding more simply or connect it to available resources?`, matches: previous.result.matches || [], intent: 'Follow-up', tone: 'Conversational', confidence: .91 };
+  }
   const words = normalized.split(/[^a-z0-9]+/).filter(word => word.length > 2 && !['what','does','about','tell','the','are','and','this','study'].includes(word));
   const scored = state.records.map(record => {
     const haystack = clean(Object.values(record).join(' '));
@@ -63,10 +90,9 @@ function answerFor(input) {
     return { record, score };
   }).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
   const matches = scored.slice(0, 4).map(item => item.record);
-  if (urgent) return { text: 'Your safety matters more than finding an answer in the report. If you are in immediate danger, move to a safer place if you can and contact the police on 10111 or 112 from a mobile. The GBV Command Centre is available on 0800 428 428, or SMS *120*7867#.', matches: [], intent: 'Immediate support', tone: `${signals.emotion} · safety-first`, confidence: signals.confidence };
   if (signals.intent === 'emotional_support') return { text: `I hear that you may be feeling ${signals.emotion}. You do not have to handle this alone. If you are able, consider moving to a trusted person or safer place. I can also share the report's findings or help you find support contacts.`, matches: [], intent: 'Emotional support', tone: `${signals.emotion} detected`, confidence: signals.confidence };
   if (signals.intent === 'resources') return { text: 'For immediate support in South Africa, contact the GBV Command Centre on 0800 428 428 or SMS *120*7867#. For police or emergency assistance, call 10111 or 112. If you tell me what kind of support you need, I can guide the next step.', matches: [], intent: 'Resource referral', tone: 'Supportive', confidence: signals.confidence };
-  if (!matches.length) return { text: followUp ? 'I want to make sure I follow you. Which part would you like me to expand: the study finding, its context, or available support?' : 'I could not find a grounded answer for that in this report. You could ask about prevalence, intimate partner violence, risk factors, help-seeking, laws, recommendations, or the study methodology.', matches: [], intent: 'Clarification', tone: 'Open question', confidence: signals.confidence };
+  if (!matches.length) return { text: followUp ? 'I want to make sure I follow you. Which part would you like me to expand: the study finding, its context, or available support?' : 'I could not find a grounded answer for that in this report, but I can still help with the broader context. You could ask about prevalence, risk factors, help-seeking, laws, recommendations, or the study methodology.', matches: [], intent: 'Clarification', tone: 'Open question', confidence: signals.confidence };
   const lead = matches[0];
   const value = lead.value && lead.value_type === 'percentage' ? `${lead.value}%` : lead.value;
   const note = lead.notes ? ` (${lead.notes})` : '';
@@ -85,7 +111,7 @@ function addMessage(text, type, result) {
 }
 
 async function loadReport() {
-  try { const [reportResponse, stationResponse] = await Promise.all([fetch(REPORT_URL), fetch(STATION_URL)]); if (!reportResponse.ok || !stationResponse.ok) throw new Error('Data unavailable'); state.records = parseCSV(await reportResponse.text()); state.stations = parseDelimited(await stationResponse.text()); state.ready = true; renderStations(); } catch (error) { state.records = []; state.stations = []; }
+  try { const [reportResponse, stationResponse, conversationResponse] = await Promise.all([fetch(REPORT_URL), fetch(STATION_URL), fetch(CONVERSATION_DATA_URL)]); if (!reportResponse.ok || !stationResponse.ok || !conversationResponse.ok) throw new Error('Data unavailable'); state.records = parseCSV(await reportResponse.text()); state.stations = parseDelimited(await stationResponse.text()); state.conversationExamples = parseCSV(await conversationResponse.text()); state.ready = true; renderStations(); } catch (error) { state.records = []; state.stations = []; state.conversationExamples = []; }
   document.querySelector('#record-count').textContent = state.ready ? 'Report online' : 'Report unavailable';
   document.querySelector('#model-status').textContent = 'NLP baseline online';
   document.querySelector('#row-count').textContent = state.records.length || '—';

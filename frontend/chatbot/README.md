@@ -98,7 +98,7 @@ Stop the server with `Ctrl+C` in the terminal.
 6. Emergency and support-related inputs receive dedicated safety responses before report lookup.
 7. `renderStations()` filters station records and renders the embedded map, markers, popup details, totals, and ranked list.
 
-8. The assistant keeps the last eight user turns in memory for greetings, thanks, and follow-up questions such as `tell me more`; refreshing the page clears this context.
+8. The assistant loads `../../text_data.txt` for conversational examples and keeps the last eight user turns in memory for greetings, thanks, and follow-up questions such as `tell me more`; refreshing the page clears this context.
 
 The assistant does not save conversations. All processing in `app.js` occurs in the browser.
 

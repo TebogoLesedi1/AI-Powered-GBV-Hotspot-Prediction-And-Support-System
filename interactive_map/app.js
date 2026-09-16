@@ -46,13 +46,15 @@ function drawMap() {
 
 function drawFallbackMap(stations, year) {
   const mapElement = document.querySelector('#station-map');
-  mapElement.innerHTML = `<div class="fallback-map"><div class="fallback-label">South Africa · station records</div><div class="fallback-grid"></div>${stations.map(station => {
+  const maxCases = Math.max(...stations.map(station => Number(station[year] || 0)), 1);
+  mapElement.innerHTML = `<div class="fallback-map"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="M260 86 418 74 557 111 681 166 795 260 760 347 815 416 757 511 670 568 598 664 487 632 422 574 326 574 255 504 218 396 247 301 215 205Z" /><path class="fallback-border" d="M260 86 418 74 557 111 681 166 795 260 760 347 815 416 757 511 670 568 598 664 487 632 422 574 326 574 255 504 218 396 247 301 215 205Z" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map(station => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, ((longitude - 16) / 18) * 100));
     const top = Math.max(5, Math.min(95, ((-latitude - 22) / 14) * 100));
     const colorClass = station.Risk === 'High' ? 'high' : 'medium';
-    return `<button class="fallback-marker ${colorClass}" style="left:${left}%;top:${top}%" title="${escapeHTML(station.Station)}" data-station="${escapeHTML(station.Station)}" data-province="${escapeHTML(station.Province)}" data-risk="${escapeHTML(station.Risk)}" data-cases="${Number(station[year] || 0).toLocaleString()}"></button>`;
+    const size = 12 + Math.round((Number(station[year] || 0) / maxCases) * 24);
+    return `<button class="fallback-marker ${colorClass}" style="left:${left}%;top:${top}%;width:${size}px;height:${size}px" title="${escapeHTML(station.Station)}" aria-label="${escapeHTML(station.Station)}, ${escapeHTML(station.Province)}, ${escapeHTML(station.Risk)} risk" data-station="${escapeHTML(station.Station)}" data-province="${escapeHTML(station.Province)}" data-risk="${escapeHTML(station.Risk)}" data-cases="${Number(station[year] || 0).toLocaleString()}"></button>`;
   }).join('')}<div class="fallback-info" id="fallback-info">Select a station marker for details.</div></div>`;
   mapElement.querySelectorAll('.fallback-marker').forEach(marker => marker.addEventListener('click', () => {
     mapElement.querySelector('#fallback-info').innerHTML = `<strong>${marker.dataset.station}</strong><br>${marker.dataset.province} · ${marker.dataset.risk}<br><b>${marker.dataset.cases}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`;

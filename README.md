@@ -189,6 +189,31 @@ http://localhost:4173/interactive_map/
 
 Stop the server with `Ctrl+C`.
 
+## How the hotspot map was built
+
+Follow these steps to reproduce the map from the repository:
+
+1. Prepare `extracted_datasets/GBV Dataset.csv` as a semicolon-delimited file with station name, province, latitude, longitude, source risk label, yearly counts, and `TOTAL`.
+2. Keep only rows with a station name and usable coordinates for plotting. The province summary and national total rows remain in the source data but are not map markers.
+3. Embed the current 30 station records in `interactive_map/app.js` so the downloaded three-file map can render without a local CSV request.
+4. Build `interactive_map/index.html` with filter controls, totals, a map container, a risk legend, and the Leaflet stylesheet/script references.
+5. Load the records in the browser, populate the province filter, and filter by province and year in `drawMap()`.
+6. Render each station as a Leaflet circle marker. Marker color comes from the source `Risk` field and the popup shows the selected year's cases.
+7. Fit the Leaflet viewport to the visible markers after every filter change. If Leaflet or its tiles cannot load, render the self-contained geographic fallback with case-scaled markers instead.
+8. Embed the map at `frontend/hotspot.html` with an iframe. The frontend copy at `frontend/interactive_map/` uses the same rendering approach and also adds station search, risk filtering, and accessible status messaging.
+9. Serve the repository over HTTP and test both `/interactive_map/` and `/frontend/hotspot.html`; opening the files directly can prevent browser data requests from working.
+
+### APIs and external services used
+
+| API or service | How the map uses it | Required? |
+| --- | --- | --- |
+| Leaflet JavaScript API `1.9.4` | Creates the interactive map, circle markers, popups, tooltips, panning, zooming, and bounds fitting. Loaded from unpkg. | Optional; the fallback renderer works without it |
+| OpenStreetMap tile service | Supplies the geographic basemap through `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`. | Optional; tiles require internet access |
+| Browser Fetch API | Loads the semicolon-delimited CSV when the map is served from the repository. | Used for server-based data maintenance |
+| Google Fonts CSS API | Loads Manrope and DM Mono for the map interface. | Optional; local fallback fonts apply |
+
+There is no application backend, API key, package manager, or live SAPS API connection in the hotspot map. The displayed values come from the repository dataset or the embedded snapshot. OpenStreetMap attribution supplied by Leaflet must remain visible when changing the tile provider.
+
 ### Downloaded standalone map
 
 To run the standalone map on another computer:

@@ -98,7 +98,34 @@ Stop the server with `Ctrl+C` in the terminal.
 6. Emergency and support-related inputs receive dedicated safety responses before report lookup.
 7. `renderStations()` filters station records and renders the embedded map, markers, popup details, totals, and ranked list.
 
+8. The assistant keeps the last eight user turns in memory for greetings, thanks, and follow-up questions such as `tell me more`; refreshing the page clears this context.
+
 The assistant does not save conversations. All processing in `app.js` occurs in the browser.
+
+## Step-by-step build and tools
+
+1. Create the dashboard structure in `index.html` with the conversation panel, quick prompts, emergency contacts, and station-risk panel.
+2. Load the report and station CSV with the browser Fetch API from the relative paths in **Data connections**.
+3. Parse the report with the browser's JavaScript string/array APIs and parse the semicolon-delimited station file into objects.
+4. Normalize each question, score keyword-based intents and emotion signals, and search report fields for matching evidence.
+5. Handle emergency language before report lookup and return South African support contacts without sending data to a server.
+6. Store a short in-memory conversation context so greetings, thanks, and follow-up questions receive natural responses.
+7. Render the user question, assistant reply, confidence metadata, and escaped report evidence into the message list.
+8. Render the station dashboard with Leaflet markers in this legacy embedded chatbot view; use the standalone `interactive_map/` page for the current self-contained dynamic map.
+9. Serve the folder with Python's static HTTP server and test loading, questions, emergency language, follow-ups, filters, and map controls.
+
+### Tools and APIs
+
+| Tool/API | Use |
+| --- | --- |
+| Browser Fetch API | Loads the local report and station CSV files. |
+| JavaScript DOM API | Handles form submission, quick prompts, message rendering, filters, and in-memory conversation state. |
+| Leaflet `1.9.4` | Renders the legacy station map embedded in the chatbot dashboard. |
+| OpenStreetMap tile service | Provides the legacy embedded map background when available; the standalone map does not depend on it. |
+| Google Fonts CSS API | Loads Manrope and DM Mono typography. |
+| Python `http.server` | Serves local files so browser Fetch requests work. |
+
+No backend, API key, hosted AI model, or live SAPS API is used by the assistant. The chatbot is a transparent keyword-search baseline grounded in the repository report.
 
 ## Safety information
 

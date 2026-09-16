@@ -1,5 +1,5 @@
 const DATA_URL = '../extracted_datasets/GBV Dataset.csv';
-const state = { stations: [], map: null, markers: [] };
+const state = { stations: [], map: null, markers: [], view: { scale: 1, panX: 0, panY: 0, dragging: false } };
 const SOUTH_AFRICA_RINGS = [[[31.521,-29.257],[30.902,-29.91],[30.056,-31.14],[28.926,-32.172],[27.465,-33.227],[26.419,-33.615],[25.781,-33.945],[24.678,-33.987],[23.594,-33.794],[22.574,-33.864],[21.543,-34.259],[20.071,-34.795],[19.193,-34.463],[18.425,-33.998],[18.25,-33.281],[17.925,-32.611],[18.248,-32.43],[18.222,-31.662],[17.567,-30.726],[17.065,-29.879],[16.345,-28.577],[16.824,-28.082],[17.219,-28.356],[17.388,-28.784],[18.465,-29.045],[19.002,-28.972],[19.895,-28.462],[19.896,-24.768],[20.166,-24.918],[20.759,-25.868],[20.666,-26.477],[20.89,-26.829],[21.606,-26.727],[22.106,-26.28],[22.58,-25.979],[22.824,-25.5],[23.312,-25.269],[23.734,-25.39],[24.211,-25.67],[25.025,-25.72],[25.665,-25.487],[25.766,-25.175],[25.942,-24.696],[26.486,-24.616],[26.786,-24.241],[27.119,-23.574],[28.017,-22.828],[29.432,-22.091],[30.323,-22.272],[30.66,-22.152],[31.191,-22.252],[31.67,-23.659],[31.931,-24.369],[31.752,-25.484],[31.838,-25.843],[31.333,-25.66],[31.044,-25.731],[30.95,-26.023],[30.677,-26.398],[30.686,-26.744],[31.283,-27.286],[31.868,-27.178],[32.072,-26.734],[32.83,-26.742],[32.58,-27.471],[32.462,-28.301],[32.203,-28.752],[31.521,-29.257]],[[28.978,-28.956],[28.542,-28.648],[28.075,-28.852],[27.533,-29.243],[27,-29.876],[27.749,-30.645],[28.107,-30.546],[28.292,-30.226],[28.848,-30.07],[29.018,-29.744],[29.325,-29.257],[28.978,-28.956]]];
 const EMBEDDED_STATIONS = [
   ['Free State','Park Road',-29.11994,26.21159,'High',1903,1982,1933,1806,1682,9306],
@@ -26,6 +26,8 @@ function coordinate(value) {
 function projectPoint([longitude, latitude]) { return [((longitude - 16) / 18) * 1000, ((-latitude - 22) / 14) * 720]; }
 function southAfricaPath() { return SOUTH_AFRICA_RINGS.map(ring => `${ring.map((point, index) => `${index ? 'L' : 'M'}${projectPoint(point).map(value => value.toFixed(1)).join(' ')}`).join(' ')}Z`).join(' '); }
 function layoutStationPoints(stations) { const points = stations.map(station => projectPoint([coordinate(station.Longitude), coordinate(station.Latitude)])); for (let pass = 0; pass < 8; pass += 1) { points.forEach((point, index) => points.slice(index + 1).forEach((other, otherIndex) => { const distanceX = other[0] - point[0]; const distanceY = other[1] - point[1]; const distance = Math.hypot(distanceX, distanceY); if (distance >= 32) return; const safeDistance = distance || 1; const push = (32 - safeDistance) / 2; const unitX = distance ? distanceX / safeDistance : ((index + otherIndex) % 2 ? 1 : -1); const unitY = distance ? distanceY / safeDistance : 0; point[0] -= unitX * push; point[1] -= unitY * push; other[0] += unitX * push; other[1] += unitY * push; })); } return points; }
+function updateMapView() { const layer = document.querySelector('.fallback-layer'); if (!layer) return; layer.style.setProperty('--map-scale', state.view.scale); layer.style.setProperty('--map-pan-x', `${state.view.panX}px`); layer.style.setProperty('--map-pan-y', `${state.view.panY}px`); }
+function attachMapInteractions() { const mapElement = document.querySelector('#station-map'); if (!mapElement) return; const zoom = amount => { state.view.scale = Math.max(1, Math.min(3.5, state.view.scale + amount)); updateMapView(); }; document.querySelector('#map-zoom-in')?.addEventListener('click', () => zoom(.25)); document.querySelector('#map-zoom-out')?.addEventListener('click', () => zoom(-.25)); mapElement.addEventListener('wheel', event => { event.preventDefault(); zoom(event.deltaY < 0 ? .15 : -.15); }, { passive: false }); mapElement.addEventListener('pointerdown', event => { if (event.target.closest('.fallback-marker')) return; state.view.dragging = true; state.view.startX = event.clientX - state.view.panX; state.view.startY = event.clientY - state.view.panY; mapElement.setPointerCapture(event.pointerId); mapElement.classList.add('is-dragging'); }); mapElement.addEventListener('pointermove', event => { if (!state.view.dragging) return; state.view.panX = event.clientX - state.view.startX; state.view.panY = event.clientY - state.view.startY; updateMapView(); }); mapElement.addEventListener('pointerup', event => { state.view.dragging = false; mapElement.releasePointerCapture(event.pointerId); mapElement.classList.remove('is-dragging'); }); document.querySelector('#map-reset')?.addEventListener('click', () => { state.view.scale = 1; state.view.panX = 0; state.view.panY = 0; drawMap(); }); }
 
 function drawMap() {
   const province = document.querySelector('#province-filter').value;
@@ -71,6 +73,7 @@ function drawFallbackMap(stations, year, province) {
   mapElement.querySelectorAll('.fallback-marker').forEach(marker => marker.addEventListener('click', () => {
     mapElement.querySelector('#fallback-info').innerHTML = `<strong>${marker.dataset.station}</strong><br>${marker.dataset.province} · ${marker.dataset.risk}<br><b>${marker.dataset.cases}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`;
   }));
+  updateMapView();
   document.querySelector('#visible-count').textContent = stations.length;
   document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
 }
@@ -85,9 +88,9 @@ async function init() {
   }
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   document.querySelector('#province-filter').innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option>${escapeHTML(province)}</option>`).join('');
-  document.querySelector('#province-filter').addEventListener('change', drawMap);
+  document.querySelector('#province-filter').addEventListener('change', () => { state.view.scale = 1; state.view.panX = 0; state.view.panY = 0; drawMap(); });
   document.querySelector('#year-filter').addEventListener('change', drawMap);
-  document.querySelector('#map-reset').addEventListener('click', drawMap);
+  attachMapInteractions();
   drawMap();
 }
 

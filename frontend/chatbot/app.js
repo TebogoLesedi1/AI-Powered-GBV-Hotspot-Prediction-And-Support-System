@@ -1,6 +1,6 @@
 const REPORT_URL = '../data/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt';
 const STATION_URL = '../data/GBV Dataset.csv';
-const state = { records: [], stations: [], ready: false, map: null, markers: [], visibleStations: [] };
+const state = { records: [], stations: [], ready: false, map: null, markers: [], visibleStations: [], conversation: [] };
 const messages = document.querySelector('#messages');
 const question = document.querySelector('#question');
 const sendButton = document.querySelector('.send-button');
@@ -44,10 +44,18 @@ function clean(value) { return value.replaceAll('_', ' ').toLowerCase(); }
 function formatIndicator(value) { return value.replaceAll('_', ' ').toLowerCase().replace(/(^| )\S/g, letter => letter.toUpperCase()); }
 function escapeHTML(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]); }
 
+function isGreeting(input) { return /^(hi|hello|hey|good morning|good afternoon|good evening)\b/i.test(input.trim()); }
+function isThanks(input) { return /^(thanks|thank you|thx|that helps|great)\b/i.test(input.trim()); }
+function isFollowUp(input) { return /\b(tell me more|more about that|what about|why is that|can you explain|and the|how does that relate)\b/i.test(input); }
+
 function answerFor(input) {
-  const normalized = clean(input);
+  const previous = state.conversation.at(-1);
+  const followUp = isFollowUp(input) && previous?.input;
+  const normalized = clean(followUp ? `${previous.input} ${input}` : input);
   const signals = predictSupportSignals(input);
   const urgent = signals.intent === 'emergency';
+  if (isGreeting(input)) return { text: 'Hello. I am here with you. We can explore the study, look at reported station patterns, or find support contacts. What would you like to start with?', matches: [], intent: 'Conversation', tone: 'Welcoming', confidence: .98 };
+  if (isThanks(input)) return { text: 'You are welcome. I can explain that finding in simpler language, look at a related topic, or help you find support. What would be most useful next?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .96 };
   const words = normalized.split(/[^a-z0-9]+/).filter(word => word.length > 2 && !['what','does','about','tell','the','are','and','this','study'].includes(word));
   const scored = state.records.map(record => {
     const haystack = clean(Object.values(record).join(' '));
@@ -58,12 +66,13 @@ function answerFor(input) {
   if (urgent) return { text: 'Your safety matters more than finding an answer in the report. If you are in immediate danger, move to a safer place if you can and contact the police on 10111 or 112 from a mobile. The GBV Command Centre is available on 0800 428 428, or SMS *120*7867#.', matches: [], intent: 'Immediate support', tone: `${signals.emotion} · safety-first`, confidence: signals.confidence };
   if (signals.intent === 'emotional_support') return { text: `I hear that you may be feeling ${signals.emotion}. You do not have to handle this alone. If you are able, consider moving to a trusted person or safer place. I can also share the report's findings or help you find support contacts.`, matches: [], intent: 'Emotional support', tone: `${signals.emotion} detected`, confidence: signals.confidence };
   if (signals.intent === 'resources') return { text: 'For immediate support in South Africa, contact the GBV Command Centre on 0800 428 428 or SMS *120*7867#. For police or emergency assistance, call 10111 or 112. If you tell me what kind of support you need, I can guide the next step.', matches: [], intent: 'Resource referral', tone: 'Supportive', confidence: signals.confidence };
-  if (!matches.length) return { text: 'I could not find a grounded answer for that in this report. Try asking about prevalence, intimate partner violence, risk factors, help-seeking, laws, recommendations, or the study methodology.', matches: [], intent: 'Unknown', tone: 'Neutral', confidence: signals.confidence };
+  if (!matches.length) return { text: followUp ? 'I want to make sure I follow you. Which part would you like me to expand: the study finding, its context, or available support?' : 'I could not find a grounded answer for that in this report. You could ask about prevalence, intimate partner violence, risk factors, help-seeking, laws, recommendations, or the study methodology.', matches: [], intent: 'Clarification', tone: 'Open question', confidence: signals.confidence };
   const lead = matches[0];
   const value = lead.value && lead.value_type === 'percentage' ? `${lead.value}%` : lead.value;
   const note = lead.notes ? ` (${lead.notes})` : '';
-  let text = `The report places this under ${formatIndicator(lead.section)}. ${formatIndicator(lead.indicator)} is recorded as ${value || 'a qualitative finding'}${note}.`;
+  let text = `${followUp ? 'Building on that, ' : 'That is a useful question. '}The report places this under ${formatIndicator(lead.section)}. ${formatIndicator(lead.indicator)} is recorded as ${value || 'a qualitative finding'}${note}.`;
   if (matches.length > 1) text += ` I found ${matches.length} related findings in the same evidence set.`;
+  text += ' Would you like the wider context, the methodology, or support options connected to this topic?';
   return { text, matches, intent: normalized.includes('recommend') ? 'Recommendations' : normalized.includes('method') ? 'Methodology' : normalized.includes('help') ? 'Help-seeking' : 'Report lookup', tone: 'Informational', confidence: signals.confidence };
 }
 
@@ -112,10 +121,10 @@ function renderStations() {
   filter.addEventListener('change', draw); yearFilter.addEventListener('change', draw); document.querySelector('#map-reset').addEventListener('click', draw); draw(); window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
-function submit(text) { if (!text.trim() || !state.ready) return; addMessage(text.trim(), 'user'); const result = answerFor(text); window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
+function submit(text) { if (!text.trim() || !state.ready) return; const cleanText = text.trim(); addMessage(cleanText, 'user'); const result = answerFor(cleanText); state.conversation.push({ input: cleanText, result }); state.conversation = state.conversation.slice(-8); window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
 document.querySelector('#chat-form').addEventListener('submit', event => { event.preventDefault(); submit(question.value); });
 question.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(question.value); } });
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));
-document.querySelector('#clear-chat').addEventListener('click', () => { messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
+document.querySelector('#clear-chat').addEventListener('click', () => { state.conversation = []; messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
 loadReport();

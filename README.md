@@ -149,6 +149,33 @@ The `chatbot/` interface combines:
 
 The assistant is a transparent browser-side baseline. It searches report fields and returns matching findings; it is not connected to a hosted large language model and should not be treated as professional advice.
 
+## Complete build steps and tools
+
+1. Prepare the report text/CSV and semicolon-delimited station CSV in the repository data folders.
+2. Build the chatbot HTML shell with the conversation panel, quick prompts, emergency support panel, and station dashboard.
+3. Use the browser Fetch API to load both local data files and parse them into JavaScript records.
+4. Normalize user questions and score keyword-based intent/emotion signals before searching report fields.
+5. Return emergency-first responses for urgent language, resource referrals for support requests, and evidence-based answers for report questions.
+6. Keep the last eight user turns in browser memory so greetings, thanks, and follow-up questions such as `tell me more` are conversational; no conversation is persisted.
+7. Render report evidence, confidence metadata, station totals, and filtered station markers through the JavaScript DOM API.
+8. Render the standalone map with browser SVG/DOM APIs, verified South Africa GeoJSON-derived boundary coordinates, province zooming, collision-aware markers, wheel/button zoom, and drag panning.
+9. Serve the repository with Python `http.server`, open the chatbot and map URLs, and test data loading, emergency responses, follow-ups, filters, map zoom, panning, reset, and mobile layout.
+
+### Tools and APIs used
+
+| Tool/API | Purpose | Required |
+| --- | --- | --- |
+| Browser Fetch API | Loads the local report and station CSV files. | Yes for server mode |
+| JavaScript DOM API | Conversation state, message rendering, controls, filters, zoom, pan, and marker interaction. | Yes |
+| Browser SVG API | Draws the offline South Africa boundary and map grid. | Yes for standalone map |
+| Leaflet `1.9.4` | Legacy embedded map in the chatbot dashboard. | Only for embedded dashboard |
+| OpenStreetMap tiles | Legacy embedded chatbot basemap. | Optional and network-dependent |
+| Google Fonts CSS API | Loads Manrope and DM Mono fonts. | Optional |
+| Python `http.server` | Local static server for Fetch and development. | Recommended |
+| Git/GitHub | Version control and publishing the static project. | Development tool |
+
+There is no backend service, API key, hosted AI model, or live SAPS API connection. The assistant uses a transparent keyword baseline and the map uses repository data plus a local geographic renderer.
+
 ## Screenshots
 
 The following screenshots show the chatbot dashboard and the interactive hotspot map in different views.

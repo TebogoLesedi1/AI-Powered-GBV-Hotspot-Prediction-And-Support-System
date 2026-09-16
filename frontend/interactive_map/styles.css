@@ -61,7 +61,7 @@
 .fallback-scale i { display: block; border: 2px solid #fff; border-radius: 50%; background: var(--pink); }
 .fallback-marker { position: absolute; transform: translate(-50%, -50%); border: 2px solid #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(36,21,47,.24); cursor: pointer; z-index: 2; transition: transform .15s ease, box-shadow .15s ease; }
 .fallback-marker:hover, .fallback-marker:focus-visible { transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 0 5px rgba(255,255,255,.6), 0 3px 12px rgba(36,21,47,.3); outline: none; }
-.fallback-info { position: absolute; left: 22px; bottom: 22px; max-width: 270px; padding: 12px 14px; background: rgba(255,255,255,.94); box-shadow: 0 4px 16px rgba(36,21,47,.1); font-size: 12px; line-height: 1.45; }
+.fallback-info { position: absolute; right: 22px; bottom: 62px; max-width: 270px; padding: 12px 14px; background: rgba(255,255,255,.94); box-shadow: 0 4px 16px rgba(36,21,47,.1); font-size: 12px; line-height: 1.45; pointer-events: none; z-index: 1; }
 
 @media (max-width: 680px) {
 	.controls { grid-template-columns: 1fr; }

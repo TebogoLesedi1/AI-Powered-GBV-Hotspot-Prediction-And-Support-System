@@ -451,6 +451,33 @@ body.menu-open {
 
 }
 
+.map-page .hero {
+    width: min(1480px, calc(100% - 48px));
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 24px 0 56px;
+}
+
+.map-page .integrated-map {
+    width: 100%;
+    height: clamp(560px, calc(100vh - 250px), 760px);
+    min-height: 0;
+    margin: 0 0 32px;
+}
+
+@media (max-width: 800px) {
+    .map-page .hero {
+        width: 100%;
+        padding: 12px 0 36px;
+    }
+
+    .map-page .integrated-map {
+        height: calc(100vh - 150px);
+        min-height: 520px;
+        margin-bottom: 24px;
+    }
+}
+
 
 .location {
 

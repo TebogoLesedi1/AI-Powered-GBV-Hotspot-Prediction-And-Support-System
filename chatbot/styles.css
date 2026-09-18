@@ -56,6 +56,23 @@ h1 em,
 	background: var(--lime);
 }
 
+.chat-tools { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:10px 18px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.5); }
+.chat-tools label { color:var(--muted); font:9px var(--mono); text-transform:uppercase; }
+.chat-tools select, .chat-tools button { min-height:30px; border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--ink); padding:5px 9px; font-size:10px; cursor:pointer; }
+.chat-tools select { margin-right:auto; }
+.chat-tools button:hover, .chat-tools button:focus-visible { border-color:var(--ink); }
+.chat-tools .danger-tool { border-color:var(--coral); color:var(--coral); }
+.suggestion-popover { margin:8px 18px 0; padding:8px 10px; border-left:3px solid var(--lime); background:#f4f8dc; color:var(--ink); font-size:11px; }
+.emergency-dialog { width:min(420px, calc(100% - 32px)); border:0; padding:0; color:var(--ink); box-shadow:0 20px 70px rgba(23,37,41,.3); }
+.emergency-dialog::backdrop { background:rgba(23,37,41,.58); }
+.emergency-dialog form { position:relative; padding:28px; background:var(--panel); }
+.emergency-dialog h2 { margin:10px 0; font-size:24px; }
+.emergency-dialog p { color:var(--muted); font-size:12px; line-height:1.6; }
+.dialog-close { position:absolute; top:12px; right:12px; border:0; background:transparent; color:var(--muted); font-size:22px; cursor:pointer; }
+.emergency-actions { display:grid; gap:8px; margin:20px 0; }
+.emergency-actions a { padding:12px; background:var(--coral); color:#fff; text-align:center; text-decoration:none; font-weight:700; }
+.dialog-note { font-size:10px !important; }
+
 @media (max-width: 900px) {
 	.workspace {
 		grid-template-columns: minmax(210px, .75fr) minmax(0, 1fr);

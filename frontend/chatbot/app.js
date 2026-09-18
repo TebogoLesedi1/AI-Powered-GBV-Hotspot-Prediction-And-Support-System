@@ -6,6 +6,11 @@ const messages = document.querySelector('#messages');
 const question = document.querySelector('#question');
 const sendButton = document.querySelector('.send-button');
 const chatStatus = document.querySelector('#chat-status');
+const suggestionPopover = document.querySelector('#suggestion-popover');
+const languageSelect = document.querySelector('#language-select');
+const latestAnswer = { text: '' };
+const correctionWords = ['help', 'hello', 'report', 'police', 'support', 'danger', 'safe', 'shelter', 'study', 'violence', 'emergency', 'afraid', 'scared'];
+const safetyPhrases = { 'zu-ZA': 'Uma usengozini esheshayo, shayela amaphoyisa ku-10111 noma ku-112.', 'xh-ZA': 'Ukuba usengozini ngoku, tsalela amapolisa ku-10111 okanye ku-112.', 'st-ZA': 'Ha o le kotsing hona jwale, letsetsa mapolesa ho 10111 kapa 112.', 'tn-ZA': 'Fa o le mo kotsing jaanong, leletsa mapodise mo 10111 kgotsa 112.', 'af-ZA': 'As jy in onmiddellike gevaar is, skakel die polisie by 10111 of 112.' };
 const emotional_support_model = {
   intents: { emergency: ['danger', 'unsafe', 'threat', 'hurt', 'assault', 'rape', 'kill', 'suicid', 'emergency', 'help me now'], emotional_support: ['scared', 'afraid', 'anxious', 'sad', 'alone', 'ashamed', 'overwhelmed', 'stressed', 'feel', 'support'], resources: ['resource', 'shelter', 'clinic', 'ngo', 'police', 'contact', 'hotline', 'where can'], report_lookup: ['report', 'study', 'percentage', 'prevalence', 'factor', 'recommend', 'method', 'law', 'violence'] },
   emotions: { fear: ['scared', 'afraid', 'unsafe', 'threat', 'danger'], distress: ['sad', 'alone', 'ashamed', 'overwhelmed', 'hurt', 'cry'], anxiety: ['anxious', 'worried', 'stress', 'panic'] }
@@ -42,6 +47,8 @@ function parseDelimited(text, delimiter = ';') {
 }
 
 function clean(value) { return value.replaceAll('_', ' ').toLowerCase(); }
+function distance(a, b) { const matrix = Array.from({ length: b.length + 1 }, (_, row) => [row]); for (let column = 1; column <= a.length; column += 1) matrix[0][column] = column; for (let row = 1; row <= b.length; row += 1) for (let column = 1; column <= a.length; column += 1) matrix[row][column] = b[row - 1] === a[column - 1] ? matrix[row - 1][column - 1] : Math.min(matrix[row - 1][column] + 1, matrix[row][column - 1] + 1, matrix[row - 1][column - 1] + 1); return matrix[b.length][a.length]; }
+function suggestCorrection(input) { const words = input.split(/(\s+)/); const corrections = []; const corrected = words.map(part => { const word = part.toLowerCase().replace(/[^a-z]/g, ''); if (word.length < 3) return part; const match = correctionWords.map(candidate => ({ candidate, score: distance(word, candidate) })).sort((a, b) => a.score - b.score)[0]; if (match && match.score <= Math.max(1, Math.floor(word.length / 3)) && match.candidate !== word) { corrections.push([word, match.candidate]); return part.replace(new RegExp(word, 'i'), match.candidate); } return part; }).join(''); return { corrected, corrections }; }
 function formatIndicator(value) { return value.replaceAll('_', ' ').toLowerCase().replace(/(^| )\S/g, letter => letter.toUpperCase()); }
 function escapeHTML(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character]); }
 
@@ -107,7 +114,7 @@ function addMessage(text, type, result) {
   const sourceHTML = result?.matches?.length ? `<div class="sources"><strong>Report evidence</strong>${result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('')}</div>` : '';
   const signalHTML = result?.intent ? `<div class="signal-row"><span>Intent: <b>${result.intent}</b></span><span>Tone: <b>${result.tone}</b></span>${result.confidence ? `<span>Confidence: <b>${Math.round(result.confidence * 100)}%</b></span>` : ''}</div>` : '';
   article.innerHTML = `<div class="avatar">${type === 'user' ? 'Y' : 'S'}</div><div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'} <time>just now</time></span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
-  messages.append(article); messages.scrollTop = messages.scrollHeight;
+  messages.append(article); messages.scrollTop = messages.scrollHeight; if (type === 'assistant') latestAnswer.text = text;
 }
 
 async function loadReport() {
@@ -147,10 +154,14 @@ function renderStations() {
   filter.addEventListener('change', draw); yearFilter.addEventListener('change', draw); document.querySelector('#map-reset').addEventListener('click', draw); draw(); window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
-function submit(text) { if (!text.trim() || !state.ready) return; const cleanText = text.trim(); addMessage(cleanText, 'user'); const result = answerFor(cleanText); state.conversation.push({ input: cleanText, result }); state.conversation = state.conversation.slice(-8); window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
+function submit(text) { if (!text.trim() || !state.ready) return; const original = text.trim(); const suggestion = suggestCorrection(original); const cleanText = suggestion.corrected.trim(); if (suggestion.corrections.length) { suggestionPopover.textContent = `I understood “${cleanText}” from “${original}”.`; suggestionPopover.hidden = false; window.setTimeout(() => { suggestionPopover.hidden = true; }, 5000); } addMessage(cleanText, 'user'); const result = answerFor(cleanText); state.conversation.push({ input: cleanText, result }); state.conversation = state.conversation.slice(-8); window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
 document.querySelector('#chat-form').addEventListener('submit', event => { event.preventDefault(); submit(question.value); });
 question.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(question.value); } });
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));
 document.querySelector('#clear-chat').addEventListener('click', () => { state.conversation = []; messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
+document.querySelector('#emergency-alert').addEventListener('click', () => document.querySelector('#emergency-dialog').showModal());
+document.querySelector('#read-aloud').addEventListener('click', () => { if ('speechSynthesis' in window && latestAnswer.text) { window.speechSynthesis.cancel(); const speech = new SpeechSynthesisUtterance(latestAnswer.text); speech.lang = languageSelect.value; window.speechSynthesis.speak(speech); } });
+document.querySelector('#voice-input').addEventListener('click', () => { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!Recognition) { chatStatus.textContent = 'Voice input is not supported by this browser.'; return; } const recognition = new Recognition(); recognition.lang = languageSelect.value; recognition.onstart = () => { chatStatus.textContent = 'Listening…'; }; recognition.onresult = event => { question.value = event.results[0][0].transcript; submit(question.value); }; recognition.onerror = () => { chatStatus.textContent = 'I could not hear that. You can type instead.'; }; recognition.onend = () => { if (state.ready) chatStatus.textContent = 'Assistant ready.'; }; recognition.start(); });
+languageSelect.addEventListener('change', () => { if (languageSelect.value !== 'en-ZA') { chatStatus.textContent = `${languageSelect.options[languageSelect.selectedIndex].text}: ${safetyPhrases[languageSelect.value]}`; } else if (state.ready) chatStatus.textContent = 'Assistant ready.'; });
 loadReport();

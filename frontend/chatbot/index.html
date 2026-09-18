@@ -53,12 +53,13 @@
       <section class="chat-panel" aria-label="Chat with the report assistant">
         <div class="chat-header"><div><span class="eyebrow">S.H.E Assistant · Conversation</span><h2>What would you like to understand?</h2></div><span class="grounded-badge">● Grounded in report</span></div>
         <div class="answer-key" aria-label="Answer types"><span><b class="key-general"></b>General information</span><span><b class="key-data"></b>Data-based answers</span><span><b class="key-emergency"></b>Emergency assistance</span></div>
+        <div class="chat-tools" aria-label="Chat tools"><label for="language-select">Language</label><select id="language-select"><option value="en-ZA">English</option><option value="zu-ZA">isiZulu</option><option value="xh-ZA">isiXhosa</option><option value="st-ZA">Sesotho</option><option value="tn-ZA">Setswana</option><option value="af-ZA">Afrikaans</option></select><button type="button" id="voice-input" title="Speak your message" aria-label="Speak your message">Speak</button><button type="button" id="read-aloud" title="Read the latest answer aloud" aria-label="Read the latest answer aloud">Read aloud</button><button type="button" class="danger-tool" id="emergency-alert" title="Call emergency services" aria-label="Call emergency services">Emergency</button></div>
         <div class="messages" id="messages" aria-live="polite" aria-busy="true">
           <article class="message assistant-message welcome-message"><div class="avatar">S</div><div class="message-body"><span class="message-label">S.H.E Assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question, or start with one of these:</p><div class="quick-prompts"><button type="button" data-prompt="What support is available near me?">Support near me <span>→</span></button><button type="button" data-prompt="What does this hotspot score mean?">Hotspot score <span>→</span></button><button type="button" data-prompt="How can I report GBV?">How to report GBV <span>→</span></button></div></div></article>
         </div>
         <div class="app-status" id="chat-status" role="status" aria-live="polite">Loading the report and station data…</div>
         <p class="data-disclaimer"><strong>Data-based answers:</strong> Responses use the loaded report and may not reflect every situation. For immediate danger, use the emergency contacts.</p>
-        <form class="composer" id="chat-form"><div class="composer-inner"><textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question" disabled></textarea><button class="send-button" type="submit" aria-label="Send question" title="Send question" disabled>↑</button></div><div class="composer-foot"><span>Answers are based on the loaded report</span><span>Enter to send · Shift + Enter for a new line</span></div></form>
+        <form class="composer" id="chat-form"><div class="composer-inner"><textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question" disabled></textarea><button class="send-button" type="submit" aria-label="Send question" title="Send question" disabled>↑</button></div><div class="suggestion-popover" id="suggestion-popover" role="status" aria-live="polite" hidden></div><div class="composer-foot"><span>Answers are based on the loaded report</span><span>Enter to send · Shift + Enter for a new line</span></div></form>
       </section>
 
       <aside class="insight-panel">
@@ -78,6 +79,7 @@
       </aside>
     </main>
   </div>
+  <dialog class="emergency-dialog" id="emergency-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close emergency dialog">×</button><span class="eyebrow">Immediate danger</span><h2>Get emergency help</h2><p>If you are in immediate danger, move to a safer place if you can. This browser cannot silently dispatch police, but you can call them now.</p><div class="emergency-actions"><a href="tel:10111">Call police · 10111</a><a href="tel:112">Call emergency · 112</a></div><p class="dialog-note">Calling opens your device dialer. Share your location with the operator if safe.</p></form></dialog>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9F5w4qB8x1D3Y6Q4v8=" crossorigin=""></script>
   <script src="app.js"></script>
 </body>

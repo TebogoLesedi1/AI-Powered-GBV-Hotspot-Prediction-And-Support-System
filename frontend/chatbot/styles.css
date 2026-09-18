@@ -190,3 +190,8 @@ body { background:linear-gradient(135deg,#17262d 0%,#3a2631 48%,#1e7795 100%); c
 .composer-inner:focus-within { border-color:var(--lime); box-shadow:0 0 0 3px rgba(143,211,232,.18); }
 .composer-inner textarea#question { flex:1; min-height:42px; max-height:100px; border:0; border-radius:13px; background:transparent; color:#fff; caret-color:var(--lime); padding:11px 13px; outline:0; resize:none; }
 .composer-inner textarea#question::placeholder { color:rgba(255,255,255,.62); opacity:1; }
+.user-message { max-width:86%; }
+.user-message .message-body { background:rgba(30,119,149,.92); border:1px solid rgba(143,211,232,.7); border-radius:16px 16px 4px 16px; padding:11px 14px; color:#fff; }
+.user-message .message-label { color:rgba(255,255,255,.78); }
+.user-message .message-label time { color:rgba(255,255,255,.56); }
+.user-message .message-body p { color:#fff; margin:0; overflow-wrap:anywhere; }

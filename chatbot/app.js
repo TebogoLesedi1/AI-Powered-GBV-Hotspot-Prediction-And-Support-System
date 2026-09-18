@@ -58,6 +58,7 @@ function coordinate(value) { return Number(String(value).replace('=', '')); }
 
 function isGreeting(input) { return /^(hi|hello|hey|good morning|good afternoon|good evening)\b/i.test(input.trim()); }
 function isThanks(input) { return /^(thanks|thank you|thx|that helps|great)\b/i.test(input.trim()); }
+function isImmediateHelpRequest(input) { return /^(help|help me|i need help|help now|please help|please help me)[.!?\s]*$/i.test(input.trim()); }
 function isFollowUp(input) { return /\b(tell me more|more about that|what about|why is that|can you explain|and the|how does that relate|what does that mean|why does that matter|how does it relate)\b/i.test(input); }
 function isGeneralConversation(input) {
   return /\b(who are you|what can you do|how can you help|can you help me|i need help|what should i do|help me|what do you know|can we talk)\b/i.test(input) || /^(hi|hello|hey|good morning|good afternoon|good evening|hey there|hi there)$/i.test(input.trim());
@@ -79,7 +80,7 @@ function answerFor(input) {
   const followUp = isFollowUp(input) && previous?.input;
   const normalized = clean(followUp ? `${previous.input} ${input}` : input);
   const signals = predictSupportSignals(input);
-  const urgent = signals.intent === 'emergency';
+  const urgent = signals.intent === 'emergency' || isImmediateHelpRequest(input);
     if (urgent) return { text: 'Your safety matters more than finding an answer in the report. If you are in immediate danger, move to a safer place if you can and contact the police on 10111 or 112 from a mobile. The GBV Command Centre is available on 0800 428 428, or SMS *120*7867#.', matches: [], intent: 'Immediate support', tone: `${signals.emotion} · safety-first`, confidence: signals.confidence };
     const exampleMatch = conversationExampleFor(input);
     if (exampleMatch?.score >= 2) {
@@ -159,7 +160,7 @@ function renderStations() {
   filter.addEventListener('change', draw); yearFilter.addEventListener('change', draw); document.querySelector('#map-reset').addEventListener('click', draw); draw(); window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
-function submit(text) { if (!text.trim()) return; const original = text.trim(); const suggestion = suggestCorrection(original); const cleanText = suggestion.corrected.trim(); if (suggestion.corrections.length) { suggestionPopover.textContent = `I understood “${cleanText}” from “${original}”.`; suggestionPopover.hidden = false; window.setTimeout(() => { suggestionPopover.hidden = true; }, 5000); } addMessage(cleanText, 'user'); const result = state.ready ? answerFor(cleanText) : { text: 'The report is still loading. Please try that question again in a moment.', matches: [] }; state.conversation.push({ input: cleanText, result }); state.conversation = state.conversation.slice(-8); window.setTimeout(() => addMessage(result.text, 'assistant', result), 250); question.value = ''; question.style.height = 'auto'; }
+function submit(text) { if (!text.trim()) return; const original = text.trim(); const suggestion = suggestCorrection(original); const cleanText = suggestion.corrected.trim(); if (suggestion.corrections.length) { suggestionPopover.textContent = `I understood “${cleanText}” from “${original}”.`; suggestionPopover.hidden = false; window.setTimeout(() => { suggestionPopover.hidden = true; }, 5000); } addMessage(cleanText, 'user'); const result = state.ready ? answerFor(cleanText) : { text: 'The report is still loading. Please try that question again in a moment.', matches: [] }; state.conversation.push({ input: cleanText, result }); state.conversation = state.conversation.slice(-8); window.setTimeout(() => { addMessage(result.text, 'assistant', result); if (isImmediateHelpRequest(cleanText) || result.intent === 'Immediate support') document.querySelector('#emergency-dialog').showModal(); }, 250); question.value = ''; question.style.height = 'auto'; }
 document.querySelector('#chat-form').addEventListener('submit', event => { event.preventDefault(); submit(question.value); });
 question.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(question.value); } });
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });

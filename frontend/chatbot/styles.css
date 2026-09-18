@@ -186,3 +186,7 @@ body { background:linear-gradient(135deg,#17262d 0%,#3a2631 48%,#1e7795 100%); c
 .speech-controls { display:flex; gap:8px; }
 .speech-controls button { border:1px solid var(--lime); background:var(--lime); color:#17262d; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; }
 @media (max-width:700px) { .app-shell { margin:0; min-height:100vh; border-radius:0; border-left:0; border-right:0; } .chat-panel { border-left:0; border-right:0; } }
+.composer-inner { border:1px solid rgba(143,211,232,.55); border-radius:18px; background:rgba(15,20,25,.72); padding:6px; box-shadow:0 0 0 3px rgba(143,211,232,.07); }
+.composer-inner:focus-within { border-color:var(--lime); box-shadow:0 0 0 3px rgba(143,211,232,.18); }
+.composer-inner textarea#question { flex:1; min-height:42px; max-height:100px; border:0; border-radius:13px; background:transparent; color:#fff; caret-color:var(--lime); padding:11px 13px; outline:0; resize:none; }
+.composer-inner textarea#question::placeholder { color:rgba(255,255,255,.62); opacity:1; }

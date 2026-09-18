@@ -159,3 +159,30 @@ h1 em,
 .emergency-actions { display:grid; gap:8px; margin:20px 0; }
 .emergency-actions a { padding:12px; background:var(--coral); color:#fff; text-align:center; text-decoration:none; font-weight:700; }
 .dialog-note { font-size:10px !important; }
+
+/* SafeSouth Africa visual system: dark glass, cyan signal, burgundy alert. */
+:root { --ink:#f8f3fa; --muted:#c7a6ad; --paper:#17262d; --panel:rgba(15,20,25,.82); --lime:#8fd3e8; --coral:#7b3544; --line:rgba(255,255,255,.14); }
+body { background:linear-gradient(135deg,#17262d 0%,#3a2631 48%,#1e7795 100%); color:var(--ink); }
+.app-shell { margin:18px; min-height:calc(100vh - 36px); border:1px solid var(--line); border-radius:18px; background:rgba(15,20,25,.68); box-shadow:0 18px 45px rgba(0,0,0,.24); overflow:hidden; }
+.topbar,.chat-panel,.sidebar,.insight-panel { background:transparent; }
+.topbar { border-color:var(--line); }
+.brand,.chat-header h2,.risk-heading strong,.big-stat,.map-summary b,.station-row b { color:var(--ink); }
+.chat-panel { border-left:1px solid var(--line); border-right:1px solid var(--line); }
+.source-card { background:rgba(30,119,149,.78); }
+.safety-card { background:rgba(123,53,68,.28); border-color:var(--coral); }
+.chat-tools { background:rgba(255,255,255,.06); border-color:var(--line); }
+.chat-tools select,.chat-tools button,.map-reset,.insight-panel select { background:rgba(255,255,255,.08); color:var(--ink); border-color:var(--line); }
+.message-body,.data-disclaimer,.risk-copy,.signal-row,.station-row,.map-summary,.risk-legend { color:rgba(255,255,255,.82); }
+.message-label,.select-label,.loading-copy,.map-attribution { color:var(--muted); }
+.quick-prompts button,.topic-list button { background:rgba(255,255,255,.06); color:var(--ink); border-color:var(--line); }
+.map-frame { border-color:var(--line); background:#263e45; }
+.insight-note { background:rgba(143,211,232,.2); color:var(--ink); }
+.bar { background:rgba(255,255,255,.12); }
+.emergency-dialog,.speech-dialog { background:var(--panel); color:var(--ink); border:1px solid var(--line); }
+.emergency-dialog form,.speech-dialog form { background:rgba(15,20,25,.96); }
+.speech-dialog { width:min(560px,calc(100% - 32px)); }
+.speech-text { max-height:260px; overflow:auto; margin:18px 0; padding:14px; border-left:3px solid var(--lime); background:rgba(255,255,255,.07); color:var(--ink); font-size:13px; line-height:1.65; }
+.translation-status { color:var(--muted); font:10px var(--mono); }
+.speech-controls { display:flex; gap:8px; }
+.speech-controls button { border:1px solid var(--lime); background:var(--lime); color:#17262d; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; }
+@media (max-width:700px) { .app-shell { margin:0; min-height:100vh; border-radius:0; border-left:0; border-right:0; } .chat-panel { border-left:0; border-right:0; } }

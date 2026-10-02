@@ -8,6 +8,9 @@ const sendButton = document.querySelector('.send-button');
 const chatStatus = document.querySelector('#chat-status');
 const suggestionPopover = document.querySelector('#suggestion-popover');
 const languageSelect = document.querySelector('#language-select');
+const optionsToggle = document.querySelector('#options-toggle');
+const chatOptions = document.querySelector('#chat-options');
+const debugToggle = document.querySelector('#debug-toggle');
 const latestAnswer = { text: '' };
 const speechDialog = document.querySelector('#speech-dialog');
 const speechText = document.querySelector('#speech-text');
@@ -116,7 +119,8 @@ function answerFor(input) {
 
 function addMessage(text, type, result) {
   const article = document.createElement('article'); article.className = `message ${type}-message`;
-  const sourceHTML = result?.matches?.length ? `<div class="sources"><strong>Report evidence</strong>${result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('')}</div>` : '';
+  const evidenceItems = result?.matches?.length ? result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('') : '';
+  const sourceHTML = result?.matches?.length ? `<details class="evidence-accordion"><summary>View ${result.matches.length} report finding${result.matches.length > 1 ? 's' : ''}</summary><div class="evidence-list">${evidenceItems}</div></details>` : '';
   const signalHTML = result?.intent ? `<div class="signal-row"><span>Intent: <b>${result.intent}</b></span><span>Tone: <b>${result.tone}</b></span>${result.confidence ? `<span>Confidence: <b>${Math.round(result.confidence * 100)}%</b></span>` : ''}</div>` : '';
   article.innerHTML = `<div class="avatar">${type === 'user' ? 'Y' : 'S'}</div><div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'} <time>just now</time></span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
   messages.append(article); messages.scrollTop = messages.scrollHeight; if (type === 'assistant') latestAnswer.text = text;
@@ -163,6 +167,20 @@ function submit(text) { if (!text.trim() || !state.ready) return; const original
 document.querySelector('#chat-form').addEventListener('submit', event => { event.preventDefault(); submit(question.value); });
 question.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submit(question.value); } });
 question.addEventListener('input', () => { question.style.height = 'auto'; question.style.height = `${Math.min(question.scrollHeight, 100)}px`; });
+if (optionsToggle && chatOptions) {
+  optionsToggle.addEventListener('click', () => {
+    const isHidden = chatOptions.hasAttribute('hidden');
+    chatOptions.toggleAttribute('hidden', !isHidden);
+    optionsToggle.setAttribute('aria-expanded', String(isHidden));
+  });
+}
+if (debugToggle) {
+  debugToggle.addEventListener('click', () => {
+    const isVisible = document.body.classList.toggle('show-debug');
+    debugToggle.setAttribute('aria-pressed', String(isVisible));
+    debugToggle.textContent = isVisible ? 'Hide debug' : 'Debug';
+  });
+}
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));
 document.querySelector('#clear-chat').addEventListener('click', () => { state.conversation = []; messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
 document.querySelector('#emergency-alert').addEventListener('click', () => document.querySelector('#emergency-dialog').showModal());

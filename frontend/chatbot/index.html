@@ -12,70 +12,89 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="../app-accessibility.css">
   <style>
-    .risk-heading{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:13px}.prototype-badge{font:8px 'DM Mono',monospace;color:#f27762;border:1px solid #f2b2a7;padding:4px 5px}.risk-copy{font-size:10px;line-height:1.5;color:#6e7b7c;margin:9px 0 15px}.select-label{font:9px 'DM Mono',monospace;text-transform:uppercase;color:#6e7b7c;display:block;margin-bottom:5px}.insight-panel select{width:100%;border:1px solid #dfe4df;background:#fff;padding:8px;font-size:11px;color:#172529}.station-list{margin-top:12px;border-top:1px solid #dfe4df}.station-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid #dfe4df;font-size:10px}.station-row b{margin-left:auto;font:10px 'DM Mono',monospace}.station-name{line-height:1.2}.station-name small{display:block;color:#6e7b7c;font-size:8px;margin-top:3px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}.legend-dot.high{background:#f27762}.legend-dot.medium{background:#e2bb48}.risk-legend{display:flex;gap:14px;color:#6e7b7c;font:9px 'DM Mono',monospace;margin-top:10px}.risk-legend .legend-dot{margin-right:4px}.loading-copy{display:block;color:#6e7b7c;font-size:10px;padding:12px 0}.at-glance-heading{margin-top:32px}.signal-row{display:flex;gap:12px;color:#83908e;font:9px 'DM Mono',monospace;border-top:1px solid #dfe4df;padding-top:9px;margin-top:13px}.signal-row b{color:#172529;font-weight:500}
-      :root{--ink:#1e7795;--muted:#c7a6ad;--paper:#f8f3fa;--panel:#fff;--lime:#8fd3e8;--coral:#7b3544;--line:#e7dce9}.brand-mark{background:#8fd3e8}.brand-slash,h1 em{color:#7b3544}.source-card{background:#1e7795}.source-label{color:#8fd3e8}.safety-card{border-color:#7b3544}.send-button{background:#1e7795;color:#8fd3e8}.insight-note{background:#8fd3e8}.live-line{background:#7b3544}.bar i{background:#1e7795}.risk-heading{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:13px}.prototype-badge{font:8px 'DM Mono',monospace;color:#7b3544;border:1px solid #8fd3e8;padding:4px 5px}.risk-copy{font-size:10px;line-height:1.5;color:#c7a6ad;margin:9px 0 15px}.select-label{font:9px 'DM Mono',monospace;text-transform:uppercase;color:#c7a6ad;display:block;margin-bottom:5px}.insight-panel select{width:100%;border:1px solid #e7dce9;background:#fff;padding:8px;font-size:11px;color:#1e7795}.station-list{margin-top:12px;border-top:1px solid #e7dce9}.station-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid #e7dce9;font-size:10px}.station-row b{margin-left:auto;font:10px 'DM Mono',monospace}.station-name{line-height:1.2}.station-name small{display:block;color:#c7a6ad;font-size:8px;margin-top:3px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}.legend-dot.high{background:#7b3544}.legend-dot.medium{background:#8fd3e8}.risk-legend{display:flex;gap:14px;color:#c7a6ad;font:9px 'DM Mono',monospace;margin-top:10px}.risk-legend .legend-dot{margin-right:4px}.loading-copy{display:block;color:#c7a6ad;font-size:10px;padding:12px 0}.at-glance-heading{margin-top:32px}.signal-row{display:flex;gap:12px;color:#c7a6ad;font:9px 'DM Mono',monospace;border-top:1px solid #e7dce9;padding-top:9px;margin-top:13px}.signal-row b{color:#1e7795;font-weight:500}
+    .risk-heading{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:13px}.prototype-badge{font:8px 'DM Mono',monospace;color:#f87171;border:1px solid rgba(248,113,113,.5);padding:4px 5px;border-radius:8px}.risk-copy{font-size:10px;line-height:1.5;color:#94a3b8;margin:9px 0 15px}.select-label{font:9px 'DM Mono',monospace;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:5px}.insight-panel select{width:100%;border:1px solid rgba(148,163,184,.25);background:rgba(15,23,42,.9);padding:8px;font-size:11px;color:#f8fafc;border-radius:8px}.station-list{margin-top:12px;border-top:1px solid rgba(148,163,184,.2)}.station-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid rgba(148,163,184,.2);font-size:10px}.station-row b{margin-left:auto;font:10px 'DM Mono',monospace}.station-name{line-height:1.2}.station-name small{display:block;color:#94a3b8;font-size:8px;margin-top:3px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}.legend-dot.high{background:#f87171}.legend-dot.medium{background:#38bdf8}.risk-legend{display:flex;gap:14px;color:#94a3b8;font:9px 'DM Mono',monospace;margin-top:10px}.risk-legend .legend-dot{margin-right:4px}.loading-copy{display:block;color:#94a3b8;font-size:10px;padding:12px 0}.signal-row{display:flex;gap:12px;color:#94a3b8;font:9px 'DM Mono',monospace;border-top:1px solid rgba(148,163,184,.2);padding-top:9px;margin-top:13px}.signal-row b{color:#f8fafc;font-weight:500}
   </style>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="../index.html" aria-label="Return to SafeSouth Africa home"><span class="brand-mark">S</span><span>S.H.E<span class="brand-slash">/</span>Assistant</span></a>
-        <div class="topbar-meta"><span class="status-dot"></span><span>Research assistant</span><span class="topbar-divider"></span><span id="record-count">Loading report</span><span class="topbar-divider"></span><span id="model-status">NLP model loading</span></div>
-      <button class="icon-button" id="clear-chat" type="button" title="Start a new conversation" aria-label="Start a new conversation">↗</button>
+      <div class="topbar-meta"><span class="status-dot"></span><span>Research assistant</span><span class="topbar-divider"></span><span id="record-count">Loading report</span><span class="topbar-divider"></span><span id="model-status">NLP model loading</span></div>
+      <div class="topbar-actions">
+        <button class="debug-toggle" id="debug-toggle" type="button" aria-pressed="false">Debug</button>
+        <button class="icon-button" id="clear-chat" type="button" title="Start a new conversation" aria-label="Start a new conversation">↗</button>
+      </div>
     </header>
 
-    <main class="workspace">
-      <aside class="sidebar" aria-label="Assistant information and emergency support">
-        <div class="sidebar-intro">
-          <span class="eyebrow">A grounded companion</span>
-          <h1>Ask the<br><em>report.</em></h1>
-          <p>Explore findings from South Africa’s first national gender-based violence study in plain language.</p>
-        </div>
-        <div class="source-card">
-          <div class="source-label"><span class="source-pulse"></span> Current source</div>
-          <strong>First South African National GBV Study</strong>
-          <span class="source-detail">Baseline survey · 2022–2024</span>
-          <div class="source-stats"><span><b id="section-count">—</b> sections</span><span><b id="row-count">—</b> findings</span></div>
-        </div>
-        <div class="safety-card" aria-labelledby="emergency-title">
-          <span class="eyebrow">Emergency support</span>
-          <h2 id="emergency-title">Need help now?</h2>
-          <p>If you are in immediate danger, move somewhere safer and contact emergency services.</p>
-          <div class="hotline"><span>Police / emergency</span><a href="tel:10111">10111</a><a href="tel:112">112</a></div>
-          <div class="hotline"><span>GBV Command Centre</span><a href="tel:0800428428">0800 428 428</a></div>
-          <div class="hotline"><span>SMS / please call me</span><a href="sms:1207867">*120*7867#</a></div>
-          <p class="safety-note">You can call these services without using the assistant.</p>
-          <p class="assistant-disclaimer"><strong>Important:</strong> S.H.E Assistant is not a replacement for emergency services or professional counselling.</p>
-        </div>
-        <div class="sidebar-foot">Private by design · Nothing is saved</div>
-      </aside>
+    <div class="study-banner" aria-label="Study context">
+      <div class="study-banner-copy">
+        <span class="eyebrow">Study context</span>
+        <h1>First South African National GBV Study</h1>
+      </div>
+      <div class="banner-actions">
+        <a class="emergency-pill" href="tel:10111">📞 Call 10111</a>
+        <a class="emergency-pill" href="tel:0800428428">📞 Call 0800 428 428</a>
+      </div>
+    </div>
 
+    <main class="workspace">
       <section class="chat-panel" aria-label="Chat with the report assistant">
         <div class="chat-header"><div><span class="eyebrow">S.H.E Assistant · Conversation</span><h2>What would you like to understand?</h2></div><span class="grounded-badge">● Grounded in report</span></div>
         <div class="answer-key" aria-label="Answer types"><span><b class="key-general"></b>General information</span><span><b class="key-data"></b>Data-based answers</span><span><b class="key-emergency"></b>Emergency assistance</span></div>
-        <div class="chat-tools" aria-label="Chat tools"><label for="language-select">Language</label><select id="language-select"><option value="en-ZA">English</option><option value="af-ZA">Afrikaans</option><option value="zu-ZA">isiZulu</option><option value="xh-ZA">isiXhosa</option><option value="st-ZA">Sesotho</option><option value="tn-ZA">Setswana</option><option value="nso-ZA">Sepedi</option><option value="ss-ZA">siSwati</option><option value="ve-ZA">Tshivenda</option><option value="ts-ZA">itsonga</option><option value="nr-ZA">isiNdebele</option></select><button type="button" id="voice-input" title="Speak your message" aria-label="Speak your message">Speak</button><button type="button" id="read-aloud" title="Read the latest answer aloud" aria-label="Read the latest answer aloud">Read aloud</button><button type="button" class="danger-tool" id="emergency-alert" title="Call emergency services" aria-label="Call emergency services">Emergency</button></div>
-        <div class="messages" id="messages" aria-live="polite" aria-busy="true">
-          <article class="message assistant-message welcome-message"><div class="avatar">S</div><div class="message-body"><span class="message-label">S.H.E Assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question, or start with one of these:</p><div class="quick-prompts"><button type="button" data-prompt="What support is available near me?">Support near me <span>→</span></button><button type="button" data-prompt="What does this hotspot score mean?">Hotspot score <span>→</span></button><button type="button" data-prompt="How can I report GBV?">How to report GBV <span>→</span></button></div></div></article>
+
+        <div class="chat-tools" aria-label="Chat tools">
+          <button class="options-toggle" id="options-toggle" type="button" aria-expanded="false" aria-controls="chat-options">⚙️ Options</button>
+          <div class="options-menu" id="chat-options" hidden>
+            <label for="language-select">Language</label>
+            <select id="language-select">
+              <option value="en-ZA">English</option>
+              <option value="af-ZA">Afrikaans</option>
+              <option value="zu-ZA">isiZulu</option>
+              <option value="xh-ZA">isiXhosa</option>
+              <option value="st-ZA">Sesotho</option>
+              <option value="tn-ZA">Setswana</option>
+              <option value="nso-ZA">Sepedi</option>
+              <option value="ss-ZA">siSwati</option>
+              <option value="ve-ZA">Tshivenda</option>
+              <option value="ts-ZA">Xitsonga</option>
+              <option value="nr-ZA">isiNdebele</option>
+            </select>
+            <button type="button" id="voice-input" title="Speak your message" aria-label="Speak your message">Speak</button>
+            <button type="button" id="read-aloud" title="Read the latest answer aloud" aria-label="Read the latest answer aloud">Read aloud</button>
+            <button type="button" class="danger-tool" id="emergency-alert" title="Call emergency services" aria-label="Call emergency services">Emergency</button>
+          </div>
         </div>
+
+        <div class="messages" id="messages" aria-live="polite" aria-busy="true">
+          <article class="message assistant-message welcome-message"><div class="avatar">S</div><div class="message-body"><span class="message-label">S.H.E Assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question and I will respond in plain language.</p></div></article>
+        </div>
+
+        <div class="quick-prompts" id="quick-prompts" aria-label="Quick reply prompts">
+          <button type="button" data-prompt="What support is available near me?">Support near me <span>→</span></button>
+          <button type="button" data-prompt="What does this hotspot score mean?">Hotspot score <span>→</span></button>
+          <button type="button" data-prompt="How can I report GBV?">How to report GBV <span>→</span></button>
+        </div>
+
         <div class="app-status" id="chat-status" role="status" aria-live="polite">Loading the report and station data…</div>
         <p class="data-disclaimer"><strong>Data-based answers:</strong> Responses use the loaded report and may not reflect every situation. For immediate danger, use the emergency contacts.</p>
         <form class="composer" id="chat-form"><div class="composer-inner"><textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question" disabled></textarea><button class="send-button" type="submit" aria-label="Send question" title="Send question" disabled>↑</button></div><div class="suggestion-popover" id="suggestion-popover" role="status" aria-live="polite" hidden></div><div class="composer-foot"><span>Answers are based on the loaded report</span><span>Enter to send · Shift + Enter for a new line</span></div></form>
       </section>
 
       <aside class="insight-panel">
-        <div class="insight-heading"><span class="eyebrow">Prediction engine</span><span class="live-line"></span></div>
-        <div class="risk-heading"><strong>Station risk view</strong><span class="prototype-badge">PROTOTYPE</span></div>
-        <p class="risk-copy">Explore reported serious-crime totals by station. This is a research view, not an individual risk prediction.</p>
+        <div class="insight-heading"><span class="eyebrow">Top risk precincts</span><span class="live-line"></span></div>
+        <div class="risk-heading"><strong>Current hotspot summary</strong></div>
         <div class="map-toolbar"><label class="select-label" for="province-filter">Province</label><select id="province-filter"><option value="all">All provinces</option></select><label class="select-label" for="year-filter">Cases shown</label><select id="year-filter"><option value="TOTAL">Total · 2022–2026</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select></div>
         <div class="map-frame"><div id="station-map" aria-label="Interactive map of GBV station risk levels"></div><button class="map-reset" id="map-reset" type="button" title="Fit map to visible stations" aria-label="Fit map to visible stations">⌖</button><span class="map-attribution">OpenStreetMap · Leaflet</span></div>
-        <div class="map-summary"><b id="visible-count">—</b><span>stations visible</span><b id="visible-cases">—</b><span>cases shown</span></div>
-        <div class="station-list" id="station-list"><span class="loading-copy">Loading station data…</span></div>
-        <div class="risk-legend"><span><i class="legend-dot high"></i>High</span><span><i class="legend-dot medium"></i>Med-high</span></div>
+        <div class="summary-card">
+          <div class="map-summary"><b id="visible-count">—</b><span>stations visible</span><b id="visible-cases">—</b><span>cases shown</span></div>
+          <div class="station-list" id="station-list"><span class="loading-copy">Loading station data…</span></div>
+          <div class="risk-legend"><span><i class="legend-dot high"></i>High</span><span><i class="legend-dot medium"></i>Med-high</span></div>
+        </div>
+        <button class="open-map-button" type="button" onclick="window.open('../hotspot.html', '_blank')">Open Interactive Map ↗</button>
         <div class="insight-heading at-glance-heading"><span class="eyebrow">At a glance</span><span class="live-line"></span></div>
         <div class="big-stat"><span class="stat-value">35.5%</span><span class="stat-copy">of surveyed women reported physical and/or sexual violence in their lifetime.</span><span class="stat-source">WOMEN_ALL_LIFETIME</span></div>
         <div class="mini-chart" aria-label="Selected report statistics"><div class="chart-row"><span>Lifetime violence</span><div class="bar"><i style="width: 35.5%"></i></div><b>35.5%</b></div><div class="chart-row"><span>Recent violence</span><div class="bar"><i style="width: 7%"></i></div><b>7.0%</b></div><div class="chart-row"><span>Controlling behaviour</span><div class="bar"><i style="width: 57.6%"></i></div><b>57.6%</b></div></div>
         <div class="insight-note"><span class="note-icon">i</span><p>Figures describe survey participants and should not be treated as a measure of an individual’s risk.</p></div>
-        <div class="topic-list"><span class="eyebrow">Explore a topic</span><button type="button" data-prompt="Tell me about the study methodology">Methodology <span>↗</span></button><button type="button" data-prompt="What factors are associated with GBV in the study?">Risk factors <span>↗</span></button><button type="button" data-prompt="What laws and policies are discussed?">Laws & policy <span>↗</span></button></div>
       </aside>
     </main>
   </div>

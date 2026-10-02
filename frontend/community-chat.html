@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A local-only preview of an anonymous, topic-based community peer-support chat.">
+  <title>Community Peer Support | SafeSouth Africa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="community-chat.css">
+  <script src="community-chat.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">S</span><span>SafeSouth Africa</span></a>
+      <div class="session-status"><span class="status-dot"></span><span>Alias <strong id="user-alias">Creating…</strong></span><span class="local-label">Local preview</span></div>
+      <button class="quick-exit" id="quick-exit" type="button" title="Clear this session and leave this page">Quick Exit <span aria-hidden="true">×</span></button>
+    </header>
+
+    <main>
+      <section class="intro-row" aria-labelledby="page-title">
+        <div><p class="eyebrow">Community space / 01</p><h1 id="page-title">Peer support, on your terms.</h1></div>
+        <button class="support-toggle" id="support-toggle" type="button" aria-expanded="false" aria-controls="support-drawer">Support &amp; tools <span aria-hidden="true">↗</span></button>
+      </section>
+
+      <div class="disclaimer" role="note"><span class="disclaimer-mark" aria-hidden="true">!</span><p><strong>This is a peer-to-peer support space.</strong> Participants are community members, not professional counselors. For immediate crisis support, contact the GBV Command Centre at <a href="tel:0800428428">0800 428 428</a>.</p></div>
+
+      <div class="prototype-notice" role="status"><strong>Local preview only</strong><span>This page has no live room or chat server. Messages stay in this tab's memory and are not shared; page hosting may still see connection requests. Do not use this preview to seek urgent help.</span></div>
+
+      <div class="workspace">
+        <aside class="room-rail" aria-label="Choose a support topic">
+          <div class="rail-heading"><span class="eyebrow">Choose a room</span><span class="room-count">04 topics</span></div>
+          <nav class="room-list" id="room-list" aria-label="Support topics">
+            <button class="room-option is-active" type="button" data-room="general" aria-pressed="true"><span class="room-icon">01</span><span><strong>General peer support</strong><small>Listen and be heard</small></span><span class="room-arrow">↗</span></button>
+            <button class="room-option" type="button" data-room="resources" aria-pressed="false"><span class="room-icon">02</span><span><strong>Resources &amp; guidance</strong><small>Share practical options</small></span><span class="room-arrow">↗</span></button>
+            <button class="room-option" type="button" data-room="healing" aria-pressed="false"><span class="room-icon">03</span><span><strong>Healing &amp; wellness</strong><small>Small steps, at your pace</small></span><span class="room-arrow">↗</span></button>
+            <button class="room-option" type="button" data-room="questions" aria-pressed="false"><span class="room-icon">04</span><span><strong>Anonymous questions</strong><small>Ask without a profile</small></span><span class="room-arrow">↗</span></button>
+          </nav>
+          <div class="rail-note"><span class="note-icon">i</span><p>Only use an alias. Avoid names, contact details, addresses, or other identifying information.</p></div>
+          <button class="new-alias" id="new-alias" type="button"><span aria-hidden="true">⟳</span> Generate a new alias</button>
+        </aside>
+
+        <section class="chat-room" aria-labelledby="room-title">
+          <header class="room-header"><div><p class="eyebrow">Local conversation preview</p><h2 id="room-title">General peer support</h2></div><span class="preview-badge"><i></i> Not live</span></header>
+          <div class="conversation-notice"><span aria-hidden="true">↳</span><p>Sample posts are clearly marked. Your messages are visible only in this tab and disappear when you leave or refresh.</p></div>
+          <div class="message-feed" id="message-feed" aria-live="polite" aria-label="Conversation messages"></div>
+          <div class="reaction-bar" aria-label="Quick responses"><span>Quick responses</span><button type="button" data-reaction="I hear you.">I hear you</button><button type="button" data-reaction="Thank you for sharing.">Thank you</button><button type="button" data-reaction="Sending care.">Sending care</button></div>
+          <form class="composer" id="message-form">
+            <label for="message-input">Write a message as <span id="composer-alias">your alias</span></label>
+            <div class="composer-field"><textarea id="message-input" rows="2" maxlength="600" placeholder="Share only what feels safe. Avoid identifying details." aria-describedby="privacy-hint"></textarea><button class="send-button" type="submit" aria-label="Add message to local preview">Send <span aria-hidden="true">↑</span></button></div>
+            <div class="composer-footer"><p id="privacy-hint">Automatic filters can miss personal details. Review before sending.</p><span id="character-count">0 / 600</span></div>
+          </form>
+          <div class="live-announcement" id="live-announcement" role="status" aria-live="polite"></div>
+        </section>
+
+        <aside class="safety-rail" aria-label="Safety and support">
+          <div class="safety-heading"><span class="eyebrow">Your safety comes first</span><span class="safety-symbol" aria-hidden="true">+</span></div>
+          <h2>Need a person now?</h2>
+          <p class="safety-copy">If you are in immediate danger, contact emergency services or the GBV Command Centre.</p>
+          <a class="hotline-link" href="tel:0800428428"><span>GBV Command Centre</span><strong>0800 428 428</strong><small>Call for support</small></a>
+          <a class="hotline-link police-link" href="tel:10111"><span>Police emergency</span><strong>10111</strong><small>Immediate danger</small></a>
+          <div class="side-rule"></div>
+          <span class="eyebrow">Explore the platform</span>
+          <a class="resource-link" href="chatbot/" target="_blank" rel="noopener">Ask S.H.E Assistant <span aria-hidden="true">↗</span></a>
+          <a class="resource-link" href="hotspot.html" target="_blank" rel="noopener">Open hotspot map <span aria-hidden="true">↗</span></a>
+          <div class="limits-note"><strong>Not a crisis service</strong><p>Peer support is not counseling or emergency response. If a conversation feels uncomfortable, use Quick Exit or leave the room.</p></div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <aside class="support-drawer" id="support-drawer" aria-label="Support and platform tools" hidden>
+    <div class="drawer-head"><div><span class="eyebrow">Keep this tab open</span><h2>Support &amp; tools</h2></div><button id="support-close" type="button" aria-label="Close support and tools">×</button></div>
+    <p>If you need official information, open S.H.E Assistant in a new tab. This local preview will remain open.</p>
+    <a href="chatbot/" target="_blank" rel="noopener">S.H.E Assistant <span>↗</span></a>
+    <a href="hotspot.html" target="_blank" rel="noopener">GBV hotspot map <span>↗</span></a>
+    <a href="resources.html" target="_blank" rel="noopener">Support resources <span>↗</span></a>
+    <a class="drawer-hotline" href="tel:0800428428">Call 0800 428 428</a>
+  </aside>
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+
+  <dialog class="crisis-dialog" id="crisis-dialog" aria-labelledby="crisis-title">
+    <form method="dialog"><button class="dialog-close" aria-label="Close safety message">×</button><span class="eyebrow">Private safety check</span><h2 id="crisis-title">Are you safe right now?</h2><p>Your draft may mention immediate danger or thoughts of self-harm. This preview cannot contact responders or monitor the room. If you need urgent help, call a support line now.</p><div class="crisis-actions"><a href="tel:0800428428">GBV Command Centre · 0800 428 428</a><a href="tel:10111">Police emergency · 10111</a><a href="tel:112">Mobile emergency · 112</a></div><button class="continue-button" id="continue-message" type="button">Return to my draft</button></form>
+  </dialog>
+</body>
+</html>

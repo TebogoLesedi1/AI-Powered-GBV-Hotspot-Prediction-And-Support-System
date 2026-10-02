@@ -38,6 +38,18 @@ The project is intended for research, education, and prototype demonstration. It
 │   ├── 2025-2026_-_4th_Quarter_WEB.xlsx - Prov TOP30 stations.csv
 │   ├── GBV Dataset.csv
 │   └── gbv_data.xlsx - Sheet1.csv
+├── images/
+│   ├── Audrey.jpg
+│   ├── background.jpg
+│   ├── Donate.jpg
+│   ├── Irene2.jpg
+│   ├── kagiso.jpg
+│   ├── kgaogelo.jpg
+│   ├── Nomthunzi.jpg
+│   ├── siyamthanda.jpg
+│   ├── stopgbv.jpg
+│   ├── Tebogo.jpg
+│   └── Tumelo.jpg
 ├── python_notebooks/
 │   ├── classification.ipynb
 │   ├── emotional_support.ipynb
@@ -245,6 +257,10 @@ The following screenshots show the chatbot dashboard and the interactive hotspot
 ![Station hotspot map](screenshots/station%20hotspot%20map1.png)
 
 ![Filtered station hotspot map](screenshots/station_hotspot_map2.png)
+
+## Project image assets
+
+The archived image set has been extracted into the project-level [images](images) folder. This folder contains supporting visuals and team/profile images used in the project, including [images/background.jpg](images/background.jpg), [images/Donate.jpg](images/Donate.jpg), [images/stopgbv.jpg](images/stopgbv.jpg), and [images/Tumelo.jpg](images/Tumelo.jpg).
 
 ## Run locally
 

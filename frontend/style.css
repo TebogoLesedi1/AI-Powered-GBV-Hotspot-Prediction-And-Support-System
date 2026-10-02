@@ -48,12 +48,12 @@ body {
     width: calc(100% + 40px);
     height: calc(100% + 40px);
 
-    background:
-        radial-gradient(circle at 18% 18%, rgba(143, 211, 232, 0.26), transparent 34%),
-        linear-gradient(135deg, #17262d 0%, #3a2631 48%, #1e7795 100%);
-
+    background-image:
+        linear-gradient(rgba(18, 28, 32, 0.55), rgba(18, 28, 32, 0.72)),
+        url("../images/background.jpg");
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 
     filter: blur(5px);
 

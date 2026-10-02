@@ -8,16 +8,43 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="community-chat.css">
+  <link rel="stylesheet" href="app-accessibility.css">
+  <script src="script.js" defer></script>
   <script src="community-chat.js" defer></script>
 </head>
 <body>
+  <div class="background"></div>
+  <div class="overlay"></div>
   <div class="page-shell">
-    <header class="topbar">
-      <a class="brand" href="index.html"><span class="brand-mark">S</span><span>SafeSouth Africa</span></a>
-      <div class="session-status"><span class="status-dot"></span><span>Alias <strong id="user-alias">Creating…</strong></span><span class="local-label">Local preview</span></div>
+    <header class="header community-header">
+      <a class="logo" href="index.html">Safe<span>South Africa</span></a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a href="hotspot.html">GBV Hotspot Map</a>
+        <a href="resources.html">Resources</a>
+        <a href="community-chat.html" aria-current="page">Peer Support</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">S.H.E Assistant</a>
+      </nav>
+      <div class="session-status"><span class="status-dot"></span><span>Alias <strong id="user-alias">Not set</strong></span><span class="local-label">Local preview</span></div>
       <button class="quick-exit" id="quick-exit" type="button" title="Clear this session and leave this page">Quick Exit <span aria-hidden="true">×</span></button>
+      <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-controls="sideMenu" aria-expanded="false"><span></span><span></span><span></span></button>
     </header>
+
+    <aside class="side-menu" id="sideMenu" aria-label="Mobile navigation">
+      <div class="menu-header"><h2>Menu</h2><button class="close-menu" id="closeMenu" type="button" aria-label="Close menu">&times;</button></div>
+      <nav class="mobile-navigation" aria-label="Mobile navigation links">
+        <a href="index.html">Home</a>
+        <a href="hotspot.html">GBV Hotspot Map</a>
+        <a href="resources.html">Resources</a>
+        <a href="community-chat.html" aria-current="page">Peer Support</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">S.H.E Assistant</a>
+      </nav>
+    </aside>
+    <div class="menu-overlay" id="menuOverlay"></div>
 
     <main>
       <section class="intro-row" aria-labelledby="page-title">
@@ -46,10 +73,10 @@
           <header class="room-header"><div><p class="eyebrow">Local conversation preview</p><h2 id="room-title">General peer support</h2></div><span class="preview-badge"><i></i> Not live</span></header>
           <div class="conversation-notice"><span aria-hidden="true">↳</span><p>Sample posts are clearly marked. Your messages are visible only in this tab and disappear when you leave or refresh.</p></div>
           <div class="message-feed" id="message-feed" aria-live="polite" aria-label="Conversation messages"></div>
-          <div class="reaction-bar" aria-label="Quick responses"><span>Quick responses</span><button type="button" data-reaction="I hear you.">I hear you</button><button type="button" data-reaction="Thank you for sharing.">Thank you</button><button type="button" data-reaction="Sending care.">Sending care</button></div>
+          <div class="reaction-bar" aria-label="Quick responses"><span>Quick responses</span><button type="button" data-reaction="I hear you." disabled>I hear you</button><button type="button" data-reaction="Thank you for sharing." disabled>Thank you</button><button type="button" data-reaction="Sending care." disabled>Sending care</button></div>
           <form class="composer" id="message-form">
             <label for="message-input">Write a message as <span id="composer-alias">your alias</span></label>
-            <div class="composer-field"><textarea id="message-input" rows="2" maxlength="600" placeholder="Share only what feels safe. Avoid identifying details." aria-describedby="privacy-hint"></textarea><button class="send-button" type="submit" aria-label="Add message to local preview">Send <span aria-hidden="true">↑</span></button></div>
+            <div class="composer-field"><textarea id="message-input" rows="2" maxlength="600" placeholder="Create an alias before you can send a message." aria-describedby="privacy-hint" disabled></textarea><button class="send-button" type="submit" aria-label="Add message to local preview" disabled>Send <span aria-hidden="true">↑</span></button></div>
             <div class="composer-footer"><p id="privacy-hint">Automatic filters can miss personal details. Review before sending.</p><span id="character-count">0 / 600</span></div>
           </form>
           <div class="live-announcement" id="live-announcement" role="status" aria-live="polite"></div>
@@ -83,6 +110,17 @@
 
   <dialog class="crisis-dialog" id="crisis-dialog" aria-labelledby="crisis-title">
     <form method="dialog"><button class="dialog-close" aria-label="Close safety message">×</button><span class="eyebrow">Private safety check</span><h2 id="crisis-title">Are you safe right now?</h2><p>Your draft may mention immediate danger or thoughts of self-harm. This preview cannot contact responders or monitor the room. If you need urgent help, call a support line now.</p><div class="crisis-actions"><a href="tel:0800428428">GBV Command Centre · 0800 428 428</a><a href="tel:10111">Police emergency · 10111</a><a href="tel:112">Mobile emergency · 112</a></div><button class="continue-button" id="continue-message" type="button">Return to my draft</button></form>
+  </dialog>
+  <dialog class="alias-dialog" id="alias-dialog" aria-labelledby="alias-title">
+    <form id="alias-form">
+      <span class="eyebrow">Before you enter</span>
+      <h2 id="alias-title">Choose a temporary alias</h2>
+      <p>Use a pseudonym that does not identify you. Do not use your real name, phone number, social handle, or other personal details.</p>
+      <label for="alias-input">Your alias</label>
+      <div class="alias-field"><input id="alias-input" name="alias" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]{3,24}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. HopefulRiver_19" required><button id="generate-alias" type="button">Suggest alias</button></div>
+      <span class="alias-hint">3–24 characters: letters, numbers, _ or -</span>
+      <button class="alias-submit" type="submit">Confirm alias and enter</button>
+    </form>
   </dialog>
 </body>
 </html>

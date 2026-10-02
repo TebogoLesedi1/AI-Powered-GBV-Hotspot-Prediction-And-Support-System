@@ -19,12 +19,12 @@ This folder contains the static web frontend for the SafeSouth Africa GBV hotspo
 
 ## Main Features
 
-- Responsive navigation with a desktop menu and mobile hamburger menu.
+- Responsive navigation with a desktop menu and mobile hamburger menu, including a link to Peer Support.
 - Homepage links to the chatbot and GBV hotspot map.
 - Chatbot answers questions using the loaded GBV study report and provides safety-focused responses.
 - Hotspot map displays station locations, risk levels, province filters, year filters, station totals, and map markers.
 - Emergency support details are shown throughout the relevant pages.
-- Peer-support preview uses temporary aliases and in-memory messages, with local report/mute controls, limited text masking, and a quick exit. It is not a live room, moderation service, or confidential crisis service; hosting infrastructure may still receive connection metadata.
+- Peer-support preview requires users to create or confirm a temporary alias before composing messages. It uses in-memory messages, local report/mute controls, limited text masking, and a quick exit. It is not a live room, moderation service, or confidential crisis service; hosting infrastructure may still receive connection metadata.
 - The map uses a self-contained geographic SVG renderer and does not depend on third-party map tiles.
 
 ## Run Locally
@@ -71,4 +71,6 @@ The map is a research visualization of reported station totals. It is not an ind
 
 ## Peer-Support Preview Limits
 
-The community page is a frontend prototype only. It does not connect people to a shared room, transmit reports to moderators, or provide server-side message filtering, crisis response, or IP-log controls. Messages and mute choices exist only in the current page memory and are cleared when the page is refreshed or exited. Client-side personal-information masking is best-effort and can miss identifying details. A production service requires a reviewed backend, privacy-preserving operational logging, moderation and escalation coverage, retention limits, and security testing before it is appropriate for sensitive peer support.
+The community page is available at `/community-chat.html` when serving the `frontend/` directory, or `/frontend/community-chat.html` when serving the repository root. Users must choose a temporary alias or generate a suggestion and confirm it before composing a message.
+
+The page is a frontend prototype only. It does not connect people to a shared room, transmit reports to moderators, or provide server-side message filtering, crisis response, or IP-log controls. Messages and mute choices exist only in the current page memory and are cleared when the page is refreshed or exited. Client-side personal-information masking is best-effort and can miss identifying details. A production service requires a reviewed backend, privacy-preserving operational logging, moderation and escalation coverage, retention limits, and security testing before it is appropriate for sensitive peer support.

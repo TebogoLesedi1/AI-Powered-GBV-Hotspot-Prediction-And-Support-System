@@ -34,12 +34,15 @@ const feed = document.querySelector('#message-feed');
 const input = document.querySelector('#message-input');
 const aliasLabel = document.querySelector('#user-alias');
 const composerAlias = document.querySelector('#composer-alias');
+const aliasDialog = document.querySelector('#alias-dialog');
+const aliasInput = document.querySelector('#alias-input');
 const announcement = document.querySelector('#live-announcement');
 const crisisDialog = document.querySelector('#crisis-dialog');
 const localMessages = Object.fromEntries(Object.keys(roomContent).map(room => [room, []]));
 const blockedAliases = new Set();
+const ownAliases = new Set();
 let activeRoom = 'general';
-let alias = makeAlias();
+let alias = '';
 let announcementTimer;
 
 function makeAlias() {
@@ -105,7 +108,7 @@ function renderRoom() {
 
   messages.forEach(message => {
     const item = document.createElement('article');
-    const own = message.sender === alias;
+    const own = ownAliases.has(message.sender);
     item.className = `chat-message${own ? ' own-message' : ''}`;
     item.innerHTML = `<div class="message-meta"><strong>${escapeHtml(message.sender)}</strong>${message.sample ? '<span class="sample-tag">Sample</span>' : ''}<time>${escapeHtml(message.time)}</time></div><p>${escapeHtml(message.text)}</p><div class="message-actions">${own ? '<button type="button" data-action="remove">Remove</button>' : `<button type="button" data-action="report" data-sender="${escapeHtml(message.sender)}">Report</button><button type="button" data-action="block" data-sender="${escapeHtml(message.sender)}">Mute alias</button>`}</div>`;
     item.querySelector('[data-action="remove"]')?.addEventListener('click', () => {
@@ -127,27 +130,39 @@ function renderRoom() {
   feed.scrollTop = feed.scrollHeight;
 }
 
-function resetAlias() {
-  alias = makeAlias();
-  aliasLabel.textContent = alias;
-  composerAlias.textContent = alias;
-  localMessages[activeRoom] = localMessages[activeRoom].filter(message => message.sender !== alias);
-  renderRoom();
-}
-
 document.querySelectorAll('.room-option').forEach(button => button.addEventListener('click', () => {
   activeRoom = button.dataset.room;
   renderRoom();
 }));
 
-document.querySelector('#new-alias').addEventListener('click', () => {
-  const previousAlias = alias;
-  alias = makeAlias();
-  while (alias === previousAlias) alias = makeAlias();
+function openAliasDialog() {
+  aliasInput.value = alias;
+  aliasDialog.showModal();
+  aliasInput.focus();
+}
+
+document.querySelector('#new-alias').addEventListener('click', openAliasDialog);
+document.querySelector('#generate-alias').addEventListener('click', () => {
+  aliasInput.value = makeAlias();
+  aliasInput.focus();
+});
+document.querySelector('#alias-form').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!aliasInput.reportValidity()) return;
+  alias = aliasInput.value.trim();
+  ownAliases.add(alias);
   aliasLabel.textContent = alias;
   composerAlias.textContent = alias;
+  input.disabled = false;
+  document.querySelector('.send-button').disabled = false;
+  document.querySelectorAll('[data-reaction]').forEach(button => { button.disabled = false; });
+  aliasDialog.close();
+  input.placeholder = 'Share only what feels safe. Avoid identifying details.';
+  input.focus();
   renderRoom();
-  announce(`Your new temporary alias is ${alias}.`);
+});
+aliasDialog.addEventListener('cancel', event => {
+  if (!alias) event.preventDefault();
 });
 
 document.querySelectorAll('[data-reaction]').forEach(button => button.addEventListener('click', () => {
@@ -162,6 +177,10 @@ input.addEventListener('input', () => {
 
 document.querySelector('#message-form').addEventListener('submit', event => {
   event.preventDefault();
+  if (!alias) {
+    openAliasDialog();
+    return;
+  }
   const draft = input.value.trim();
   if (!draft) return;
   if (hasCrisisSignal(draft)) crisisDialog.showModal();
@@ -198,7 +217,9 @@ document.querySelector('#quick-exit').addEventListener('click', () => {
   Object.values(localMessages).forEach(messages => messages.splice(0));
   blockedAliases.clear();
   input.value = '';
+  alias = '';
+  ownAliases.clear();
   location.replace('index.html');
 });
 
-resetAlias();
+aliasDialog.showModal();

@@ -1,9 +1,10 @@
 # AI-Powered GBV Hotspot Prediction and Support System
 
-An exploratory research project for collecting, preprocessing, analyzing, and visualizing publicly available gender-based violence (GBV) data in South Africa. The project combines machine-learning notebooks with two browser interfaces:
+An exploratory research project for collecting, preprocessing, analyzing, and visualizing publicly available gender-based violence (GBV) data in South Africa. The project combines machine-learning notebooks with browser interfaces for:
 
 - An interactive station hotspot map for geographic exploration
 - A grounded GBV information and emotional-support chatbot
+- A topic-based peer-support interface prototype
 
 The project is intended for research, education, and prototype demonstration. It is not an emergency service, a clinical tool, a law-enforcement decision system, or an individual risk predictor.
 
@@ -161,6 +162,23 @@ The `chatbot/` interface combines:
 
 The assistant is a transparent browser-side baseline. It searches report fields and returns matching findings; it is not connected to a hosted large language model and should not be treated as professional advice.
 
+### 3. Community peer-support preview
+
+`frontend/community-chat.html` is a standalone, topic-based peer-support interface linked from the frontend navigation. Before posting, users must choose an alias or generate a suggestion and confirm it. The page includes sample room conversations, local message removal and mute/report controls, best-effort personal-detail masking, crisis signposting, and a Quick Exit.
+
+This is a static frontend preview, not a live multi-user chat. Messages are not transmitted or persisted, reports do not reach moderators, and client-side filtering is not a privacy guarantee. Hosting infrastructure may still receive connection metadata. Do not use the preview for urgent support.
+
+#### Peer-support implementation steps
+
+1. Created `frontend/community-chat.html` as a standalone page with focused support rooms, hotline contacts, platform links, and a clear peer-support disclaimer.
+2. Added `frontend/community-chat.css` and reused the frontend's shared background, brand colors, typography, navigation, and mobile menu styling.
+3. Added Peer Support links to the desktop and mobile navigation across the main frontend pages and to the standalone map tools.
+4. Added alias onboarding: users enter a pseudonym or request a generated suggestion, then confirm it before the composer and quick responses are enabled.
+5. Implemented in-memory sample conversations and local controls for removing messages, reporting posts, and muting aliases. These actions are only a preview and are not sent to a server or moderator.
+6. Added best-effort client-side masking for likely contact details, a crisis phrase alert with hotline links, and Quick Exit to clear this page's session state and return home.
+7. Documented the static-only architecture and privacy limitations; no WebSocket service, shared room, server-side moderation, crisis response, or IP-log controls are included.
+8. Validated JavaScript syntax, editor diagnostics, page and asset HTTP responses, and navigation links.
+
 ## Complete build steps and tools
 
 1. Prepare the report text/CSV and semicolon-delimited station CSV in the repository data folders.
@@ -282,6 +300,12 @@ Open the standalone map:
 http://localhost:4173/interactive_map/
 ```
 
+Open the peer-support preview:
+
+```text
+http://localhost:4173/frontend/community-chat.html
+```
+
 Stop the server with `Ctrl+C`.
 
 ## How the hotspot map was built
@@ -337,6 +361,16 @@ interactive_map/index.html
     ├── styles.css
     └── app.js
          └── embedded station records
+```
+
+### Community peer-support preview
+
+```text
+frontend/community-chat.html
+    ├── community-chat.css
+    ├── community-chat.js
+    ├── ../style.css
+    └── ../script.js
 ```
 
 ## Safety and ethics

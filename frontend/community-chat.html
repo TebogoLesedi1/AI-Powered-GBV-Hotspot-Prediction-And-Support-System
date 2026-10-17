@@ -117,11 +117,20 @@
     <form id="alias-form">
       <span class="eyebrow">Before you enter</span>
       <h2 id="alias-title">Choose a temporary alias</h2>
-      <p>Choose an alias. Don’t use your name or contact details.</p>
+      <p>Choose a made-up alias so you can participate without using your real identity.</p>
+      <div class="alias-safety" role="note">
+        <strong>Protect your privacy</strong>
+        <p>Never include your full name, phone number, address, workplace, school, or current location in your alias or messages. Avoid identifying combinations such as <code>JaneJoburg_01</code>.</p>
+        <p>This is an unmonitored preview, not counselling or a confidential service. Messages stay in this tab and are cleared when you leave.</p>
+        <span>If you need urgent help, call <a href="tel:0800428428">0800 428 428</a> or <a href="tel:10111">10111</a>.</span>
+      </div>
       <label for="alias-input">Alias</label>
-      <div class="alias-field"><input id="alias-input" name="alias" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]{3,24}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. HopefulRiver_19" required><button id="generate-alias" type="button">Suggest alias</button></div>
-      <span class="alias-hint">3–24 letters, numbers, _ or -</span>
-      <button class="alias-submit" type="submit">Join</button>
+      <div class="alias-field"><input id="alias-input" name="alias" type="text" minlength="3" maxlength="24" pattern="[A-Za-z0-9_-]{3,24}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="e.g. HopefulRiver_19" aria-describedby="alias-hint" required><button id="generate-alias" type="button">Suggest alias</button></div>
+      <span class="alias-hint" id="alias-hint">3–24 characters: letters, numbers, _ or - only.</span>
+      <div class="alias-actions">
+        <button class="alias-exit" id="alias-exit" type="button" aria-label="Exit peer support" title="Exit peer support">×</button>
+        <button class="alias-submit" type="submit">Join</button>
+      </div>
     </form>
   </dialog>
 </body>

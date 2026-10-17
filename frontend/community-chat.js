@@ -195,6 +195,16 @@ document.querySelector('#message-form').addEventListener('submit', event => {
 
 document.querySelector('#continue-message').addEventListener('click', () => crisisDialog.close());
 
+function exitPeerSupport() {
+  Object.values(localMessages).forEach(messages => messages.splice(0));
+  blockedAliases.clear();
+  input.value = '';
+  alias = '';
+  ownAliases.clear();
+  const homePage = new URL('index.html', window.location.href);
+  window.location.replace(homePage.href);
+}
+
 const supportDrawer = document.querySelector('#support-drawer');
 const drawerBackdrop = document.querySelector('#drawer-backdrop');
 const supportToggle = document.querySelector('#support-toggle');
@@ -213,13 +223,7 @@ document.querySelector('#support-close').addEventListener('click', closeDrawer);
 drawerBackdrop.addEventListener('click', closeDrawer);
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDrawer(); });
 
-document.querySelector('#quick-exit').addEventListener('click', () => {
-  Object.values(localMessages).forEach(messages => messages.splice(0));
-  blockedAliases.clear();
-  input.value = '';
-  alias = '';
-  ownAliases.clear();
-  location.replace('index.html');
-});
+document.querySelector('#quick-exit').addEventListener('click', exitPeerSupport);
+document.querySelector('#alias-exit').addEventListener('click', exitPeerSupport);
 
 aliasDialog.showModal();

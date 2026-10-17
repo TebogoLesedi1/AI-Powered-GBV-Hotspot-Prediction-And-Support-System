@@ -1,25 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const loginBox = document.getElementById("login-box");
-  const signupBox = document.getElementById("signup-box");
+  const signupForm = document.getElementById("signup-form");
+  const message = document.getElementById("signup-message");
 
-  document.addEventListener("click", (e) => {
-    if (e.target.id === "go-to-signup") {
-      e.preventDefault();
-      loginBox.classList.add("hidden");
-      signupBox.classList.remove("hidden");
-    }
-    if (e.target.id === "go-to-login") {
-      e.preventDefault();
-      signupBox.classList.add("hidden");
-      loginBox.classList.remove("hidden");
-    }
-  });
+  if (!signupForm || !message) return;
 
-  // stop page from reloading
-  document.querySelectorAll("form").forEach((form) => {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      alert("Form works! Now you can add backend logic");
-    });
+  signupForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    message.textContent =
+      "The registration form is ready to connect to an account service.";
   });
 });

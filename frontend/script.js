@@ -3,6 +3,31 @@
 // =========================================
 
 document.addEventListener("DOMContentLoaded", function () {
+    const signInDialog = document.getElementById("signin-dialog");
+    const openSignIn = document.getElementById("openSignIn");
+    const closeSignIn = document.getElementById("closeSignIn");
+    const signInForm = document.getElementById("signin-form");
+
+    if (signInDialog && openSignIn && closeSignIn) {
+        openSignIn.addEventListener("click", function () {
+            signInDialog.showModal();
+        });
+
+        closeSignIn.addEventListener("click", function () {
+            signInDialog.close();
+        });
+
+        signInDialog.addEventListener("click", function (event) {
+            if (event.target === signInDialog) signInDialog.close();
+        });
+    }
+
+    if (signInForm) {
+        signInForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            alert("Sign-in is ready to connect to an authentication service.");
+        });
+    }
 
     // =========================================
     // GET MENU ELEMENTS
@@ -83,4 +108,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-

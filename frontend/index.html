@@ -45,6 +45,9 @@
 
         </nav>
 
+        <button class="sign-in-trigger" id="openSignIn" type="button">
+            Sign in
+        </button>
 
         <!-- Hamburger -->
         <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-controls="sideMenu" aria-expanded="false">
@@ -229,7 +232,22 @@
         <p class="safety-message"><strong>Safety note:</strong> Hotspot scores are indicators of reported patterns, not guaranteed risk levels or predictions about an individual. Use the map for research and planning, and contact emergency services when immediate help is needed.</p>
     </section>
 
-
+    <dialog class="auth-dialog" id="signin-dialog" aria-labelledby="signin-title">
+        <div class="auth-dialog-header">
+            <a class="auth-brand" href="index.html">Safe<span>South Africa</span></a>
+            <button class="auth-close" id="closeSignIn" type="button" aria-label="Close sign in">&times;</button>
+        </div>
+        <h2 id="signin-title">Welcome back</h2>
+        <p class="auth-intro">Sign in to continue to SafeSouth Africa.</p>
+        <form class="signin-form" id="signin-form">
+            <label for="signin-email">Email address</label>
+            <input id="signin-email" name="email" type="email" autocomplete="email" required>
+            <label for="signin-password">Password</label>
+            <input id="signin-password" name="password" type="password" autocomplete="current-password" required>
+            <button class="auth-submit" type="submit">Sign in</button>
+        </form>
+        <p class="auth-switch">New to SafeSouth Africa? <a href="../signup.html">Create an account</a></p>
+    </dialog>
 
     <script src="script.js"></script>
 

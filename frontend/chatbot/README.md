@@ -20,49 +20,27 @@ The assistant provides a lightweight, browser-based way to search findings from 
 
 The assistant uses local report data and a transparent keyword-scoring baseline. It is not connected to a hosted large language model or a clinical decision system.
 
-### Embedded station-risk view
-
-The right-hand panel includes a research visualization of station records from the GBV dataset. It provides:
-
-- Risk-colored station markers
-- Province filtering
-- Year filtering for `2022` through `2026` and the combined `TOTAL`
-- Clickable marker details
-- Visible station and case totals
-- A short ranked list of stations for the active filter
-
-The full-screen version is available in [`interactive_map/`](../interactive_map/). Its complete documentation is in [`interactive_map/README.md`](../interactive_map/README.md).
+The station-risk dashboard is not part of the assistant page. Use the standalone map at [`interactive_map/`](../interactive_map/) to explore GBV station data; its documentation is in [`interactive_map/README.md`](../interactive_map/README.md).
 
 ## Folder contents
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Dashboard layout, assistant interface, safety panel, and embedded station view |
+| `index.html` | Assistant interface and emergency contacts |
 | `styles.css` | Dashboard typography, layout, responsive behavior, and component styling |
-| `app.js` | Report loading, CSV parsing, question answering, support signals, station filtering, and map rendering |
+| `app.js` | Report loading, question answering, and support signals |
 | `README.md` | Documentation for this interface |
 
 ## Data connections
 
-The application loads both sources relative to this folder:
+The assistant loads the study report and conversational examples relative to this folder:
 
 ```text
 ../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt
-../extracted_datasets/GBV Dataset.csv
+../../text_data.txt
 ```
 
-The report file is parsed as comma-separated data and is expected to contain fields such as `section`, `indicator`, `value`, `value_type`, and `notes`. The station file is semicolon-delimited and contains:
-
-| Field | Description |
-| --- | --- |
-| `Province` | Province containing the station |
-| `Station` | Police station name |
-| `Latitude` / `Longitude` | Station coordinates |
-| `Risk` | Source risk label, currently `High` or `Med-high` |
-| `2022`–`2026` | Reported yearly case totals |
-| `TOTAL` | Combined cases for the available years |
-
-Station summary rows without coordinates are excluded from plotted markers. The page uses the station dataset as provided; it does not recalculate the source risk labels.
+The report file is parsed as comma-separated data and is expected to contain fields such as `section`, `indicator`, `value`, `value_type`, and `notes`. Conversational examples support simple follow-up exchanges.
 
 ## Run locally
 
@@ -90,38 +68,32 @@ Stop the server with `Ctrl+C` in the terminal.
 
 ## How the assistant works
 
-1. `loadReport()` fetches the report and station files.
+1. `loadReport()` fetches the report and conversational examples.
 2. The report CSV is parsed into `state.records`.
-3. The station data is parsed into `state.stations`.
-4. `predictSupportSignals()` scores simple intent and emotion keywords.
-5. `answerFor()` searches report fields for words from the question and returns the highest-scoring matches.
-6. Emergency and support-related inputs receive dedicated safety responses before report lookup.
-7. `renderStations()` filters station records and renders the embedded map, markers, popup details, totals, and ranked list.
-
-8. The assistant loads `../../text_data.txt` for conversational examples and keeps the last eight user turns in memory for greetings, thanks, and follow-up questions such as `tell me more`; refreshing the page clears this context.
+3. `predictSupportSignals()` scores simple intent and emotion keywords.
+4. `answerFor()` searches report fields for words from the question and returns the highest-scoring matches.
+5. Emergency and support-related inputs receive dedicated safety responses before report lookup.
+6. The assistant loads `../../text_data.txt` for conversational examples and keeps the last eight user turns in memory for greetings, thanks, and follow-up questions such as `tell me more`; refreshing the page clears this context.
 
 The assistant does not save conversations. All processing in `app.js` occurs in the browser.
 
 ## Step-by-step build and tools
 
-1. Create the dashboard structure in `index.html` with the conversation panel, quick prompts, emergency contacts, and station-risk panel.
-2. Load the report and station CSV with the browser Fetch API from the relative paths in **Data connections**.
-3. Parse the report with the browser's JavaScript string/array APIs and parse the semicolon-delimited station file into objects.
+1. Create the assistant structure in `index.html` with the conversation panel, quick prompts, and emergency contacts.
+2. Load the report and conversation examples with the browser Fetch API from the relative paths in **Data connections**.
+3. Parse the report with the browser's JavaScript string/array APIs.
 4. Normalize each question, score keyword-based intents and emotion signals, and search report fields for matching evidence.
 5. Handle emergency language before report lookup and return South African support contacts without sending data to a server.
 6. Store a short in-memory conversation context so greetings, thanks, and follow-up questions receive natural responses.
 7. Render the user question, assistant reply, confidence metadata, and escaped report evidence into the message list.
-8. Render the station dashboard with Leaflet markers in this legacy embedded chatbot view; use the standalone `interactive_map/` page for the current self-contained dynamic map.
-9. Serve the folder with Python's static HTTP server and test loading, questions, emergency language, follow-ups, filters, and map controls.
+8. Serve the folder with Python's static HTTP server and test loading, questions, emergency language, and follow-ups.
 
 ### Tools and APIs
 
 | Tool/API | Use |
 | --- | --- |
-| Browser Fetch API | Loads the local report and station CSV files. |
-| JavaScript DOM API | Handles form submission, quick prompts, message rendering, filters, and in-memory conversation state. |
-| Leaflet `1.9.4` | Renders the legacy station map embedded in the chatbot dashboard. |
-| OpenStreetMap tile service | Provides the legacy embedded map background when available; the standalone map does not depend on it. |
+| Browser Fetch API | Loads the local report and conversation examples. |
+| JavaScript DOM API | Handles form submission, quick prompts, message rendering, and in-memory conversation state. |
 | Google Fonts CSS API | Loads Manrope and DM Mono typography. |
 | Python `http.server` | Serves local files so browser Fetch requests work. |
 

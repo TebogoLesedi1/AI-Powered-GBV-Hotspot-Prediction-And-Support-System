@@ -1,8 +1,10 @@
 const REPORT_URL = '../data/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt';
-const STATION_URL = '../data/GBV Dataset.csv';
 const CONVERSATION_DATA_URL = '../../text_data.txt';
-const state = { records: [], stations: [], conversationExamples: [], ready: false, map: null, markers: [], visibleStations: [], conversation: [] };
+const state = { records: [], conversationExamples: [], ready: false, conversation: [] };
 const messages = document.querySelector('#messages');
+const chatPanel = document.querySelector('.chat-panel');
+const quickPrompts = document.querySelector('#quick-prompts');
+const welcomeMessage = messages.querySelector('.welcome-message');
 const question = document.querySelector('#question');
 const sendButton = document.querySelector('.send-button');
 const chatStatus = document.querySelector('#chat-status');
@@ -47,12 +49,6 @@ function parseCSV(text) {
   return rows.map(values => Object.fromEntries(headers.map((header, index) => [header, values[index] || ''])));
 }
 
-function parseDelimited(text, delimiter = ';') {
-  const rows = text.trim().split(/\r?\n/).map(line => line.split(delimiter));
-  const headers = rows.shift();
-  return rows.map(values => Object.fromEntries(headers.map((header, index) => [header.trim(), (values[index] || '').trim()])));
-}
-
 function clean(value) { return value.replaceAll('_', ' ').toLowerCase(); }
 function distance(a, b) { const matrix = Array.from({ length: b.length + 1 }, (_, row) => [row]); for (let column = 1; column <= a.length; column += 1) matrix[0][column] = column; for (let row = 1; row <= b.length; row += 1) for (let column = 1; column <= a.length; column += 1) matrix[row][column] = b[row - 1] === a[column - 1] ? matrix[row - 1][column - 1] : Math.min(matrix[row - 1][column] + 1, matrix[row][column - 1] + 1, matrix[row - 1][column - 1] + 1); return matrix[b.length][a.length]; }
 function suggestCorrection(input) { const words = input.split(/(\s+)/); const corrections = []; const corrected = words.map(part => { const word = part.toLowerCase().replace(/[^a-z]/g, ''); if (word.length < 3) return part; const match = correctionWords.map(candidate => ({ candidate, score: distance(word, candidate) })).sort((a, b) => a.score - b.score)[0]; if (match && match.score <= Math.max(1, Math.floor(word.length / 3)) && match.candidate !== word) { corrections.push([word, match.candidate]); return part.replace(new RegExp(word, 'i'), match.candidate); } return part; }).join(''); return { corrected, corrections }; }
@@ -92,7 +88,7 @@ function answerFor(input) {
       return { text: `${example.bot_response}${followUp}`, matches: [], intent: formatIndicator(example.intent_category), tone: 'Conversational', confidence: Math.min(.96, .7 + exampleMatch.score * .06), followUp: example.follow_up_prompt, action: example.action_flag };
     }
   if (isGreeting(input)) return { text: 'Hello. I am here with you. I can explain the study, talk through a pattern in plain language, or help you find support. What would you like to start with?', matches: [], intent: 'Conversation', tone: 'Welcoming', confidence: .98 };
-  if (isGeneralConversation(input)) return { text: 'I can help in a few ways: explain the GBV study in plain language, look at hotspot patterns, or guide you to safe support resources. What would be most useful to you right now?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .97 };
+  if (isGeneralConversation(input)) return { text: 'I can explain the GBV study in plain language or guide you to support resources. What would be most useful to you right now?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .97 };
   if (isThanks(input)) return { text: 'You are welcome. I can simplify that finding, explain the wider context, or help you find support. What would help most next?', matches: [], intent: 'Conversation', tone: 'Supportive', confidence: .96 };
   if (followUp && previous?.result?.text) {
     const previousSummary = previous.result.text.replace(/\s+Would you like.*$/i, '').replace(/\s+I found .*? evidence set\.?$/i, '');
@@ -118,49 +114,43 @@ function answerFor(input) {
 }
 
 function addMessage(text, type, result) {
+  if (type === 'user' && !chatPanel.classList.contains('has-conversation')) {
+    welcomeMessage.remove();
+    quickPrompts.hidden = true;
+    chatPanel.classList.add('has-conversation');
+  }
   const article = document.createElement('article'); article.className = `message ${type}-message`;
   const evidenceItems = result?.matches?.length ? result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('') : '';
   const sourceHTML = result?.matches?.length ? `<details class="evidence-accordion"><summary>View ${result.matches.length} report finding${result.matches.length > 1 ? 's' : ''}</summary><div class="evidence-list">${evidenceItems}</div></details>` : '';
   const signalHTML = result?.intent ? `<div class="signal-row"><span>Intent: <b>${result.intent}</b></span><span>Tone: <b>${result.tone}</b></span>${result.confidence ? `<span>Confidence: <b>${Math.round(result.confidence * 100)}%</b></span>` : ''}</div>` : '';
-  article.innerHTML = `<div class="avatar">${type === 'user' ? 'Y' : 'S'}</div><div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'} <time>just now</time></span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
+  article.innerHTML = `<div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'}</span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
   messages.append(article); messages.scrollTop = messages.scrollHeight; if (type === 'assistant') latestAnswer.text = text;
 }
 
 async function loadReport() {
-  try { const [reportResponse, stationResponse, conversationResponse] = await Promise.all([fetch(REPORT_URL), fetch(STATION_URL), fetch(CONVERSATION_DATA_URL)]); if (!reportResponse.ok || !stationResponse.ok || !conversationResponse.ok) throw new Error('Data unavailable'); state.records = parseCSV(await reportResponse.text()); state.stations = parseDelimited(await stationResponse.text()); state.conversationExamples = parseCSV(await conversationResponse.text()); state.ready = true; question.disabled = false; sendButton.disabled = false; messages.setAttribute('aria-busy', 'false'); try { renderStations(); } catch (error) { document.querySelector('#station-list').innerHTML = '<span class="loading-copy">Map data is unavailable, but the assistant is ready.</span>'; } chatStatus.textContent = 'Assistant ready.'; chatStatus.className = 'app-status is-ready'; } catch (error) { state.records = []; state.stations = []; state.conversationExamples = []; chatStatus.textContent = 'The assistant is offline. Check your connection and reload to try again.'; chatStatus.className = 'app-status is-error'; messages.setAttribute('aria-busy', 'false'); }
-  document.querySelector('#record-count').textContent = state.ready ? 'Report online' : 'Report unavailable';
-  document.querySelector('#model-status').textContent = 'NLP baseline online';
-  document.querySelector('#row-count').textContent = state.records.length || '—';
-  document.querySelector('#section-count').textContent = new Set(state.records.map(item => item.section)).size || '—';
-}
-
-function renderStations() {
-  const filter = document.querySelector('#province-filter');
-  const yearFilter = document.querySelector('#year-filter');
-  if (!state.map) {
-    state.map = L.map('station-map', { zoomControl: false, scrollWheelZoom: false }).setView([-29.2, 24.7], 4.7);
-    L.control.zoom({ position: 'bottomright' }).addTo(state.map);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(state.map);
+  try {
+    const [reportResponse, conversationResponse] = await Promise.all([
+      fetch(REPORT_URL),
+      fetch(CONVERSATION_DATA_URL),
+    ]);
+    if (!reportResponse.ok || !conversationResponse.ok) {
+      throw new Error('Assistant data unavailable');
+    }
+    state.records = parseCSV(await reportResponse.text());
+    state.conversationExamples = parseCSV(await conversationResponse.text());
+    state.ready = true;
+    question.disabled = false;
+    sendButton.disabled = false;
+    messages.setAttribute('aria-busy', 'false');
+    chatStatus.textContent = 'Assistant ready.';
+    chatStatus.className = 'app-status is-ready';
+  } catch (error) {
+    state.records = [];
+    state.conversationExamples = [];
+    chatStatus.textContent = 'The assistant is offline. Check your connection and reload to try again.';
+    chatStatus.className = 'app-status is-error';
+    messages.setAttribute('aria-busy', 'false');
   }
-  const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
-  filter.innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option value="${province}">${province}</option>`).join('');
-  const draw = () => {
-    const selected = filter.value;
-    const year = yearFilter.value;
-    const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (selected === 'all' || station.Province === selected)).sort((a, b) => Number(b[year] || 0) - Number(a[year] || 0));
-    state.visibleStations = stations;
-    state.markers.forEach(marker => marker.remove()); state.markers = [];
-    stations.forEach(station => {
-      const riskColor = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
-      const marker = L.circleMarker([Number(station.Latitude.replace('=', '')), Number(station.Longitude.replace('=', ''))], { radius: 8, color: '#fff', weight: 2, fillColor: riskColor, fillOpacity: .92 }).addTo(state.map);
-      marker.bindPopup(`<strong>${escapeHTML(station.Station)}</strong><br>${escapeHTML(station.Province)} · ${escapeHTML(station.Risk)}<br><b>${Number(station[year] || 0).toLocaleString()}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`); state.markers.push(marker);
-    });
-    document.querySelector('#station-list').innerHTML = stations.slice(0, 5).map(station => `<div class="station-row"><span class="legend-dot ${station.Risk === 'High' ? 'high' : 'medium'}"></span><span class="station-name">${escapeHTML(station.Station)}<small>${escapeHTML(station.Province)}</small></span><b>${Number(station[year] || 0).toLocaleString()}</b></div>`).join('') || '<span class="loading-copy">No station records for this province.</span>';
-    document.querySelector('#visible-count').textContent = stations.length;
-    document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
-    if (stations.length) state.map.fitBounds(L.latLngBounds(state.markers.map(marker => marker.getLatLng())), { padding: [22, 22], maxZoom: 8 });
-  };
-  filter.addEventListener('change', draw); yearFilter.addEventListener('change', draw); document.querySelector('#map-reset').addEventListener('click', draw); draw(); window.setTimeout(() => state.map.invalidateSize(), 0);
 }
 
 function submit(text) { if (!text.trim() || !state.ready) return; const original = text.trim(); const suggestion = suggestCorrection(original); const cleanText = suggestion.corrected.trim(); if (suggestion.corrections.length) { suggestionPopover.textContent = `I understood “${cleanText}” from “${original}”.`; suggestionPopover.hidden = false; window.setTimeout(() => { suggestionPopover.hidden = true; }, 5000); } addMessage(cleanText, 'user'); const result = answerFor(cleanText); state.conversation.push({ input: cleanText, result }); state.conversation = state.conversation.slice(-8); window.setTimeout(() => { addMessage(result.text, 'assistant', result); if (isImmediateHelpRequest(cleanText) || result.intent === 'Immediate support') document.querySelector('#emergency-dialog').showModal(); }, 250); question.value = ''; question.style.height = 'auto'; }
@@ -182,7 +172,15 @@ if (debugToggle) {
   });
 }
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));
-document.querySelector('#clear-chat').addEventListener('click', () => { state.conversation = []; messages.innerHTML = ''; addMessage('Conversation cleared. What would you like to explore?', 'assistant'); });
+document.querySelector('#clear-chat').addEventListener('click', () => {
+  state.conversation = [];
+  messages.replaceChildren(welcomeMessage.cloneNode(true));
+  chatPanel.classList.remove('has-conversation');
+  quickPrompts.hidden = false;
+  question.value = '';
+  latestAnswer.text = '';
+  chatStatus.textContent = state.ready ? 'Assistant ready.' : 'Loading…';
+});
 document.querySelector('#emergency-alert').addEventListener('click', () => document.querySelector('#emergency-dialog').showModal());
 async function translateAnswer(text) { const target = languageCodes[languageSelect.value]; if (!text || target === 'en') return text; const fallback = safetyPhrases[languageSelect.value] && /immediate danger|emergency|police|10111|112/i.test(text) ? `${safetyPhrases[languageSelect.value]} ${text}` : text; try { const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 480))}&langpair=en|${target}`); const data = await response.json(); return data.responseData?.translatedText || fallback; } catch (error) { return fallback; } }
 async function prepareSpeech() { if (!latestAnswer.text) return; speechDialog.showModal(); speechText.textContent = latestAnswer.text; translationStatus.textContent = languageSelect.value === 'en-ZA' ? 'English response' : 'Translating with MyMemory free translation…'; const translated = await translateAnswer(latestAnswer.text); speechText.textContent = translated; translationStatus.textContent = languageSelect.value === 'en-ZA' ? 'English response' : `${languageSelect.options[languageSelect.selectedIndex].text} response`; }

@@ -15,6 +15,7 @@ This folder contains the static web frontend for the SafeSouth Africa GBV hotspo
 - `data/`: Report and station data loaded by the embedded tools.
 - `style.css`, `contact.css`, `about.css`, and `resources.css`: Page styling.
 - `script.js`: Shared responsive navigation menu behavior.
+- `auth.js`, `firebase-config.js`: Optional Firebase email/password accounts; all feature pages remain public.
 - `app-accessibility.css`: Accessibility states and focus styling.
 
 ## Main Features
@@ -61,13 +62,25 @@ Useful pages:
 6. Keep the renderer local so the map remains visual when external tile servers are blocked.
 7. Serve the frontend over HTTP and test `hotspot.html` plus the standalone `/interactive_map/` page.
 
-The map uses browser SVG and DOM APIs for its geographic visualization and the browser Fetch API for the local CSV. Google Fonts supplies the interface fonts. No tile server, API key, backend, build tool, or live crime-data API is used; the map is driven by the repository dataset and embedded station snapshot.
+The map uses browser SVG and DOM APIs for its geographic visualization and the browser Fetch API for the local CSV. Google Fonts supplies the interface fonts. The map uses no tile server or live crime-data API; it is driven by the repository dataset and embedded station snapshot.
 
 ## Data Notes
 
 The chatbot loads the report from `data/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt` and station data from `data/GBV Dataset.csv`. Keep these relative paths intact when moving files or deploying the frontend.
 
 The map is a research visualization of reported station totals. It is not an individual risk prediction and should not be used as a substitute for emergency or professional support.
+
+## Optional Accounts
+
+All pages and features remain public; signing in is optional. Firebase Authentication stores the account email and full name, manages the password, and keeps the sign-in session in the browser so it can be restored on later visits.
+
+1. Create a Firebase project and add a Web app.
+2. Enable **Email/Password** under **Authentication → Sign-in method**.
+3. Copy the web app's `apiKey`, `authDomain`, `projectId`, and `appId` values into `firebase-config.js`.
+4. Add the development and production site domains to **Authentication → Settings → Authorized domains**.
+5. Serve the repository over HTTP, open the homepage, and create an account.
+
+An account retains its email and full name in Firebase Authentication, and the browser keeps the sign-in session across visits. The site does not save peer-support messages, chatbot conversations, or other feature activity to an account; peer-support messages remain in the current tab's memory. Do not enter sensitive personal information into these previews.
 
 ## Peer-Support Preview Limits
 

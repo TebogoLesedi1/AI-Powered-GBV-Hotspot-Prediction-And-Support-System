@@ -936,6 +936,17 @@ h6 {
     background: #a2dfd1;
 }
 
+.auth-message {
+    min-height: 1.4em;
+    color: #a2dfd1;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.auth-message.is-error {
+    color: #ffb4a8;
+}
+
 .auth-switch {
     margin-top: 22px;
     color: #c5d9d8;

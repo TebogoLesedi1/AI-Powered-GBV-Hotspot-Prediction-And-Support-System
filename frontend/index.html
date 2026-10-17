@@ -11,6 +11,10 @@
     <title>SafeSouth Africa | GBV Hotspot Prediction</title>
 
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+    <script src="firebase-config.js" defer></script>
+    <script src="auth.js" defer></script>
 </head>
 
 <body>
@@ -239,14 +243,15 @@
         </div>
         <h2 id="signin-title">Welcome back</h2>
         <p class="auth-intro">Sign in to continue to SafeSouth Africa.</p>
-        <form class="signin-form" id="signin-form">
+        <form class="signin-form" id="signin-form" method="post">
             <label for="signin-email">Email address</label>
             <input id="signin-email" name="email" type="email" autocomplete="email" required>
             <label for="signin-password">Password</label>
             <input id="signin-password" name="password" type="password" autocomplete="current-password" required>
             <button class="auth-submit" type="submit">Sign in</button>
+            <p class="auth-message" id="signin-message" role="status" aria-live="polite"></p>
         </form>
-        <p class="auth-switch">New to SafeSouth Africa? <a href="../signup.html">Create an account</a></p>
+        <p class="auth-switch">New to SafeSouth Africa? <a href="signup.html">Create an account</a></p>
     </dialog>
 
     <script src="script.js"></script>

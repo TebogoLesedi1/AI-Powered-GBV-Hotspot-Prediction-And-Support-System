@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#163d44" />
+    <title>Create an account | SafeSouth Africa</title>
+    <link rel="stylesheet" href="../form.css" />
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+    <script src="firebase-config.js" defer></script>
+    <script src="auth.js" defer></script>
+  </head>
+  <body>
+    <main class="page-bg">
+      <section class="signup-card" aria-labelledby="signup-title">
+        <a class="brand" href="index.html">Safe<span>South Africa</span></a>
+        <p class="eyebrow">JOIN THE COMMUNITY</p>
+        <h1 id="signup-title">Create your account</h1>
+        <p class="intro">Sign up to continue to SafeSouth Africa.</p>
+
+        <form id="signup-form" method="post">
+          <div class="input-group">
+            <label for="signup-name">Full name</label>
+            <input
+              type="text"
+              id="signup-name"
+              name="name"
+              placeholder="Enter your full name"
+              autocomplete="name"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="signup-email">Email address</label>
+            <input
+              type="email"
+              id="signup-email"
+              name="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="signup-password">Password</label>
+            <input
+              type="password"
+              id="signup-password"
+              name="password"
+              placeholder="Create a password"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+          <button type="submit" class="auth-btn">Create account</button>
+          <p class="form-message" id="signup-message" role="status" aria-live="polite"></p>
+        </form>
+
+        <p class="switch-text">
+          Already have an account?
+          <a href="index.html?signin=1">Return to sign in</a>
+        </p>
+      </section>
+    </main>
+    <script src="../form.js"></script>
+  </body>
+</html>

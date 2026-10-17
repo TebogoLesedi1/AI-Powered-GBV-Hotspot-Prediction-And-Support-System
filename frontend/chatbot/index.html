@@ -3,47 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A grounded GBV information assistant for the South African National Gender-Based Violence Study.">
+  <meta name="description" content="A GBV information assistant based on the South African National Gender-Based Violence Study.">
   <title>S.H.E Assistant | SafeSouth Africa</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3qfK6Y0o5eVJ8j1v+M6H4b5hY9zU=" crossorigin="">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="../app-accessibility.css">
-  <style>
-    .risk-heading{display:flex;align-items:center;justify-content:space-between;margin-top:20px;font-size:13px}.prototype-badge{font:8px 'DM Mono',monospace;color:#f87171;border:1px solid rgba(248,113,113,.5);padding:4px 5px;border-radius:8px}.risk-copy{font-size:10px;line-height:1.5;color:#94a3b8;margin:9px 0 15px}.select-label{font:9px 'DM Mono',monospace;text-transform:uppercase;color:#94a3b8;display:block;margin-bottom:5px}.insight-panel select{width:100%;border:1px solid rgba(148,163,184,.25);background:rgba(15,23,42,.9);padding:8px;font-size:11px;color:#f8fafc;border-radius:8px}.station-list{margin-top:12px;border-top:1px solid rgba(148,163,184,.2)}.station-row{display:flex;align-items:center;gap:7px;padding:9px 0;border-bottom:1px solid rgba(148,163,184,.2);font-size:10px}.station-row b{margin-left:auto;font:10px 'DM Mono',monospace}.station-name{line-height:1.2}.station-name small{display:block;color:#94a3b8;font-size:8px;margin-top:3px}.legend-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex:none}.legend-dot.high{background:#f87171}.legend-dot.medium{background:#38bdf8}.risk-legend{display:flex;gap:14px;color:#94a3b8;font:9px 'DM Mono',monospace;margin-top:10px}.risk-legend .legend-dot{margin-right:4px}.loading-copy{display:block;color:#94a3b8;font-size:10px;padding:12px 0}.signal-row{display:flex;gap:12px;color:#94a3b8;font:9px 'DM Mono',monospace;border-top:1px solid rgba(148,163,184,.2);padding-top:9px;margin-top:13px}.signal-row b{color:#f8fafc;font-weight:500}
-  </style>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="../index.html" aria-label="Return to SafeSouth Africa home"><span class="brand-mark">S</span><span>S.H.E<span class="brand-slash">/</span>Assistant</span></a>
-      <div class="topbar-meta"><span class="status-dot"></span><span>Research assistant</span><span class="topbar-divider"></span><span id="record-count">Loading report</span><span class="topbar-divider"></span><span id="model-status">NLP model loading</span></div>
+      <div class="topbar-meta"><span class="status-dot"></span><span>Study-informed support</span></div>
       <div class="topbar-actions">
-        <button class="debug-toggle" id="debug-toggle" type="button" aria-pressed="false">Debug</button>
-        <button class="icon-button" id="clear-chat" type="button" title="Start a new conversation" aria-label="Start a new conversation">↗</button>
-      </div>
-    </header>
-
-    <div class="study-banner" aria-label="Study context">
-      <div class="study-banner-copy">
-        <span class="eyebrow">Study context</span>
-        <h1>First South African National GBV Study</h1>
-      </div>
-      <div class="banner-actions">
-        <a class="emergency-pill" href="tel:10111">📞 Call 10111</a>
-        <a class="emergency-pill" href="tel:0800428428">📞 Call 0800 428 428</a>
-      </div>
-    </div>
-
-    <main class="workspace">
-      <section class="chat-panel" aria-label="Chat with the report assistant">
-        <div class="chat-header"><div><span class="eyebrow">S.H.E Assistant · Conversation</span><h2>What would you like to understand?</h2></div><span class="grounded-badge">● Grounded in report</span></div>
-        <div class="answer-key" aria-label="Answer types"><span><b class="key-general"></b>General information</span><span><b class="key-data"></b>Data-based answers</span><span><b class="key-emergency"></b>Emergency assistance</span></div>
-
+        <a class="header-hotline" href="tel:0800428428" aria-label="Call the GBV Command Centre at 0800 428 428">GBV help <strong>0800 428 428</strong></a>
+        <button class="header-emergency" id="emergency-alert" type="button">Emergency <strong>10111</strong></button>
         <div class="chat-tools" aria-label="Chat tools">
-          <button class="options-toggle" id="options-toggle" type="button" aria-expanded="false" aria-controls="chat-options">⚙️ Options</button>
+          <button class="options-toggle" id="options-toggle" type="button" aria-expanded="false" aria-controls="chat-options" aria-label="Open assistant options">•••</button>
           <div class="options-menu" id="chat-options" hidden>
             <label for="language-select">Language</label>
             <select id="language-select">
@@ -56,51 +33,69 @@
               <option value="nso-ZA">Sepedi</option>
               <option value="ss-ZA">siSwati</option>
               <option value="ve-ZA">Tshivenda</option>
-              <option value="ts-ZA">Xitsonga</option>
+              <option value="ts-ZA">itsonga</option>
               <option value="nr-ZA">isiNdebele</option>
             </select>
             <button type="button" id="voice-input" title="Speak your message" aria-label="Speak your message">Speak</button>
             <button type="button" id="read-aloud" title="Read the latest answer aloud" aria-label="Read the latest answer aloud">Read aloud</button>
-            <button type="button" class="danger-tool" id="emergency-alert" title="Call emergency services" aria-label="Call emergency services">Emergency</button>
+            <button class="debug-toggle" id="debug-toggle" type="button" aria-pressed="false">Debug</button>
           </div>
         </div>
+        <button class="icon-button" id="clear-chat" type="button" title="Start a new conversation" aria-label="Start a new conversation">＋</button>
+      </div>
+    </header>
 
+    <main class="workspace">
+      <section class="chat-panel" aria-label="Chat with the report assistant">
         <div class="messages" id="messages" aria-live="polite" aria-busy="true">
-          <article class="message assistant-message welcome-message"><div class="avatar">S</div><div class="message-body"><span class="message-label">S.H.E Assistant <time>now</time></span><p>Hello. I can help you explore the study’s findings, methodology, risk factors, help-seeking patterns, and recommendations.</p><p>Ask me a question and I will respond in plain language.</p></div></article>
+          <article class="message assistant-message welcome-message">
+            <div class="message-body">
+              <span class="message-label">S.H.E Assistant</span>
+              <h1>What would you like to know?</h1>
+              <p>Ask about GBV, the study, or where to find support.</p>
+            </div>
+          </article>
         </div>
 
         <div class="quick-prompts" id="quick-prompts" aria-label="Quick reply prompts">
-          <button type="button" data-prompt="What support is available near me?">Support near me <span>→</span></button>
-          <button type="button" data-prompt="What does this hotspot score mean?">Hotspot score <span>→</span></button>
-          <button type="button" data-prompt="How can I report GBV?">How to report GBV <span>→</span></button>
+          <button type="button" data-prompt="What support is available near me?">Find support</button>
+          <button type="button" data-prompt="What are the key findings of the study?">Study findings</button>
+          <button type="button" data-prompt="How can I report GBV?">How to report GBV</button>
         </div>
 
-        <div class="app-status" id="chat-status" role="status" aria-live="polite">Loading the report and station data…</div>
-        <p class="data-disclaimer"><strong>Data-based answers:</strong> Responses use the loaded report and may not reflect every situation. For immediate danger, use the emergency contacts.</p>
-        <form class="composer" id="chat-form"><div class="composer-inner"><textarea id="question" rows="1" placeholder="Ask about the study…" aria-label="Your question" disabled></textarea><button class="send-button" type="submit" aria-label="Send question" title="Send question" disabled>↑</button></div><div class="suggestion-popover" id="suggestion-popover" role="status" aria-live="polite" hidden></div><div class="composer-foot"><span>Answers are based on the loaded report</span><span>Enter to send · Shift + Enter for a new line</span></div></form>
+        <div class="app-status" id="chat-status" role="status" aria-live="polite">Loading…</div>
+        <form class="composer" id="chat-form">
+          <div class="composer-inner">
+            <textarea id="question" rows="1" placeholder="Talk to me" aria-label="Talk to me" disabled></textarea>
+            <button class="send-button" type="submit" aria-label="Send message" title="Send message" disabled>↑</button>
+          </div>
+          <div class="suggestion-popover" id="suggestion-popover" role="status" aria-live="polite" hidden></div>
+          <div class="composer-foot"><span>Answers are based on the South African GBV study. For immediate danger, call 10111 or 112.</span></div>
+        </form>
       </section>
-
-      <aside class="insight-panel">
-        <div class="insight-heading"><span class="eyebrow">Top risk precincts</span><span class="live-line"></span></div>
-        <div class="risk-heading"><strong>Current hotspot summary</strong></div>
-        <div class="map-toolbar"><label class="select-label" for="province-filter">Province</label><select id="province-filter"><option value="all">All provinces</option></select><label class="select-label" for="year-filter">Cases shown</label><select id="year-filter"><option value="TOTAL">Total · 2022–2026</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select></div>
-        <div class="map-frame"><div id="station-map" aria-label="Interactive map of GBV station risk levels"></div><button class="map-reset" id="map-reset" type="button" title="Fit map to visible stations" aria-label="Fit map to visible stations">⌖</button><span class="map-attribution">OpenStreetMap · Leaflet</span></div>
-        <div class="summary-card">
-          <div class="map-summary"><b id="visible-count">—</b><span>stations visible</span><b id="visible-cases">—</b><span>cases shown</span></div>
-          <div class="station-list" id="station-list"><span class="loading-copy">Loading station data…</span></div>
-          <div class="risk-legend"><span><i class="legend-dot high"></i>High</span><span><i class="legend-dot medium"></i>Med-high</span></div>
-        </div>
-        <button class="open-map-button" type="button" onclick="window.open('../hotspot.html', '_blank')">Open Interactive Map ↗</button>
-        <div class="insight-heading at-glance-heading"><span class="eyebrow">At a glance</span><span class="live-line"></span></div>
-        <div class="big-stat"><span class="stat-value">35.5%</span><span class="stat-copy">of surveyed women reported physical and/or sexual violence in their lifetime.</span><span class="stat-source">WOMEN_ALL_LIFETIME</span></div>
-        <div class="mini-chart" aria-label="Selected report statistics"><div class="chart-row"><span>Lifetime violence</span><div class="bar"><i style="width: 35.5%"></i></div><b>35.5%</b></div><div class="chart-row"><span>Recent violence</span><div class="bar"><i style="width: 7%"></i></div><b>7.0%</b></div><div class="chart-row"><span>Controlling behaviour</span><div class="bar"><i style="width: 57.6%"></i></div><b>57.6%</b></div></div>
-        <div class="insight-note"><span class="note-icon">i</span><p>Figures describe survey participants and should not be treated as a measure of an individual’s risk.</p></div>
-      </aside>
     </main>
   </div>
-  <dialog class="emergency-dialog" id="emergency-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close emergency dialog">×</button><span class="eyebrow">Immediate danger</span><h2>Get emergency help</h2><p>If you are in immediate danger, move to a safer place if you can. This browser cannot silently dispatch police, but you can call them now.</p><div class="emergency-actions"><a href="tel:10111">Call police · 10111</a><a href="tel:112">Call emergency · 112</a></div><p class="dialog-note">Calling opens your device dialer. Share your location with the operator if safe.</p></form></dialog>
-  <dialog class="speech-dialog" id="speech-dialog"><form method="dialog"><button class="dialog-close" id="speech-close" aria-label="Close read aloud dialog">×</button><span class="eyebrow">Voice support</span><h2>Read this answer aloud</h2><p class="translation-status" id="translation-status">Preparing the selected language…</p><div class="speech-text" id="speech-text"></div><div class="speech-controls"><button type="button" id="speech-play">Play</button><button type="button" id="speech-pause">Pause</button></div></form></dialog>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9F5w4qB8x1D3Y6Q4v8=" crossorigin=""></script>
+
+  <dialog class="emergency-dialog" id="emergency-dialog">
+    <form method="dialog">
+      <button class="dialog-close" aria-label="Close emergency dialog">×</button>
+      <span class="eyebrow">Immediate danger</span>
+      <h2>Get emergency help</h2>
+      <p>If you are in immediate danger, move to a safer place if you can. This browser cannot silently dispatch police, but you can call them now.</p>
+      <div class="emergency-actions"><a href="tel:10111">Call police · 10111</a><a href="tel:112">Call emergency · 112</a></div>
+      <p class="dialog-note">Calling opens your device dialer. Share your location with the operator if safe.</p>
+    </form>
+  </dialog>
+  <dialog class="speech-dialog" id="speech-dialog">
+    <form method="dialog">
+      <button class="dialog-close" id="speech-close" aria-label="Close read aloud dialog">×</button>
+      <span class="eyebrow">Voice support</span>
+      <h2>Read this answer aloud</h2>
+      <p class="translation-status" id="translation-status">Preparing the selected language…</p>
+      <div class="speech-text" id="speech-text"></div>
+      <div class="speech-controls"><button type="button" id="speech-play">Play</button><button type="button" id="speech-pause">Pause</button></div>
+    </form>
+  </dialog>
   <script src="app.js"></script>
 </body>
 </html>

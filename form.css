@@ -114,10 +114,15 @@ h1 {
 }
 
 .form-message {
+  min-height: 1.4em;
   margin-top: 12px;
   color: #a2dfd1;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.form-message.is-error {
+  color: #ffb4a8;
 }
 
 .switch-text {

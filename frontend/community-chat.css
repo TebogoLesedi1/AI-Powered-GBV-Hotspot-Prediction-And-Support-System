@@ -25,6 +25,7 @@ a { color: inherit; }
 .community-header .desktop-nav { gap: clamp(12px, 1.5vw, 25px); }
 .community-header .desktop-nav a { font-size: 13px; }
 .community-header .hamburger { flex: 0 0 45px; }
+.community-header #account-control { padding: 9px 12px; font-size: 11px; }
 .session-status { display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--muted); font: 10px var(--mono); }
 .session-status strong { color: var(--ink); font-weight: 500; }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
@@ -166,6 +167,7 @@ h1, h2, p { margin-top: 0; }
   .community-header.header { padding: 16px 0; flex-wrap: wrap; gap: 10px; }
   .community-header .logo { order: 1; font-size: 21px; }
   .community-header .quick-exit { order: 2; margin-left: auto; padding: 9px; font-size: 9px; }
+  .community-header #account-control { order: 3; padding: 9px 10px; font-size: 10px; }
   .community-header .hamburger { order: 3; }
   .session-status { order: 4; flex-basis: 100%; justify-content: flex-start; padding-left: 3px; font-size: 8px; }
   .intro-row { align-items: flex-start; padding: 22px 0 15px; }

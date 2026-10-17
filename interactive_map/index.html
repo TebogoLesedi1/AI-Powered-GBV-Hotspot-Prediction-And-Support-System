@@ -8,11 +8,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+  <script src="../frontend/firebase-config.js" defer></script>
+  <script src="../frontend/auth.js" defer></script>
 </head>
 <body>
   <main class="page-shell">
     <header class="page-header">
-      <div><span class="eyebrow">Ubuntu / GBV research view</span><h1>Station hotspot map</h1><p>Explore reported station totals across South Africa by year and risk level.</p></div>
+      <div><span class="eyebrow">SOUTH AFRICA · GBV DATA</span><h1>Station hotspot map</h1><p>Reported cases by station, province and year.</p></div>
       <a href="../chatbot/">Open assistant <span aria-hidden="true">↗</span></a>
     </header>
     <section class="controls" aria-label="Map filters">
@@ -21,8 +25,8 @@
       <div class="stats"><strong id="visible-count">—</strong><span>stations</span><strong id="visible-cases">—</strong><span>cases</span></div>
     </section>
     <section class="map-wrap"><div id="station-map" aria-label="Interactive map showing GBV station risk levels"></div><div class="map-tools" aria-label="Map controls"><button id="map-zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button><button id="map-zoom-out" type="button" title="Zoom out" aria-label="Zoom out">−</button><button id="map-reset" type="button" title="Reset map view" aria-label="Reset map view">⌖</button></div><div class="legend"><span><i class="high"></i>High risk</span><span><i class="medium"></i>Medium-high risk</span></div></section>
-    <footer>Source: extracted GBV station dataset · Research visualization, not an individual risk prediction.</footer>
+    <footer>Reported station data · Not an individual risk prediction. Emergency: <a href="tel:10111">10111</a> / <a href="tel:112">112</a> · GBV support: <a href="tel:0800428428">0800 428 428</a>.</footer>
   </main>
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>

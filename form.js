@@ -1,12 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const signupForm = document.getElementById("signup-form");
-  const message = document.getElementById("signup-message");
+  const signupLink = document.querySelector(".switch-text a");
+  if (!signupLink) return;
 
-  if (!signupForm || !message) return;
+  const pages = new Set([
+    "index.html",
+    "about.html",
+    "contact.html",
+    "resources.html",
+    "hotspot.html",
+    "community-chat.html",
+    "interactive_map/index.html",
+    "chatbot/index.html",
+  ]);
+  const requestedPage = new URLSearchParams(window.location.search).get("next");
+  const nextPage = pages.has(requestedPage) ? requestedPage : "index.html";
+  const authScript = document.querySelector('script[src$="auth.js"]');
+  if (!authScript) return;
 
-  signupForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    message.textContent =
-      "The registration form is ready to connect to an account service.";
-  });
+  const signInUrl = new URL("index.html", authScript.src);
+  signInUrl.searchParams.set("signin", "1");
+  signInUrl.searchParams.set("next", nextPage);
+  signupLink.href = signInUrl.href;
 });

@@ -9,31 +9,35 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="../app-accessibility.css">
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+  <script src="../firebase-config.js" defer></script>
+  <script src="../auth.js" defer></script>
 </head>
 <body>
   <main class="page-shell">
     <header class="page-header">
-      <div><span class="eyebrow">SafeSouth Africa / research view</span><h1>GBV Hotspot Map</h1><p>Explore reported station totals across South Africa by year and risk level.</p></div>
+      <div><span class="eyebrow">SOUTH AFRICA · GBV DATA</span><h1>GBV Hotspot Map</h1><p>Reported cases by station, province and year.</p></div>
       <nav aria-label="Support tools"><a href="../contact.html">Talk to S.H.E <span aria-hidden="true">↗</span></a><a href="../community-chat.html">Peer Support <span aria-hidden="true">↗</span></a></nav>
     </header>
     <div class="emergency-panel" aria-labelledby="map-emergency-title">
       <strong id="map-emergency-title">Emergency support</strong>
-      <span>If you are in immediate danger, call <a href="tel:10111">10111</a> or <a href="tel:112">112</a>. GBV Command Centre: <a href="tel:0800428428">0800 428 428</a>.</span>
+      <span>In danger? Call <a href="tel:10111">10111</a> or <a href="tel:112">112</a>. GBV Command Centre: <a href="tel:0800428428">0800 428 428</a>.</span>
     </div>
     <section class="controls" aria-label="Map filters">
       <label for="province-filter">Province<select id="province-filter"><option value="all">All provinces</option></select></label>
       <label for="station-filter">Station<input id="station-filter" type="search" placeholder="Search station" autocomplete="off"></label>
-      <label for="risk-filter">Risk level<select id="risk-filter"><option value="all">All risk levels</option><option value="High">High</option><option value="Med-high">Medium</option><option value="Low">Low</option></select></label>
-      <label for="incident-filter">Incident type<select id="incident-filter"><option value="all">All reported GBV incidents</option><option value="reported">Reported GBV incidents</option></select></label>
+      <label for="risk-filter">Risk<select id="risk-filter"><option value="all">All levels</option><option value="High">High</option><option value="Med-high">Medium</option><option value="Low">Low</option></select></label>
+      <label for="incident-filter">Incident<select id="incident-filter"><option value="all">All reports</option><option value="reported">Reported GBV</option></select></label>
       <label for="year-filter">Cases shown<select id="year-filter"><option value="TOTAL">Total · 2022–2026</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select></label>
       <div class="stats"><strong id="visible-count">—</strong><span>stations</span><strong id="visible-cases">—</strong><span>cases</span></div>
     </section>
-    <div id="map-status" class="app-status" role="status" aria-live="polite">Loading station data and map…</div>
+    <div id="map-status" class="app-status" role="status" aria-live="polite">Loading map…</div>
     <section class="map-wrap" aria-label="Interactive hotspot map"><div id="station-map" aria-label="Interactive map showing GBV station risk levels" tabindex="0"></div><div class="map-tools" aria-label="Map controls"><button id="map-zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button><button id="map-zoom-out" type="button" title="Zoom out" aria-label="Zoom out">−</button><button id="map-reset" type="button" title="Reset map view" aria-label="Reset map view">⌖</button></div><div class="legend" aria-label="Risk legend"><span><i class="low"></i>Low</span><span><i class="medium"></i>Medium</span><span><i class="high"></i>High</span></div></section>
-    <p class="map-explanation"><strong>How scores are calculated:</strong> The map groups reported station totals by year and displays the source risk label. It shows patterns in recorded data, not guaranteed risk levels or an individual's risk. The current dataset does not separate incidents by type.</p>
-    <p class="journey-links"><a href="../contact.html">Next: Talk to S.H.E</a><a href="../resources.html">View support resources</a></p>
-    <footer>Source: extracted GBV station dataset · Research visualization, not an individual risk prediction.</footer>
+    <p class="map-explanation">Reported totals by station and year; no incident-type breakdown. Scores are not individual risk predictions.</p>
+    <p class="journey-links"><a href="../contact.html">S.H.E Assistant</a><a href="../resources.html">Support resources</a></p>
+    <footer>Source: GBV station dataset</footer>
   </main>
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication Portal</title>
+    <link rel="stylesheet" href="form.css" />
+  </head>
+  <body>
+    <div class="page-bg">
+      <div class="main-card">
+        <!-- LEFT SIDE - WELCOME -->
+        <div class="welcome-side">
+          <div class="logo">Hello</div>
+          <h1>Welcome!</h1>
+          <div class="underline"></div>
+          <p>
+            This is an AI-Powered GBV Hotspot Prediction and Support System.
+          </p>
+          <button class="learn-more">Learn More</button>
+        </div>
+
+        <!-- RIGHT SIDE - FORMS -->
+        <div class="form-side">
+          <!-- LOG IN FORM -->
+          <div class="auth-container" id="login-box">
+            <h2><span>Sign in</span></h2>
+            <form action="/login-endpoint" method="POST">
+              <div class="input-group">
+                <label for="login-email">User Name</label>
+                <input
+                  type="email"
+                  id="login-email"
+                  name="email"
+                  placeholder="TechTree"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label for="login-password">Password</label>
+                <input
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  placeholder="••••••••••"
+                  required
+                />
+              </div>
+              <button type="submit" class="auth-btn">Submit</button>
+            </form>
+            <div class="socials">f &nbsp; @ &nbsp; p</div>
+            <p class="switch-text">
+              Don't have an account?
+              <button class="toggle-link" id="go-to-signup">Sign up</button>
+            </p>
+          </div>
+
+          <!-- SIGN UP FORM -->
+          <div class="auth-container hidden" id="signup-box">
+            <h2><span>Sign up</span></h2>
+            <form action="/signup-endpoint" method="POST">
+              <div class="input-group">
+                <label for="signup-name">Full Name</label>
+                <input
+                  type="text"
+                  id="signup-name"
+                  name="name"
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label for="signup-email">Email Address</label>
+                <input
+                  type="email"
+                  id="signup-email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div class="input-group">
+                <label for="signup-password">Password</label>
+                <input
+                  type="password"
+                  id="signup-password"
+                  name="password"
+                  placeholder="Create password"
+                  required
+                />
+              </div>
+              <button type="submit" class="auth-btn">Submit</button>
+            </form>
+            <p class="switch-text">
+              Already have an account?
+              <button class="toggle-link" id="go-to-login">Log in</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="form.js"></script>
+  </body>
+</html>

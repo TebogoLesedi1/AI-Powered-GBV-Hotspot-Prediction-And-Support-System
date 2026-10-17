@@ -12,7 +12,6 @@ const suggestionPopover = document.querySelector('#suggestion-popover');
 const languageSelect = document.querySelector('#language-select');
 const optionsToggle = document.querySelector('#options-toggle');
 const chatOptions = document.querySelector('#chat-options');
-const debugToggle = document.querySelector('#debug-toggle');
 const latestAnswer = { text: '' };
 const speechDialog = document.querySelector('#speech-dialog');
 const speechText = document.querySelector('#speech-text');
@@ -122,8 +121,7 @@ function addMessage(text, type, result) {
   const article = document.createElement('article'); article.className = `message ${type}-message`;
   const evidenceItems = result?.matches?.length ? result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('') : '';
   const sourceHTML = result?.matches?.length ? `<details class="evidence-accordion"><summary>View ${result.matches.length} report finding${result.matches.length > 1 ? 's' : ''}</summary><div class="evidence-list">${evidenceItems}</div></details>` : '';
-  const signalHTML = result?.intent ? `<div class="signal-row"><span>Intent: <b>${result.intent}</b></span><span>Tone: <b>${result.tone}</b></span>${result.confidence ? `<span>Confidence: <b>${Math.round(result.confidence * 100)}%</b></span>` : ''}</div>` : '';
-  article.innerHTML = `<div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'}</span><p>${text}</p>${signalHTML}${sourceHTML}</div>`;
+  article.innerHTML = `<div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'}</span><p>${text}</p>${sourceHTML}</div>`;
   messages.append(article); messages.scrollTop = messages.scrollHeight; if (type === 'assistant') latestAnswer.text = text;
 }
 
@@ -162,13 +160,6 @@ if (optionsToggle && chatOptions) {
     const isHidden = chatOptions.hasAttribute('hidden');
     chatOptions.toggleAttribute('hidden', !isHidden);
     optionsToggle.setAttribute('aria-expanded', String(isHidden));
-  });
-}
-if (debugToggle) {
-  debugToggle.addEventListener('click', () => {
-    const isVisible = document.body.classList.toggle('show-debug');
-    debugToggle.setAttribute('aria-pressed', String(isVisible));
-    debugToggle.textContent = isVisible ? 'Hide debug' : 'Debug';
   });
 }
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => submit(button.dataset.prompt)));

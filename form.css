@@ -251,3 +251,14 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
+.hidden {
+  display: none !important;
+}
+.toggle-link {
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #6a3de8;
+  font-weight: bold;
+  text-decoration: underline;
+}

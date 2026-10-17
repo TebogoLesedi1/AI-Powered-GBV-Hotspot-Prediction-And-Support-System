@@ -4,72 +4,60 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Authentication Portal</title>
-    <!-- Link to external CSS stylesheet -->
     <link rel="stylesheet" href="form.css" />
   </head>
   <body>
     <div class="page-bg">
       <div class="main-card">
-        <!--LEFT SIDE - Welcome-->
-
-        <div class="Welcome-side">
+        <!-- LEFT SIDE - WELCOME -->
+        <div class="welcome-side">
           <div class="logo">Hello</div>
-          <h1>Welcome</h1>
-          <div class="Underline"></div>
-          <p>This is AI-Powered GBV Hotspot Prediction and Support System.</p>
+          <h1>Welcome!</h1>
+          <div class="underline"></div>
+          <p>
+            This is an AI-Powered GBV Hotspot Prediction and Support System.
+          </p>
+          <button class="learn-more">Learn More</button>
         </div>
-        <!--RIGHT SIDE - Forms-->
+
+        <!-- RIGHT SIDE - FORMS -->
         <div class="form-side">
-          <!-- ================= LOG IN FORM ================= -->
+          <!-- LOG IN FORM -->
           <div class="auth-container" id="login-box">
             <h2><span>Sign in</span></h2>
             <form action="/login-endpoint" method="POST">
               <div class="input-group">
-                <label for="login-email">User name</label>
+                <label for="login-email">User Name</label>
                 <input
                   type="email"
                   id="login-email"
                   name="email"
-                  placeholder="Enter your username"
+                  placeholder="TechTree"
                   required
                 />
               </div>
-
               <div class="input-group">
                 <label for="login-password">Password</label>
                 <input
                   type="password"
                   id="login-password"
                   name="password"
-                  placeholder="Enter your password"
+                  placeholder="••••••••••"
                   required
                 />
-                <small class="forgot-pass"
-                  ><a href="#">Forgot Password?</a></small
-                >
-                <small class="error-message" id="login-error"></small>
               </div>
-
-              <div class="form-options">
-                <label class="remember-me">
-                  <input type="checkbox" name="remember" /> Remember me
-                </label>
-                <a href="#" class="forgot-pass">Forgot Password?</a>
-              </div>
-
-              <button type="submit" class="auth-btn">Log In</button>
+              <button type="submit" class="auth-btn">Submit</button>
             </form>
-
-            <div class="socials">f &nbsp;@ &nbsp; p</div>
+            <div class="socials">f &nbsp; @ &nbsp; p</div>
             <p class="switch-text">
               Don't have an account?
               <button class="toggle-link" id="go-to-signup">Sign up</button>
             </p>
           </div>
 
-          <!-- ================= SIGN UP FORM ================= -->
+          <!-- SIGN UP FORM -->
           <div class="auth-container hidden" id="signup-box">
-            <h2>Sign up</h2>
+            <h2><span>Sign up</span></h2>
             <form action="/signup-endpoint" method="POST">
               <div class="input-group">
                 <label for="signup-name">Full Name</label>
@@ -77,11 +65,10 @@
                   type="text"
                   id="signup-name"
                   name="name"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your name"
                   required
                 />
               </div>
-
               <div class="input-group">
                 <label for="signup-email">Email Address</label>
                 <input
@@ -92,19 +79,17 @@
                   required
                 />
               </div>
-
               <div class="input-group">
                 <label for="signup-password">Password</label>
                 <input
                   type="password"
                   id="signup-password"
                   name="password"
-                  placeholder="Create a password"
+                  placeholder="Create password"
                   required
                 />
               </div>
-
-              <button type="submit" class="auth-btn">Sign Up</button>
+              <button type="submit" class="auth-btn">Submit</button>
             </form>
             <p class="switch-text">
               Already have an account?
@@ -114,7 +99,6 @@
         </div>
       </div>
     </div>
-    <!-- Link to external JavaScript file -->
     <script src="form.js"></script>
   </body>
 </html>

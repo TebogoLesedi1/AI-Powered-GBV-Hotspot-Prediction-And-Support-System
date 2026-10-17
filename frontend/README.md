@@ -72,7 +72,7 @@ The map is a research visualization of reported station totals. It is not an ind
 
 ## Optional Accounts
 
-All pages and features remain public; signing in is optional. Firebase Authentication stores the account email and full name, manages the password, and keeps the sign-in session in the browser so it can be restored on later visits.
+All pages and features remain public; signing in is optional. The `signup.html` account page provides both sign-in and account creation and uses the shared Firebase Authentication setup. Firebase stores the account email and full name, manages the password, and keeps the sign-in session in the browser so it can be restored on later visits.
 
 1. Create a Firebase project and add a Web app.
 2. Enable **Email/Password** under **Authentication → Sign-in method**.

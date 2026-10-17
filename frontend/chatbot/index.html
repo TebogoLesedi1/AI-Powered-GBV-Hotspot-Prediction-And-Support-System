@@ -43,34 +43,99 @@
       </div>
     </header>
 
+    <section class="emergency-strip" aria-label="Emergency and GBV support contacts">
+      <strong>Need help now?</strong>
+      <a href="tel:0800428428"><span>GBV Command Centre</span><b>0800 428 428</b></a>
+      <a href="tel:10111"><span>Police</span><b>10111</b></a>
+      <a href="tel:112"><span>Emergency from mobile</span><b>112</b></a>
+      <span class="strip-note">Tap a number to call. If you are in immediate danger, move somewhere safer if possible.</span>
+    </section>
+
+    <section class="assistant-hero" aria-labelledby="assistant-title">
+      <div class="assistant-hero-copy">
+        <span class="eyebrow">A steady place to start</span>
+        <h1 id="assistant-title">You deserve to be heard.</h1>
+        <p>S.H.E can help you explore the study, understand your options, or find a support contact. Share only what feels safe.</p>
+      </div>
+      <aside class="study-snapshot" aria-label="Study snapshot">
+        <span class="eyebrow">Study snapshot</span>
+        <strong id="study-stat-value">—</strong>
+        <span id="study-stat-label">Loading a study finding…</span>
+        <a href="../hotspot.html">Explore reported patterns <span aria-hidden="true">↗</span></a>
+      </aside>
+    </section>
+
     <main class="workspace">
       <section class="chat-panel" aria-label="Chat with the report assistant">
         <div class="messages" id="messages" aria-live="polite" aria-busy="true">
           <article class="message assistant-message welcome-message">
+            <span class="avatar" aria-hidden="true">S</span>
             <div class="message-body">
               <span class="message-label">S.H.E Assistant</span>
-              <h1>What would you like to know?</h1>
+              <h2>What would you like to know?</h2>
               <p>Ask about GBV, the study, or where to find support.</p>
             </div>
           </article>
         </div>
 
         <div class="quick-prompts" id="quick-prompts" aria-label="Quick reply prompts">
-          <button type="button" data-prompt="What support is available near me?">Find support</button>
-          <button type="button" data-prompt="What are the key findings of the study?">Study findings</button>
-          <button type="button" data-prompt="How can I report GBV?">How to report GBV</button>
+          <button type="button" data-prompt="What support is available near me?">
+            <span class="prompt-icon" aria-hidden="true">♡</span>
+            <span><strong>Find support</strong><small>Explore confidential help options</small></span>
+            <span class="prompt-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button type="button" data-prompt="What are the key findings of the study?">
+            <span class="prompt-icon" aria-hidden="true">◌</span>
+            <span><strong>Study findings</strong><small>Learn what the research says</small></span>
+            <span class="prompt-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button type="button" data-prompt="How can I report GBV?">
+            <span class="prompt-icon" aria-hidden="true">→</span>
+            <span><strong>How to report GBV</strong><small>See practical next steps</small></span>
+            <span class="prompt-arrow" aria-hidden="true">↗</span>
+          </button>
         </div>
 
-        <div class="app-status" id="chat-status" role="status" aria-live="polite">Loading…</div>
+        <div class="app-status" id="chat-status" role="status" aria-live="polite">Preparing the study guide…</div>
         <form class="composer" id="chat-form">
           <div class="composer-inner">
-            <textarea id="question" rows="1" placeholder="hi, lets talk" aria-label="Message S.H.E Assistant" disabled></textarea>
+            <textarea id="question" rows="1" placeholder="Type your message here…" aria-label="Message S.H.E Assistant" disabled></textarea>
             <button class="send-button" type="submit" aria-label="Send message" title="Send message" disabled>↑</button>
           </div>
+          <div class="composer-foot"><span>Enter to send · Shift + Enter for a new line</span><span>Your conversation stays in this browser tab.</span></div>
           <div class="suggestion-popover" id="suggestion-popover" role="status" aria-live="polite" hidden></div>
         </form>
       </section>
     </main>
+
+    <section class="resource-section" aria-labelledby="resource-title">
+      <div class="resource-heading">
+        <span class="eyebrow">Support, at your pace</span>
+        <h2 id="resource-title">Useful next steps</h2>
+      </div>
+      <div class="resource-tabs" role="tablist" aria-label="Support and project information">
+        <button id="tab-emergency" type="button" role="tab" aria-selected="true" aria-controls="panel-emergency" tabindex="0">Emergency contacts</button>
+        <button id="tab-support" type="button" role="tab" aria-selected="false" aria-controls="panel-support" tabindex="-1">Support options</button>
+        <button id="tab-findings" type="button" role="tab" aria-selected="false" aria-controls="panel-findings" tabindex="-1">Study &amp; findings</button>
+      </div>
+      <div class="resource-panel" id="panel-emergency" role="tabpanel" aria-labelledby="tab-emergency">
+        <a class="resource-card urgent" href="tel:10111"><span>Police</span><strong>10111</strong><small>Call for police assistance</small></a>
+        <a class="resource-card urgent" href="tel:112"><span>Mobile emergency</span><strong>112</strong><small>Call from a mobile phone</small></a>
+        <a class="resource-card" href="tel:0800428428"><span>GBV Command Centre</span><strong>0800 428 428</strong><small>Call for GBV support</small></a>
+        <a class="resource-card" href="tel:*120*7867%23"><span>SMS support</span><strong>*120*7867#</strong><small>GBV Command Centre SMS line</small></a>
+      </div>
+      <div class="resource-panel" id="panel-support" role="tabpanel" aria-labelledby="tab-support" hidden>
+        <article class="resource-card"><span>Confidential support</span><strong>GBV Command Centre</strong><small>Call 0800 428 428 or SMS *120*7867# to reach the support line.</small></article>
+        <a class="resource-card" href="../resources.html"><span>Browse support information</span><strong>Support resources</strong><small>View the project’s support and service information.</small></a>
+        <a class="resource-card" href="../contact.html"><span>Talk it through</span><strong>S.H.E Assistant</strong><small>Ask questions or find a practical next step.</small></a>
+      </div>
+      <div class="resource-panel findings-panel" id="panel-findings" role="tabpanel" aria-labelledby="tab-findings" hidden>
+        <p>The assistant searches findings from the South African National Gender-Based Violence Study. Its answers are based on this report, not live incident data or individual risk predictions.</p>
+        <a class="resource-card" href="../hotspot.html"><span>Explore the station dataset</span><strong>GBV Hotspot Map</strong><small>Explore reported station totals and their limitations.</small></a>
+        <a class="resource-card" href="../about.html"><span>How to interpret the project</span><strong>About the study and map</strong><small>Read about the project’s data, methods, and limitations.</small></a>
+      </div>
+      <p class="resource-note">This assistant is an information tool, not a crisis service. You do not need to share personal details to use it.</p>
+    </section>
   </div>
 
   <dialog class="emergency-dialog" id="emergency-dialog">

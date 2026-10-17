@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const signInMessage = document.getElementById("signin-message");
   const signUpForm = document.getElementById("signup-form");
   const signUpMessage = document.getElementById("signup-message");
-  const closeSignIn = document.getElementById("closeSignIn");
   const authScript = document.querySelector('script[src$="auth.js"]');
   const homeUrl = new URL("index.html", authScript.src);
   const siteRoot = new URL(".", homeUrl);
@@ -49,22 +48,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.assign(destination);
   };
 
-  const configureSignUpLink = () => {
-    const signUpLink = document.querySelector("#signin-dialog .auth-switch a");
-    if (signUpLink) {
-      signUpLink.href = new URL(
-        `signup.html?next=${encodeURIComponent(nextPage)}`,
-        siteRoot,
-      ).href;
-    }
-  };
-
   const openSignInDialog = () => {
-    if (signInDialog && !signInDialog.open) signInDialog.showModal();
+    if (signInDialog && !signInDialog.open) {
+      signInDialog.showModal();
+      return;
+    }
+
+    const signInUrl = new URL("signup.html", siteRoot);
+    signInUrl.searchParams.set("signin", "1");
+    signInUrl.searchParams.set("next", nextPage);
+    window.location.assign(signInUrl);
   };
 
   const openSignIn = document.getElementById("openSignIn");
-  if (openSignIn && signInDialog) {
+  if (openSignIn) {
     openSignIn.onclick = openSignInDialog;
   }
 
@@ -77,15 +74,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       signInDialog.showModal();
     }
   };
-
-  if (signInDialog && closeSignIn) {
-    closeSignIn.addEventListener("click", () => signInDialog.close());
-    signInDialog.addEventListener("click", (event) => {
-      if (event.target === signInDialog) signInDialog.close();
-    });
-  }
-
-  configureSignUpLink();
 
   if (
     !config ||
@@ -156,14 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     control.onclick = async () => {
       if (!user) {
-        if (signInDialog && typeof signInDialog.showModal === "function") {
-          signInDialog.showModal();
-        } else {
-          const signInUrl = new URL(homeUrl);
-          signInUrl.searchParams.set("signin", "1");
-          signInUrl.searchParams.set("next", nextPage);
-          window.location.assign(signInUrl);
-        }
+        openSignInDialog();
         return;
       }
 

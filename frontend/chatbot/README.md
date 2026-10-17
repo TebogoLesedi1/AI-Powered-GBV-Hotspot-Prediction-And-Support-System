@@ -16,7 +16,8 @@ The assistant provides a lightweight, browser-based way to search findings from 
 - Basic emotion signals for fear, distress, and anxiety
 - Safety-first responses for urgent language
 - South African emergency and GBV support contacts
-- Quick prompts for common research topics
+- Quick-action cards for support, study findings, and reporting information
+- A rotating study snapshot, one-tap emergency contacts, and tabbed support resources
 
 The assistant uses local report data and a transparent keyword-scoring baseline. It is not connected to a hosted large language model or a clinical decision system.
 
@@ -33,14 +34,14 @@ The station-risk dashboard is not part of the assistant page. Use the standalone
 
 ## Data connections
 
-The assistant loads the study report and conversational examples relative to this folder:
+The assistant loads the study report and optional conversational examples relative to this folder:
 
 ```text
-../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt
+../data/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt
 ../../text_data.txt
 ```
 
-The report file is parsed as comma-separated data and is expected to contain fields such as `section`, `indicator`, `value`, `value_type`, and `notes`. Conversational examples support simple follow-up exchanges.
+The report file is required and is parsed as comma-separated data with fields such as `section`, `indicator`, `value`, `value_type`, and `notes`. Conversational examples support simple follow-up exchanges but are optional; if they cannot be reached, study-based questions remain enabled.
 
 ## Run locally
 
@@ -68,7 +69,7 @@ Stop the server with `Ctrl+C` in the terminal.
 
 ## How the assistant works
 
-1. `loadReport()` fetches the report and conversational examples.
+1. `loadReport()` fetches the report and enables the composer when it is ready; conversational examples are loaded separately as an optional enhancement.
 2. The report CSV is parsed into `state.records`.
 3. `predictSupportSignals()` scores simple intent and emotion keywords.
 4. `answerFor()` searches report fields for words from the question and returns the highest-scoring matches.
@@ -79,7 +80,7 @@ The assistant does not save conversations. All processing in `app.js` occurs in 
 
 ## Step-by-step build and tools
 
-1. Create the assistant structure in `index.html` with the conversation panel, quick prompts, and emergency contacts.
+1. Create the assistant structure in `index.html` with the conversation panel, quick-action cards, emergency contacts, and support tabs.
 2. Load the report and conversation examples with the browser Fetch API from the relative paths in **Data connections**.
 3. Parse the report with the browser's JavaScript string/array APIs.
 4. Normalize each question, score keyword-based intents and emotion signals, and search report fields for matching evidence.
@@ -92,8 +93,8 @@ The assistant does not save conversations. All processing in `app.js` occurs in 
 
 | Tool/API | Use |
 | --- | --- |
-| Browser Fetch API | Loads the local report and conversation examples. |
-| JavaScript DOM API | Handles form submission, quick prompts, message rendering, and in-memory conversation state. |
+| Browser Fetch API | Loads the required local report and optional conversation examples. |
+| JavaScript DOM API | Handles form submission, quick actions, resource tabs, message rendering, and in-memory conversation state. |
 | Google Fonts CSS API | Loads Manrope and DM Mono typography. |
 | Python `http.server` | Serves local files so browser Fetch requests work. |
 

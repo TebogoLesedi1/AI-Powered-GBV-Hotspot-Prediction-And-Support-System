@@ -13,6 +13,8 @@ const languageSelect = document.querySelector('#language-select');
 const optionsToggle = document.querySelector('#options-toggle');
 const chatOptions = document.querySelector('#chat-options');
 const latestAnswer = { text: '' };
+const studyStatValue = document.querySelector('#study-stat-value');
+const studyStatLabel = document.querySelector('#study-stat-label');
 const speechDialog = document.querySelector('#speech-dialog');
 const speechText = document.querySelector('#speech-text');
 const translationStatus = document.querySelector('#translation-status');
@@ -119,33 +121,70 @@ function addMessage(text, type, result) {
     chatPanel.classList.add('has-conversation');
   }
   const article = document.createElement('article'); article.className = `message ${type}-message`;
-  const evidenceItems = result?.matches?.length ? result.matches.map(item => `<div class="source-result"><b>${formatIndicator(item.indicator)}</b> · ${item.value || 'qualitative'}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${item.notes}` : ''}</div>`).join('') : '';
+  const evidenceItems = result?.matches?.length ? result.matches.map(item => `<div class="source-result"><b>${escapeHTML(formatIndicator(item.indicator))}</b> · ${escapeHTML(item.value || 'qualitative')}${item.value_type === 'percentage' ? '%' : ''}${item.notes ? ` · ${escapeHTML(item.notes)}` : ''}</div>`).join('') : '';
   const sourceHTML = result?.matches?.length ? `<details class="evidence-accordion"><summary>View ${result.matches.length} report finding${result.matches.length > 1 ? 's' : ''}</summary><div class="evidence-list">${evidenceItems}</div></details>` : '';
-  article.innerHTML = `<div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'}</span><p>${text}</p>${sourceHTML}</div>`;
+  article.innerHTML = `<span class="avatar" aria-hidden="true">${type === 'user' ? 'Y' : 'S'}</span><div class="message-body"><span class="message-label">${type === 'user' ? 'You' : 'S.H.E Assistant'}</span><p>${escapeHTML(text)}</p>${sourceHTML}</div>`;
   messages.append(article); messages.scrollTop = messages.scrollHeight; if (type === 'assistant') latestAnswer.text = text;
+}
+
+function updateStudySnapshot() {
+  const snapshotIndicators = [
+    ['Women_Individual_Response_Rate', 'Women · individual response rate'],
+    ['Women_Household_Response_Rate', 'Women · household response rate'],
+    ['Men_Individual_Response_Rate', 'Men · individual response rate'],
+  ];
+  const snapshots = snapshotIndicators
+    .map(([indicator, label]) => {
+      const record = state.records.find(item => item.indicator === indicator && item.value_type === 'percentage');
+      return record ? { value: `${record.value}%`, label } : null;
+    })
+    .filter(Boolean);
+  if (!snapshots.length) {
+    studyStatValue.textContent = 'Study data loaded';
+    studyStatLabel.textContent = 'Explore the report findings in the assistant.';
+    return;
+  }
+  let current = 0;
+  const renderSnapshot = () => {
+    studyStatValue.textContent = snapshots[current].value;
+    studyStatLabel.textContent = snapshots[current].label;
+    current = (current + 1) % snapshots.length;
+  };
+  renderSnapshot();
+  if (snapshots.length > 1) window.setInterval(renderSnapshot, 7000);
 }
 
 async function loadReport() {
   try {
-    const [reportResponse, conversationResponse] = await Promise.all([
-      fetch(REPORT_URL),
-      fetch(CONVERSATION_DATA_URL),
-    ]);
-    if (!reportResponse.ok || !conversationResponse.ok) {
-      throw new Error('Assistant data unavailable');
+    const reportResponse = await fetch(REPORT_URL);
+    if (!reportResponse.ok) {
+      throw new Error(`Study report request failed with HTTP ${reportResponse.status}`);
     }
     state.records = parseCSV(await reportResponse.text());
-    state.conversationExamples = parseCSV(await conversationResponse.text());
+    try {
+      const conversationResponse = await fetch(CONVERSATION_DATA_URL);
+      if (!conversationResponse.ok) {
+        throw new Error(`Conversation examples request failed with HTTP ${conversationResponse.status}`);
+      }
+      state.conversationExamples = parseCSV(await conversationResponse.text());
+    } catch (error) {
+      state.conversationExamples = [];
+      console.warn('Conversational examples are unavailable; study-based answers remain enabled.', error);
+    }
     state.ready = true;
     question.disabled = false;
     sendButton.disabled = false;
     messages.setAttribute('aria-busy', 'false');
-    chatStatus.textContent = 'Assistant ready.';
+    chatStatus.textContent = state.conversationExamples.length
+      ? 'Assistant ready.'
+      : 'Assistant ready. Study questions work; some conversational examples are unavailable.';
     chatStatus.className = 'app-status is-ready';
+    updateStudySnapshot();
   } catch (error) {
     state.records = [];
     state.conversationExamples = [];
-    chatStatus.textContent = 'The assistant is offline. Check your connection and reload to try again.';
+    console.error('Could not load the study report for S.H.E Assistant.', error);
+    chatStatus.textContent = `The study report could not be loaded (${error.message}). Check your connection and reload to try again.`;
     chatStatus.className = 'app-status is-error';
     messages.setAttribute('aria-busy', 'false');
   }
@@ -173,6 +212,28 @@ document.querySelector('#clear-chat').addEventListener('click', () => {
   chatStatus.textContent = state.ready ? 'Assistant ready.' : 'Loading…';
 });
 document.querySelector('#emergency-alert').addEventListener('click', () => document.querySelector('#emergency-dialog').showModal());
+const resourceTabs = [...document.querySelectorAll('[role="tab"]')];
+resourceTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => {
+    resourceTabs.forEach((item, itemIndex) => {
+      const selected = itemIndex === index;
+      item.setAttribute('aria-selected', String(selected));
+      item.tabIndex = selected ? 0 : -1;
+      document.getElementById(item.getAttribute('aria-controls')).hidden = !selected;
+    });
+  });
+  tab.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? resourceTabs.length - 1
+        : (index + (event.key === 'ArrowRight' ? 1 : resourceTabs.length - 1)) % resourceTabs.length;
+    resourceTabs[nextIndex].focus();
+    resourceTabs[nextIndex].click();
+  });
+});
 async function translateAnswer(text) { const target = languageCodes[languageSelect.value]; if (!text || target === 'en') return text; const fallback = safetyPhrases[languageSelect.value] && /immediate danger|emergency|police|10111|112/i.test(text) ? `${safetyPhrases[languageSelect.value]} ${text}` : text; try { const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 480))}&langpair=en|${target}`); const data = await response.json(); return data.responseData?.translatedText || fallback; } catch (error) { return fallback; } }
 async function prepareSpeech() { if (!latestAnswer.text) return; speechDialog.showModal(); speechText.textContent = latestAnswer.text; translationStatus.textContent = languageSelect.value === 'en-ZA' ? 'English response' : 'Translating with MyMemory free translation…'; const translated = await translateAnswer(latestAnswer.text); speechText.textContent = translated; translationStatus.textContent = languageSelect.value === 'en-ZA' ? 'English response' : `${languageSelect.options[languageSelect.selectedIndex].text} response`; }
 function speakAnswer() { if (!('speechSynthesis' in window) || !speechText.textContent) return; window.speechSynthesis.cancel(); const speech = new SpeechSynthesisUtterance(speechText.textContent); speech.lang = languageSelect.value; window.speechSynthesis.speak(speech); }

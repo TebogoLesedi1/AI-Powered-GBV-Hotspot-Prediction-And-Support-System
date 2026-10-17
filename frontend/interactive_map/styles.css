@@ -88,3 +88,128 @@ select,.controls input { background:rgba(255,255,255,.08); color:#f8f3fa; border
 	.controls { grid-template-columns: 1fr; }
 	.controls input { min-width: 0; width: 100%; }
 }
+
+/* Keep primary map controls readable while allowing the map to show through. */
+body { min-height: 100vh; }
+.page-shell { padding: 22px 28px 20px; }
+.page-header { align-items: center; padding-bottom: 16px; }
+.page-header h1 { margin: 8px 0 6px; font-size: clamp(30px, 4vw, 48px); }
+.page-header nav { display: flex; flex-wrap: wrap; gap: 8px; }
+.page-header nav a { padding: 10px 12px; }
+.emergency-panel {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0;
+	padding: 9px 12px;
+	border: 1px solid rgba(255,255,255,.15);
+	border-radius: 10px;
+	background: rgba(18,24,38,.5);
+	color: rgba(248,243,250,.8);
+	font-size: 11px;
+}
+.emergency-panel a { color: #fff; font-weight: 800; text-decoration: none; }
+.emergency-panel a:hover { text-decoration: underline; }
+.emergency-divider { opacity: .55; }
+.map-stage { position: relative; }
+.map-wrap {
+	height: min(72vh, 680px);
+	min-height: 480px;
+	border-radius: 16px;
+	box-shadow: 0 8px 32px rgba(0,0,0,.28);
+}
+.filter-container {
+	position: absolute;
+	z-index: 600;
+	top: 16px;
+	left: 16px;
+	display: flex;
+	width: min(460px, calc(100% - 32px));
+	flex-direction: column;
+	align-items: stretch;
+	gap: 12px;
+	padding: 14px;
+	border: 1px solid rgba(255,255,255,.15);
+	border-radius: 14px;
+	background-color: rgba(18,24,38,.65);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	box-shadow: 0 8px 32px rgba(0,0,0,.35);
+}
+.primary-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.filter-container label { gap: 6px; font-size: 9px; }
+.filter-container select,
+.filter-container input {
+	width: 100%;
+	min-width: 0;
+	padding: 10px 11px;
+	background: rgba(255,255,255,.09);
+	color: #f8f3fa;
+	border: 1px solid rgba(255,255,255,.16);
+	border-radius: 8px;
+	font: 12px var(--sans);
+}
+.filter-container option { color: #24152f; }
+.advanced-filters { border-top: 1px solid rgba(255,255,255,.13); padding-top: 10px; }
+.advanced-filters summary {
+	width: fit-content;
+	color: #d9c5e0;
+	cursor: pointer;
+	font-size: 11px;
+	font-weight: 700;
+	list-style-position: inside;
+}
+.advanced-filter-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 12px; }
+.advanced-filter-fields label:first-child { grid-column: 1 / -1; }
+.stats {
+	margin: 0;
+	padding-top: 10px;
+	border-top: 1px solid rgba(255,255,255,.13);
+	color: rgba(248,243,250,.75);
+	font-size: 10px;
+}
+.stats strong { color: #f1b6dd; }
+.stats-separator { opacity: .5; }
+.map-tools { position: absolute; z-index: 500; top: 14px; right: 14px; display: grid; gap: 6px; }
+.map-tools button {
+	width: 36px;
+	height: 36px;
+	border: 1px solid rgba(255,255,255,.18);
+	background: rgba(18,24,38,.72);
+	color: #fff;
+	font-size: 18px;
+	cursor: pointer;
+	backdrop-filter: blur(8px);
+}
+.legend { bottom: 14px; left: 14px; box-shadow: 0 4px 16px rgba(0,0,0,.2); }
+.app-status {
+	position: absolute;
+	z-index: 550;
+	right: 62px;
+	top: 16px;
+	max-width: min(280px, calc(100% - 520px));
+	padding: 8px 11px;
+	border: 1px solid rgba(255,255,255,.15);
+	border-radius: 9px;
+	background: rgba(18,24,38,.65);
+	color: #f8f3fa;
+	font-size: 11px;
+	backdrop-filter: blur(10px);
+}
+.map-explanation { padding: 12px 0 0; font-size: 11px; }
+.journey-links { padding: 10px 0 0; }
+.journey-links a { color: #f8f3fa; }
+.page-shell > footer { padding-top: 8px; }
+
+@media (max-width: 680px) {
+	.page-shell { margin: 0; padding: 16px 14px; border-radius: 0; }
+	.page-header { display: block; }
+	.page-header h1 { font-size: 36px; }
+	.page-header nav { margin-top: 12px; }
+	.emergency-panel { gap: 6px; font-size: 10px; }
+	.map-wrap { height: 70vh; min-height: 430px; }
+	.filter-container { top: 10px; left: 10px; width: min(350px, calc(100% - 20px)); padding: 11px; }
+	.primary-filters { grid-template-columns: 1fr 1fr; }
+	.app-status { top: auto; right: 10px; bottom: 60px; max-width: calc(100% - 20px); }
+}

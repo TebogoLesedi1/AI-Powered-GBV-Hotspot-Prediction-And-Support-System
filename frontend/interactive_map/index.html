@@ -20,20 +20,31 @@
       <div><span class="eyebrow">SOUTH AFRICA · GBV DATA</span><h1>GBV Hotspot Map</h1><p>Reported cases by station, province and year.</p></div>
       <nav aria-label="Support tools"><a href="../contact.html">Talk to S.H.E <span aria-hidden="true">↗</span></a><a href="../community-chat.html">Peer Support <span aria-hidden="true">↗</span></a></nav>
     </header>
-    <div class="emergency-panel" aria-labelledby="map-emergency-title">
-      <strong id="map-emergency-title">Emergency support</strong>
-      <span>In danger? Call <a href="tel:10111">10111</a> or <a href="tel:112">112</a>. GBV Command Centre: <a href="tel:0800428428">0800 428 428</a>.</span>
+    <div class="emergency-panel" aria-label="Emergency support">
+      <span>Need urgent help?</span>
+      <a href="tel:10111">10111</a><a href="tel:112">112</a>
+      <span class="emergency-divider">·</span>
+      <a href="tel:0800428428">GBV Command Centre · 0800 428 428</a>
     </div>
-    <section class="controls" aria-label="Map filters">
-      <label for="province-filter">Province<select id="province-filter"><option value="all">All provinces</option></select></label>
-      <label for="station-filter">Station<input id="station-filter" type="search" placeholder="Search station" autocomplete="off"></label>
-      <label for="risk-filter">Risk<select id="risk-filter"><option value="all">All levels</option><option value="High">High</option><option value="Med-high">Medium</option><option value="Low">Low</option></select></label>
-      <label for="incident-filter">Incident<select id="incident-filter"><option value="all">All reports</option><option value="reported">Reported GBV</option></select></label>
-      <label for="year-filter">Cases shown<select id="year-filter"><option value="TOTAL">Total · 2022–2026</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select></label>
-      <div class="stats"><strong id="visible-count">—</strong><span>stations</span><strong id="visible-cases">—</strong><span>cases</span></div>
+    <section class="map-stage" aria-label="Hotspot map and filters">
+      <section class="map-wrap" aria-label="Interactive hotspot map"><div id="station-map" aria-label="Interactive map showing GBV station risk levels" tabindex="0"></div><div class="map-tools" aria-label="Map controls"><button id="map-zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button><button id="map-zoom-out" type="button" title="Zoom out" aria-label="Zoom out">−</button><button id="map-reset" type="button" title="Reset map view" aria-label="Reset map view">⌖</button></div><div class="legend" aria-label="Risk legend"><span><i class="low"></i>Low</span><span><i class="medium"></i>Medium</span><span><i class="high"></i>High</span></div></section>
+      <section class="controls filter-container" aria-label="Map filters">
+        <div class="primary-filters">
+          <label for="province-filter">Province<select id="province-filter"><option value="all">All provinces</option></select></label>
+          <label for="year-filter">Year<select id="year-filter"><option value="TOTAL">Total · 2022–2026</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select></label>
+        </div>
+        <details class="advanced-filters">
+          <summary>More filters</summary>
+          <div class="advanced-filter-fields">
+            <label for="station-filter">Station<input id="station-filter" type="search" placeholder="Search station" autocomplete="off"></label>
+            <label for="risk-filter">Risk<select id="risk-filter"><option value="all">All levels</option><option value="High">High</option><option value="Med-high">Medium</option><option value="Low">Low</option></select></label>
+            <label for="incident-filter">Incident<select id="incident-filter"><option value="all">All reports</option><option value="reported">Reported GBV</option></select></label>
+          </div>
+        </details>
+        <div class="stats" aria-live="polite"><strong id="visible-count">—</strong><span>stations</span><span class="stats-separator">·</span><strong id="visible-cases">—</strong><span>cases</span></div>
+      </section>
+      <div id="map-status" class="app-status" role="status" aria-live="polite">Loading map…</div>
     </section>
-    <div id="map-status" class="app-status" role="status" aria-live="polite">Loading map…</div>
-    <section class="map-wrap" aria-label="Interactive hotspot map"><div id="station-map" aria-label="Interactive map showing GBV station risk levels" tabindex="0"></div><div class="map-tools" aria-label="Map controls"><button id="map-zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button><button id="map-zoom-out" type="button" title="Zoom out" aria-label="Zoom out">−</button><button id="map-reset" type="button" title="Reset map view" aria-label="Reset map view">⌖</button></div><div class="legend" aria-label="Risk legend"><span><i class="low"></i>Low</span><span><i class="medium"></i>Medium</span><span><i class="high"></i>High</span></div></section>
     <p class="map-explanation">Reported totals by station and year; no incident-type breakdown. Scores are not individual risk predictions.</p>
     <p class="journey-links"><a href="../contact.html">S.H.E Assistant</a><a href="../resources.html">Support resources</a></p>
     <footer>Source: GBV station dataset</footer>

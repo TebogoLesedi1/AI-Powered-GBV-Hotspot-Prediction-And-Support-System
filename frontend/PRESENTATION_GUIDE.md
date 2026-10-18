@@ -23,7 +23,7 @@
 ### Interactive map
 
 - `interactive_map/index.html` loads `interactive_map/styles.css`, `../app-accessibility.css`, Leaflet from the CDN, and `interactive_map/app.js`.
-- `interactive_map/app.js` loads `../data/GBV Dataset.csv` and renders the map and station-risk information.
+- `interactive_map/app.js` renders the embedded station snapshot and loads `../data/GBV Dataset.csv` if that snapshot is removed. Leaflet and Esri tiles provide the interactive basemap, with a local SVG fallback.
 
 ### S.H.E chatbot
 

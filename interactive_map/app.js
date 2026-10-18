@@ -41,8 +41,12 @@ function drawMap() {
   state.markers = stations.map(station => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
-    const color = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
-    const marker = L.circleMarker([latitude, longitude], { radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
+   // const color = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
+    //const marker = L.circleMarker([latitude, longitude], { radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
+   const color = station.Risk === 'High' ? '#7b3544' : '#8fd3e8';
+const maxCases = Math.max(...stations.map(s => Number(s[year] || 0)), 1);
+const radius = 7 + Math.round((Number(station[year] || 0) / maxCases) * 12);
+const marker = L.circleMarker([latitude, longitude], { radius, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
     marker.bindPopup(`<strong>${escapeHTML(station.Station)}</strong><br>${escapeHTML(station.Province)} · ${escapeHTML(station.Risk)}<br><b>${Number(station[year] || 0).toLocaleString()}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`);
     return marker;
   });
@@ -61,7 +65,7 @@ function drawFallbackMap(stations, year, province) {
   const shiftX = zoomed ? `${(500 - center[0]) / 10}%` : '0%';
   const shiftY = zoomed ? `${(360 - center[1]) / 7.2}%` : '0%';
   const markerPoints = layoutStationPoints(stations);
-  mapElement.innerHTML = `<div class="fallback-map"><div class="fallback-layer" style="--province-scale:${scale};--province-shift-x:${shiftX};--province-shift-y:${shiftY}"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="${southAfricaPath()}" fill-rule="evenodd" /><path class="fallback-border" d="${southAfricaPath()}" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map(station => {
+  mapElement.innerHTML = `<div class="fallback-map"><div class="fallback-layer" style="--province-scale:${scale};--province-shift-x:${shiftX};--province-shift-y:${shiftY}"><svg class="fallback-geography" viewBox="0 0 1000 720" role="img" aria-label="South Africa station record visualization"><defs><pattern id="fallback-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" /></pattern></defs><rect width="1000" height="720" fill="url(#fallback-grid)" /><path class="fallback-country" d="${southAfricaPath()}" fill-rule="evenodd" /><path class="fallback-border" d="${southAfricaPath()}" /></svg><div class="fallback-label">South Africa · station records</div><div class="fallback-scale"><span>higher case volume</span><i style="width:28px;height:28px"></i><i style="width:18px;height:18px"></i><i style="width:10px;height:10px"></i></div>${stations.map((station, index) => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, markerPoints[index][0] / 10));
@@ -90,7 +94,26 @@ async function init() {
   document.querySelector('#province-filter').innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option>${escapeHTML(province)}</option>`).join('');
   document.querySelector('#province-filter').addEventListener('change', () => { state.view.scale = 1; state.view.panX = 0; state.view.panY = 0; drawMap(); });
   document.querySelector('#year-filter').addEventListener('change', drawMap);
-  attachMapInteractions();
+  if (window.L) {
+  const mapElement = document.querySelector('#station-map');
+  mapElement.innerHTML = '';
+  state.map = L.map(mapElement, { zoomControl: false, minZoom: 4, maxZoom: 14 }).setView([-29, 25], 5);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16, attribution: 'Tiles &copy; Esri'
+  }).addTo(state.map);
+
+  // South Africa outline (works even with no tiles)
+  L.polygon(SOUTH_AFRICA_RINGS.map(ring => ring.map(([lng, lat]) => [lat, lng])), {
+    color: '#8fd3e8', weight: 1.5, fillColor: '#315a61', fillOpacity: .25, interactive: false
+  }).addTo(state.map);
+  document.querySelector('#map-zoom-in')?.addEventListener('click', () => state.map.zoomIn());
+  document.querySelector('#map-zoom-out')?.addEventListener('click', () => state.map.zoomOut());
+  document.querySelector('#map-reset')?.addEventListener('click', drawMap);
+  setTimeout(() => {state.map.invalidateSize(); drawMap(); }, 150);
+} else {
+  attachMapInteractions(); // offline fallback
+}
+
   drawMap();
 }
 

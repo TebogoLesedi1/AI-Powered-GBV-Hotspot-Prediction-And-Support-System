@@ -1,10 +1,6 @@
 const DATA_URL = '../data/GBV Dataset.csv';
 const state = { stations: [], map: null, markers: [], view: { scale: 1, panX: 0, panY: 0, dragging: false } };
-const mapStatus = document.querySelector('#map-status');
-const SOUTH_AFRICA_RINGS = [
-  [[31.521,-29.257],[30.902,-29.91],[30.056,-31.14],[28.926,-32.172],[27.465,-33.227],[26.419,-33.615],[25.781,-33.945],[24.678,-33.987],[23.594,-33.794],[22.574,-33.864],[21.543,-34.259],[20.071,-34.795],[19.193,-34.463],[18.425,-33.998],[18.25,-33.281],[17.925,-32.611],[18.248,-32.43],[18.222,-31.662],[17.567,-30.726],[17.065,-29.879],[16.345,-28.577],[16.824,-28.082],[17.219,-28.356],[17.388,-28.784],[18.465,-29.045],[19.002,-28.972],[19.895,-28.462],[19.896,-24.768],[20.166,-24.918],[20.759,-25.868],[20.666,-26.477],[20.89,-26.829],[21.606,-26.727],[22.106,-26.28],[22.58,-25.979],[22.824,-25.5],[23.312,-25.269],[23.734,-25.39],[24.211,-25.67],[25.025,-25.72],[25.665,-25.487],[25.766,-25.175],[25.942,-24.696],[26.486,-24.616],[26.786,-24.241],[27.119,-23.574],[28.017,-22.828],[29.432,-22.091],[30.323,-22.272],[30.66,-22.152],[31.191,-22.252],[31.67,-23.659],[31.931,-24.369],[31.752,-25.484],[31.838,-25.843],[31.333,-25.66],[31.044,-25.731],[30.95,-26.023],[30.677,-26.398],[30.686,-26.744],[31.283,-27.286],[31.868,-27.178],[32.072,-26.734],[32.83,-26.742],[32.58,-27.471],[32.462,-28.301],[32.203,-28.752],[31.521,-29.257]],
-  [[28.978,-28.956],[28.542,-28.648],[28.075,-28.852],[27.533,-29.243],[27,-29.876],[27.749,-30.645],[28.107,-30.546],[28.292,-30.226],[28.848,-30.07],[29.018,-29.744],[29.325,-29.257],[28.978,-28.956]]
-];
+const SOUTH_AFRICA_RINGS = [[[31.521,-29.257],[30.902,-29.91],[30.056,-31.14],[28.926,-32.172],[27.465,-33.227],[26.419,-33.615],[25.781,-33.945],[24.678,-33.987],[23.594,-33.794],[22.574,-33.864],[21.543,-34.259],[20.071,-34.795],[19.193,-34.463],[18.425,-33.998],[18.25,-33.281],[17.925,-32.611],[18.248,-32.43],[18.222,-31.662],[17.567,-30.726],[17.065,-29.879],[16.345,-28.577],[16.824,-28.082],[17.219,-28.356],[17.388,-28.784],[18.465,-29.045],[19.002,-28.972],[19.895,-28.462],[19.896,-24.768],[20.166,-24.918],[20.759,-25.868],[20.666,-26.477],[20.89,-26.829],[21.606,-26.727],[22.106,-26.28],[22.58,-25.979],[22.824,-25.5],[23.312,-25.269],[23.734,-25.39],[24.211,-25.67],[25.025,-25.72],[25.665,-25.487],[25.766,-25.175],[25.942,-24.696],[26.486,-24.616],[26.786,-24.241],[27.119,-23.574],[28.017,-22.828],[29.432,-22.091],[30.323,-22.272],[30.66,-22.152],[31.191,-22.252],[31.67,-23.659],[31.931,-24.369],[31.752,-25.484],[31.838,-25.843],[31.333,-25.66],[31.044,-25.731],[30.95,-26.023],[30.677,-26.398],[30.686,-26.744],[31.283,-27.286],[31.868,-27.178],[32.072,-26.734],[32.83,-26.742],[32.58,-27.471],[32.462,-28.301],[32.203,-28.752],[31.521,-29.257]],[[28.978,-28.956],[28.542,-28.648],[28.075,-28.852],[27.533,-29.243],[27,-29.876],[27.749,-30.645],[28.107,-30.546],[28.292,-30.226],[28.848,-30.07],[29.018,-29.744],[29.325,-29.257],[28.978,-28.956]]];
 const EMBEDDED_STATIONS = [
   ['Free State','Park Road',-29.11994,26.21159,'High',1903,1982,1933,1806,1682,9306],
   ['Gauteng','Midrand',-25.997,28.128,'High',1420,1765,1764,1736,1679,8364],['Gauteng','Honeydew',-26.0732,27.9201,'High',2149,1717,1838,1644,1665,9013],['Gauteng','Roodepoort',-26.17733,27.97173,'High',1367,1806,1858,1603,1558,8192],['Gauteng','JHB Central',-26.20676,28.03141,'High',2021,2231,1954,1556,1505,9267],['Gauteng','Ivory park',-25.99001,28.20162,'Med-high',1342,1411,1408,1273,1407,6841],['Gauteng','Tembisa',-26.00749,28.22014,'High',1473,1553,1423,1314,1397,7160],['Gauteng','Brooklyn',-25.75555,28.23751,'High',1631,1489,1521,1427,1359,7427],['Gauteng','Sandton',-26.08026,28.0615,'Med-high',1320,1268,1530,1536,1329,6983],
@@ -27,74 +23,16 @@ function coordinate(value) {
   return Number(String(value).replace('=', ''));
 }
 
-function projectPoint([longitude, latitude]) {
-  return [((longitude - 16) / 18) * 1000, ((-latitude - 22) / 14) * 720];
-}
-
-function southAfricaPath() {
-  return SOUTH_AFRICA_RINGS.map(ring => `${ring.map((point, index) => `${index ? 'L' : 'M'}${projectPoint(point).map(value => value.toFixed(1)).join(' ')}`).join(' ')}Z`).join(' ');
-}
-
-function layoutStationPoints(stations) {
-  const points = stations.map(station => projectPoint([coordinate(station.Longitude), coordinate(station.Latitude)]));
-  for (let pass = 0; pass < 8; pass += 1) {
-    points.forEach((point, index) => points.slice(index + 1).forEach((other, otherIndex) => {
-      const distanceX = other[0] - point[0];
-      const distanceY = other[1] - point[1];
-      const distance = Math.hypot(distanceX, distanceY);
-      if (distance >= 32) return;
-      const safeDistance = distance || 1;
-      const push = (32 - safeDistance) / 2;
-      const unitX = distance ? distanceX / safeDistance : ((index + otherIndex) % 2 ? 1 : -1);
-      const unitY = distance ? distanceY / safeDistance : 0;
-      point[0] -= unitX * push;
-      point[1] -= unitY * push;
-      other[0] += unitX * push;
-      other[1] += unitY * push;
-    }));
-  }
-  return points;
-}
-
-function updateMapView() {
-  const layer = document.querySelector('.fallback-layer');
-  if (!layer) return;
-  layer.style.setProperty('--map-scale', state.view.scale);
-  layer.style.setProperty('--map-pan-x', `${state.view.panX}px`);
-  layer.style.setProperty('--map-pan-y', `${state.view.panY}px`);
-}
-
-function attachMapInteractions() {
-  const mapElement = document.querySelector('#station-map');
-  if (!mapElement) return;
-  const zoom = amount => { state.view.scale = Math.max(1, Math.min(3.5, state.view.scale + amount)); updateMapView(); };
-  document.querySelector('#map-zoom-in')?.addEventListener('click', () => zoom(.25));
-  document.querySelector('#map-zoom-out')?.addEventListener('click', () => zoom(-.25));
-  mapElement.addEventListener('wheel', event => { event.preventDefault(); zoom(event.deltaY < 0 ? .15 : -.15); }, { passive: false });
-  mapElement.addEventListener('pointerdown', event => {
-    if (event.target.closest('.fallback-marker')) return;
-    state.view.dragging = true;
-    state.view.startX = event.clientX - state.view.panX;
-    state.view.startY = event.clientY - state.view.panY;
-    mapElement.setPointerCapture(event.pointerId);
-    mapElement.classList.add('is-dragging');
-  });
-  mapElement.addEventListener('pointermove', event => {
-    if (!state.view.dragging) return;
-    state.view.panX = event.clientX - state.view.startX;
-    state.view.panY = event.clientY - state.view.startY;
-    updateMapView();
-  });
-  mapElement.addEventListener('pointerup', event => { state.view.dragging = false; mapElement.releasePointerCapture(event.pointerId); mapElement.classList.remove('is-dragging'); });
-  document.querySelector('#map-reset')?.addEventListener('click', () => { state.view.scale = 1; state.view.panX = 0; state.view.panY = 0; drawMap(); });
-}
+function projectPoint([longitude, latitude]) { return [((longitude - 16) / 18) * 1000, ((-latitude - 22) / 14) * 720]; }
+function southAfricaPath() { return SOUTH_AFRICA_RINGS.map(ring => `${ring.map((point, index) => `${index ? 'L' : 'M'}${projectPoint(point).map(value => value.toFixed(1)).join(' ')}`).join(' ')}Z`).join(' '); }
+function layoutStationPoints(stations) { const points = stations.map(station => projectPoint([coordinate(station.Longitude), coordinate(station.Latitude)])); for (let pass = 0; pass < 8; pass += 1) { points.forEach((point, index) => points.slice(index + 1).forEach((other, otherIndex) => { const distanceX = other[0] - point[0]; const distanceY = other[1] - point[1]; const distance = Math.hypot(distanceX, distanceY); if (distance >= 32) return; const safeDistance = distance || 1; const push = (32 - safeDistance) / 2; const unitX = distance ? distanceX / safeDistance : ((index + otherIndex) % 2 ? 1 : -1); const unitY = distance ? distanceY / safeDistance : 0; point[0] -= unitX * push; point[1] -= unitY * push; other[0] += unitX * push; other[1] += unitY * push; })); } return points; }
+function updateMapView() { const layer = document.querySelector('.fallback-layer'); if (!layer) return; layer.style.setProperty('--map-scale', state.view.scale); layer.style.setProperty('--map-pan-x', `${state.view.panX}px`); layer.style.setProperty('--map-pan-y', `${state.view.panY}px`); }
+function attachMapInteractions() { const mapElement = document.querySelector('#station-map'); if (!mapElement) return; const zoom = amount => { state.view.scale = Math.max(1, Math.min(3.5, state.view.scale + amount)); updateMapView(); }; document.querySelector('#map-zoom-in')?.addEventListener('click', () => zoom(.25)); document.querySelector('#map-zoom-out')?.addEventListener('click', () => zoom(-.25)); mapElement.addEventListener('wheel', event => { event.preventDefault(); zoom(event.deltaY < 0 ? .15 : -.15); }, { passive: false }); mapElement.addEventListener('pointerdown', event => { if (event.target.closest('.fallback-marker')) return; state.view.dragging = true; state.view.startX = event.clientX - state.view.panX; state.view.startY = event.clientY - state.view.panY; mapElement.setPointerCapture(event.pointerId); mapElement.classList.add('is-dragging'); }); mapElement.addEventListener('pointermove', event => { if (!state.view.dragging) return; state.view.panX = event.clientX - state.view.startX; state.view.panY = event.clientY - state.view.startY; updateMapView(); }); mapElement.addEventListener('pointerup', event => { state.view.dragging = false; mapElement.releasePointerCapture(event.pointerId); mapElement.classList.remove('is-dragging'); }); document.querySelector('#map-reset')?.addEventListener('click', () => { state.view.scale = 1; state.view.panX = 0; state.view.panY = 0; drawMap(); }); }
 
 function drawMap() {
   const province = document.querySelector('#province-filter').value;
-  const stationQuery = document.querySelector('#station-filter').value.trim().toLowerCase();
-  const risk = document.querySelector('#risk-filter').value;
   const year = document.querySelector('#year-filter').value;
-  const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (province === 'all' || station.Province === province) && (!stationQuery || station.Station.toLowerCase().includes(stationQuery)) && (risk === 'all' || station.Risk === risk));
+  const stations = state.stations.filter(station => station.Station && station.Latitude && station.Longitude && (province === 'all' || station.Province === province));
   if (!state.map) {
     drawFallbackMap(stations, year, province);
     return;
@@ -103,18 +41,18 @@ function drawMap() {
   state.markers = stations.map(station => {
     const latitude = coordinate(station.Latitude);
     const longitude = coordinate(station.Longitude);
-    const color = station.Risk === 'High' ? '#7b3544' : station.Risk === 'Low' ? '#43866b' : '#c28728';
-    const marker = L.circleMarker([latitude, longitude], { radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
+   // const color = station.Risk === 'High' ? '#b34d8e' : '#d7a7f3';
+    //const marker = L.circleMarker([latitude, longitude], { radius: 9, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
+   const color = station.Risk === 'High' ? '#7b3544' : '#8fd3e8';
+const maxCases = Math.max(...stations.map(s => Number(s[year] || 0)), 1);
+const radius = 7 + Math.round((Number(station[year] || 0) / maxCases) * 12);
+const marker = L.circleMarker([latitude, longitude], { radius, color: '#fff', weight: 2, fillColor: color, fillOpacity: .94 }).addTo(state.map);
     marker.bindPopup(`<strong>${escapeHTML(station.Station)}</strong><br>${escapeHTML(station.Province)} · ${escapeHTML(station.Risk)}<br><b>${Number(station[year] || 0).toLocaleString()}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`);
-    marker.bindTooltip(`${station.Station}, ${station.Province}, ${station.Risk} risk`);
-    marker.on('add', () => { const path = marker.getElement(); if (path) { path.setAttribute('tabindex', '0'); path.setAttribute('role', 'button'); path.setAttribute('aria-label', `${station.Station}, ${station.Province}, ${station.Risk} risk`); path.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); marker.openPopup(); } }); } });
     return marker;
   });
   document.querySelector('#visible-count').textContent = stations.length;
   document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
-  const status = document.querySelector('#map-status');
   if (state.markers.length) state.map.fitBounds(L.latLngBounds(state.markers.map(marker => marker.getLatLng())), { padding: [30, 30], maxZoom: 8 });
-  if (status) status.textContent = stations.length ? `${stations.length} station${stations.length === 1 ? '' : 's'} shown.` : 'No stations match these filters.';
 }
 
 function drawFallbackMap(stations, year, province) {
@@ -132,17 +70,16 @@ function drawFallbackMap(stations, year, province) {
     const longitude = coordinate(station.Longitude);
     const left = Math.max(3, Math.min(97, markerPoints[index][0] / 10));
     const top = Math.max(5, Math.min(95, markerPoints[index][1] / 7.2));
-    const colorClass = station.Risk === 'High' ? 'high' : station.Risk === 'Low' ? 'low' : 'medium';
+    const colorClass = station.Risk === 'High' ? 'high' : 'medium';
     const size = 12 + Math.round((Number(station[year] || 0) / maxCases) * 24);
     return `<button class="fallback-marker ${colorClass}" style="left:${left}%;top:${top}%;width:${size}px;height:${size}px" title="${escapeHTML(station.Station)}" aria-label="${escapeHTML(station.Station)}, ${escapeHTML(station.Province)}, ${escapeHTML(station.Risk)} risk" data-station="${escapeHTML(station.Station)}" data-province="${escapeHTML(station.Province)}" data-risk="${escapeHTML(station.Risk)}" data-cases="${Number(station[year] || 0).toLocaleString()}"></button>`;
-  }).join('')}</div><div class="fallback-info" id="fallback-info">${stations.length ? 'Select a station marker for details.' : 'No stations match these filters.'}</div></div>`;
+  }).join('')}</div><div class="fallback-info" id="fallback-info">Select a station marker for details.</div></div>`;
   mapElement.querySelectorAll('.fallback-marker').forEach(marker => marker.addEventListener('click', () => {
     mapElement.querySelector('#fallback-info').innerHTML = `<strong>${marker.dataset.station}</strong><br>${marker.dataset.province} · ${marker.dataset.risk}<br><b>${marker.dataset.cases}</b> cases ${year === 'TOTAL' ? 'total' : `in ${year}`}`;
   }));
   updateMapView();
   document.querySelector('#visible-count').textContent = stations.length;
   document.querySelector('#visible-cases').textContent = stations.reduce((total, station) => total + Number(station[year] || 0), 0).toLocaleString();
-  if (mapStatus) mapStatus.textContent = stations.length ? `${stations.length} station${stations.length === 1 ? '' : 's'} shown.` : 'No stations match these filters.';
 }
 
 async function init() {
@@ -156,16 +93,28 @@ async function init() {
   const provinces = [...new Set(state.stations.map(station => station.Province).filter(Boolean))].sort();
   document.querySelector('#province-filter').innerHTML = '<option value="all">All provinces</option>' + provinces.map(province => `<option>${escapeHTML(province)}</option>`).join('');
   document.querySelector('#province-filter').addEventListener('change', () => { state.view.scale = 1; state.view.panX = 0; state.view.panY = 0; drawMap(); });
-  document.querySelector('#station-filter').addEventListener('input', drawMap);
-  document.querySelector('#risk-filter').addEventListener('change', drawMap);
-  document.querySelector('#incident-filter').addEventListener('change', drawMap);
   document.querySelector('#year-filter').addEventListener('change', drawMap);
-  attachMapInteractions();
-  drawMap();
-  if (mapStatus) {
-    mapStatus.textContent = 'Map ready. Use Tab to reach filters and station controls.';
-    mapStatus.className = 'app-status is-ready';
-  }
+  if (window.L) {
+  const mapElement = document.querySelector('#station-map');
+  mapElement.innerHTML = '';
+  state.map = L.map(mapElement, { zoomControl: false, minZoom: 4, maxZoom: 14 }).setView([-29, 25], 5);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16, attribution: 'Tiles &copy; Esri'
+  }).addTo(state.map);
+
+  // South Africa outline (works even with no tiles)
+  L.polygon(SOUTH_AFRICA_RINGS.map(ring => ring.map(([lng, lat]) => [lat, lng])), {
+    color: '#8fd3e8', weight: 1.5, fillColor: '#315a61', fillOpacity: .25, interactive: false
+  }).addTo(state.map);
+  document.querySelector('#map-zoom-in')?.addEventListener('click', () => state.map.zoomIn());
+  document.querySelector('#map-zoom-out')?.addEventListener('click', () => state.map.zoomOut());
+  document.querySelector('#map-reset')?.addEventListener('click', drawMap);
+  setTimeout(() => {state.map.invalidateSize(); drawMap(); }, 150);
+} else {
+  attachMapInteractions(); // offline fallback
 }
 
-init().catch(error => { if (mapStatus) { mapStatus.textContent = 'The map is offline. Check your connection and reload to try again.'; mapStatus.className = 'app-status is-error'; } document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });
+  drawMap();
+}
+
+init().catch(error => { document.querySelector('#station-map').innerHTML = `<p class="map-error">${escapeHTML(error.message)}</p>`; });

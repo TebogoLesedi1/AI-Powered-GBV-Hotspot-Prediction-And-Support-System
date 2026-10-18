@@ -6,7 +6,7 @@ The `interactive_map` folder contains a standalone browser interface for explori
 
 ## Features
 
-- Self-contained geographic map centered on South Africa
+- Interactive Leaflet map centered on South Africa, with a local SVG fallback
 - Risk-colored markers for stations classified as `High` or `Med-high`
 - Province filter for narrowing the visible stations
 - Year filter for `2022`, `2023`, `2024`, `2025`, `2026`, or the combined `TOTAL`
@@ -26,7 +26,7 @@ The `interactive_map` folder contains a standalone browser interface for explori
 
 ## Data source
 
-When served from the repository, the map loads the dataset at:
+The standalone map includes a snapshot of the 30 usable station records in `app.js`. The semicolon-delimited CSV is kept alongside the repository at:
 
 ```text
 ../extracted_datasets/GBV Dataset.csv
@@ -46,7 +46,7 @@ The CSV uses semicolons as delimiters and contains these fields:
 
 Rows without a station name or usable latitude and longitude are excluded from the map. Province summary rows and the national total are therefore not plotted as station markers.
 
-The standalone `app.js` contains the 30 usable station records so the downloaded three-file package can display the map without requesting a sibling CSV file. Update the embedded records and the source CSV together when the dataset changes.
+Update the embedded records and source CSV together when the dataset changes. If the embedded snapshot is removed, `app.js` loads the CSV from the path above.
 
 ## Run locally
 
@@ -84,11 +84,11 @@ The marker color represents the source dataset's risk label. The selected year c
 
 ## Technical notes
 
-- The page uses browser SVG and DOM APIs for its geographic backdrop and markers, so it does not depend on remote map tiles.
+- When Leaflet is available, the map uses Esri World Gray tiles. If the library is unavailable, it falls back to a locally rendered SVG map.
 - No build tool, package manager, or backend service is required.
-- The app parses the semicolon-delimited CSV in the browser.
+- The app parses the semicolon-delimited CSV in the browser if the embedded station snapshot is removed.
 - Popup values are HTML-escaped before being inserted into the page.
-- Internet access is not required for the map visualization. The station CSV is served locally by the Python server when the embedded snapshot is replaced with file loading.
+- The SVG fallback and embedded records do not require the CSV to be fetched; Leaflet tiles, Leaflet itself, and Google Fonts require internet access.
 
 ## Troubleshooting
 
@@ -100,9 +100,9 @@ Refresh the downloaded HTML and confirm that `index.html`, `styles.css`, and `ap
 
 Check that `extracted_datasets/GBV Dataset.csv` exists and that its path has not changed. The browser developer console will show `Station dataset unavailable` when the CSV request fails.
 
-### The geographic map does not appear
+### The map tiles do not appear
 
-Refresh the page and confirm that `styles.css` and `app.js` are in the same folder. The geographic backdrop and station markers are rendered locally without remote map tiles.
+Check the internet connection and the browser console for blocked Leaflet or Esri tile requests. When Leaflet is unavailable, the app uses its local SVG fallback.
 
 ## Scope and limitations
 

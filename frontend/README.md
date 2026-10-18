@@ -23,10 +23,10 @@ This folder contains the static web frontend for the SafeSouth Africa GBV hotspo
 - Responsive navigation with a desktop menu and mobile hamburger menu, including a link to Peer Support.
 - Homepage links to the chatbot and GBV hotspot map.
 - Chatbot answers questions using the loaded GBV study report and provides safety-focused responses.
-- Hotspot map displays station locations, risk levels, province filters, year filters, station totals, and map markers.
+- Hotspot map displays station locations, dataset risk levels, province and year filters, station totals, and map markers.
 - Emergency support details are shown throughout the relevant pages.
 - Peer-support preview requires users to create or confirm a temporary alias before composing messages. It uses in-memory messages, local report/mute controls, limited text masking, and a quick exit. It is not a live room, moderation service, or confidential crisis service; hosting infrastructure may still receive connection metadata.
-- The map uses a self-contained geographic SVG renderer and does not depend on third-party map tiles.
+- The map uses Leaflet with Esri map tiles when available and falls back to a locally rendered SVG map.
 
 ## Run Locally
 
@@ -55,14 +55,14 @@ Useful pages:
 ## Build Steps and APIs
 
 1. Prepare the semicolon-delimited `data/GBV Dataset.csv` with province, station, coordinates, risk, yearly counts, and total fields.
-2. Keep valid station coordinates and embed the current station snapshot in `interactive_map/app.js` for downloaded, offline-friendly use.
+2. Keep valid station coordinates and update the embedded station snapshot in `interactive_map/app.js` together with `data/GBV Dataset.csv`.
 3. Create the controls and map container in `interactive_map/index.html`.
-4. Populate filters and render accessible HTML markers over the local geographic SVG in `drawMap()`.
+4. Populate filters and render station markers on the Leaflet map or the SVG fallback in `drawMap()`.
 5. Use the selected year for totals and popups, and refit the map to the visible markers after filtering.
-6. Keep the renderer local so the map remains visual when external tile servers are blocked.
+6. Keep the SVG fallback available so the map remains usable when external tile servers are blocked.
 7. Serve the frontend over HTTP and test `hotspot.html` plus the standalone `/interactive_map/` page.
 
-The map uses browser SVG and DOM APIs for its geographic visualization and the browser Fetch API for the local CSV. Google Fonts supplies the interface fonts. The map uses no tile server or live crime-data API; it is driven by the repository dataset and embedded station snapshot.
+The map uses Leaflet and Esri World Gray tiles when available, with a browser SVG fallback. Its current station snapshot is embedded in `interactive_map/app.js`; the browser Fetch API loads `data/GBV Dataset.csv` only when that snapshot is removed. Google Fonts and the Leaflet/Esri services require internet access. The map is not a live crime-data feed.
 
 ## Data Notes
 

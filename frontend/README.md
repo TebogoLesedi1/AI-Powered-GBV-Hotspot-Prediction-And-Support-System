@@ -76,7 +76,7 @@ All pages and features remain public; signing in is optional. The `signup.html` 
 
 1. Create a Firebase project and add a Web app.
 2. Enable **Email/Password** under **Authentication → Sign-in method**.
-3. Copy the web app's `apiKey`, `authDomain`, `projectId`, and `appId` values into `firebase-config.js`.
+3. The Firebase Web app values are configured in `firebase-config.js`; update them there if the project changes.
 4. Add the development and production site domains to **Authentication → Settings → Authorized domains**.
 5. Serve the repository over HTTP, open the homepage, and create an account.
 

@@ -23,10 +23,8 @@ The project is intended for research, education, and prototype demonstration. It
 ```text
 .
 ├── chatbot/
-│   ├── index.html       # Integrated chatbot and station-risk dashboard
-│   ├── styles.css       # Chatbot and dashboard styling
-│   ├── app.js           # Report search, support signals, and embedded map logic
-│   └── README.md        # Chatbot and dashboard documentation
+│   ├── index.html       # Compatibility redirect to frontend/chatbot/
+│   └── README.md        # Redirect notes for the active chatbot
 ├── interactive_map/
 │   ├── index.html       # Standalone map page
 │   ├── styles.css       # Standalone map styling
@@ -147,9 +145,9 @@ The standalone map is in `interactive_map/` and is the recommended download for 
 
 The standalone package is intentionally portable. `index.html`, `styles.css`, and `app.js` are sufficient to display the station records when downloaded together. The station records are embedded in `app.js`, so the page does not depend on a repository-relative CSV when opened directly from disk. When served from the repository, the source CSV remains available for data maintenance and comparison.
 
-### 2. Ubuntu / GBV chatbot dashboard
+### 2. Ubuntu / GBV chatbot
 
-The `chatbot/` interface combines:
+The active chatbot is in `frontend/chatbot/`; the root `chatbot/` URL redirects there. It provides:
 
 - Report question lookup
 - Evidence matches from the loaded report
@@ -157,10 +155,8 @@ The `chatbot/` interface combines:
 - Basic emotion-signal detection
 - Emergency escalation responses
 - Support-resource signposting
-- An embedded station-risk view
-- Links to the standalone map
 
-The assistant is a transparent browser-side baseline. It searches report fields and returns matching findings; it is not connected to a hosted large language model and should not be treated as professional advice.
+The assistant is a transparent browser-side baseline. It searches report fields and returns matching findings; it is not connected to a hosted large language model and should not be treated as professional advice. See [`frontend/chatbot/README.md`](frontend/chatbot/README.md) for its implementation and data paths.
 
 ### 3. Community peer-support preview
 
@@ -348,10 +344,10 @@ The downloaded map includes embedded station data and a self-contained geographi
 
 ```text
 chatbot/index.html
-    ├── styles.css
-    └── app.js
-         ├── ../datasets/full-report-the-first-south-african-national-gender-based-violence-study-2022.txt
-         └── ../extracted_datasets/GBV Dataset.csv
+    └── redirects to frontend/chatbot/index.html
+        ├── app.js
+        ├── styles.css
+        └── ../data/
 ```
 
 ### Standalone map
@@ -407,7 +403,7 @@ No JavaScript package manager or build step is required. Python 3 is only needed
 The interfaces have been checked with:
 
 ```bash
-node --check chatbot/app.js
+node --check frontend/chatbot/app.js
 node --check interactive_map/app.js
 git diff --check
 ```
@@ -464,6 +460,7 @@ The next development stage is to connect evaluated clustering and classification
 
 ## Related documentation
 
-- [`chatbot/README.md`](chatbot/README.md) - chatbot and dashboard details
+- [`frontend/chatbot/README.md`](frontend/chatbot/README.md) - active chatbot details
+- [`chatbot/README.md`](chatbot/README.md) - root compatibility redirect notes
 - [`interactive_map/README.md`](interactive_map/README.md) - standalone map details
 - [`python_notebooks/`](python_notebooks/) - analysis and modeling notebooks

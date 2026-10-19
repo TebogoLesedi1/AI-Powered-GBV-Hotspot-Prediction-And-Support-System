@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "peerSupportMessages",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "room", "order": "ASCENDING" },
+        { "fieldPath": "expiresAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

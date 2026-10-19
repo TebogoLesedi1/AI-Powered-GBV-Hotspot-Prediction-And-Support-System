@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Peer support preview with GBV safety contacts.">
+  <meta name="description" content="Anonymous peer support rooms with GBV safety contacts.">
   <title>Community Peer Support | SafeSouth Africa</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="app-accessibility.css">
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
   <script src="firebase-config.js" defer></script>
   <script src="auth.js" defer></script>
   <script src="script.js" defer></script>
@@ -32,8 +33,8 @@
         <a href="about.html">About Us</a>
         <a href="contact.html">S.H.E Assistant</a>
       </nav>
-      <div class="session-status"><span class="status-dot"></span><span>Alias <strong id="user-alias">Not set</strong></span><span class="local-label">Local preview</span></div>
-      <button class="quick-exit" id="quick-exit" type="button" title="Clear this session and leave this page">Quick Exit <span aria-hidden="true">×</span></button>
+      <div class="session-status"><span class="status-dot"></span><span>Alias <strong id="user-alias">Not set</strong></span><span class="local-label">Shared room</span></div>
+      <button class="quick-exit" id="quick-exit" type="button" title="Leave peer support and return home">Quick Exit <span aria-hidden="true">×</span></button>
       <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-controls="sideMenu" aria-expanded="false"><span></span><span></span><span></span></button>
     </header>
 
@@ -58,7 +59,7 @@
 
       <div class="disclaimer" role="note"><span class="disclaimer-mark" aria-hidden="true">!</span><p><strong>Peer support, not counselling.</strong> Need help now? Call the GBV Command Centre: <a href="tel:0800428428">0800 428 428</a>.</p></div>
 
-      <div class="prototype-notice" role="status"><strong>Preview only</strong><span>Messages stay in this tab and clear on refresh. Not monitored; hosting may see connection metadata.</span></div>
+      <div class="prototype-notice" role="status"><strong>Peer support</strong><span>Messages are shared with everyone in a room and may be stored for up to 24 hours. This is not confidential or monitored; hosting may see connection metadata.</span></div>
 
       <div class="workspace">
         <aside class="room-rail" aria-label="Choose a support topic">
@@ -74,13 +75,13 @@
         </aside>
 
         <section class="chat-room" aria-labelledby="room-title">
-          <header class="room-header"><div><p class="eyebrow">Sample conversation</p><h2 id="room-title">General peer support</h2></div><span class="preview-badge"><i></i> Demo</span></header>
-          <div class="conversation-notice"><span aria-hidden="true">↳</span><p>Posts here are examples. Your messages stay in this tab.</p></div>
+          <header class="room-header"><div><p class="eyebrow">Shared conversation</p><h2 id="room-title">General peer support</h2></div><span class="preview-badge" id="connection-label" role="status"><i></i> Connecting</span></header>
+          <div class="conversation-notice"><span aria-hidden="true">↳</span><p>New messages sync with other people in this room.</p></div>
           <div class="message-feed" id="message-feed" aria-live="polite" aria-label="Conversation messages"></div>
           <div class="reaction-bar" aria-label="Quick responses"><span>Quick responses</span><button type="button" data-reaction="I hear you." disabled>I hear you</button><button type="button" data-reaction="Thank you for sharing." disabled>Thank you</button><button type="button" data-reaction="Sending care." disabled>Sending care</button></div>
           <form class="composer" id="message-form">
             <label for="message-input">Message as <span id="composer-alias">your alias</span></label>
-            <div class="composer-field"><textarea id="message-input" rows="2" maxlength="600" placeholder="Create an alias to join." aria-describedby="privacy-hint" disabled></textarea><button class="send-button" type="submit" aria-label="Add message to preview" disabled>Send <span aria-hidden="true">↑</span></button></div>
+            <div class="composer-field"><textarea id="message-input" rows="2" maxlength="600" placeholder="Create an alias to join." aria-describedby="privacy-hint" disabled></textarea><button class="send-button" type="submit" aria-label="Send message to room" disabled>Send <span aria-hidden="true">↑</span></button></div>
             <div class="composer-footer"><p id="privacy-hint">Review for personal details before sending.</p><span id="character-count">0 / 600</span></div>
           </form>
           <div class="live-announcement" id="live-announcement" role="status" aria-live="polite"></div>
@@ -121,7 +122,7 @@
       <div class="alias-safety" role="note">
         <strong>Protect your privacy</strong>
         <p>Never include your full name, phone number, address, workplace, school, or current location in your alias or messages. Avoid identifying combinations such as <code>JaneJoburg_01</code>.</p>
-        <p>This is an unmonitored preview, not counselling or a confidential service. Messages stay in this tab and are cleared when you leave.</p>
+        <p>This shared room is unmonitored, not counselling, and not confidential. Messages may be visible to room participants for up to 24 hours.</p>
         <span>If you need urgent help, call <a href="tel:0800428428">0800 428 428</a> or <a href="tel:10111">10111</a>.</span>
       </div>
       <label for="alias-input">Alias</label>

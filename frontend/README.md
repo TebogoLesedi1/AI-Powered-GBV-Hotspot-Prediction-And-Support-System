@@ -10,7 +10,7 @@ This folder contains the static web frontend for the SafeSouth Africa GBV hotspo
 - `resources.html`: GBV support resources and emergency contacts.
 - `about.html`: Project purpose, methodology, and limitations.
 - `chatbot/`: Chatbot interface and client-side report lookup logic.
-- `community-chat.html`, `community-chat.css`, and `community-chat.js`: Local-only preview of anonymous, topic-based peer support.
+- `community-chat.html`, `community-chat.css`, and `community-chat.js`: Anonymous, topic-based peer support rooms backed by Firebase Firestore.
 - `interactive_map/`: Interactive station hotspot map and filters.
 - `data/`: Report and station data loaded by the embedded tools.
 - `style.css`, `contact.css`, `about.css`, and `resources.css`: Page styling.
@@ -25,7 +25,7 @@ This folder contains the static web frontend for the SafeSouth Africa GBV hotspo
 - Chatbot answers questions using the loaded GBV study report and provides safety-focused responses.
 - Hotspot map displays station locations, dataset risk levels, province and year filters, station totals, and map markers.
 - Emergency support details are shown throughout the relevant pages.
-- Peer-support preview requires users to create or confirm a temporary alias before composing messages. It uses in-memory messages, local report/mute controls, limited text masking, and a quick exit. It is not a live room, moderation service, or confidential crisis service; hosting infrastructure may still receive connection metadata.
+- Peer support requires users to create or confirm a temporary alias before composing messages. It uses anonymous Firebase Authentication, shared Firestore messages, local report/mute controls, limited text masking, and a quick exit. It is not a moderated or confidential crisis service; hosting infrastructure may still receive connection metadata.
 - The map uses Leaflet with Esri map tiles when available and falls back to a locally rendered SVG map.
 
 ## Run Locally
@@ -80,10 +80,14 @@ All pages and features remain public; signing in is optional. The `signup.html` 
 4. Add the development and production site domains to **Authentication → Settings → Authorized domains**.
 5. Serve the repository over HTTP, open the homepage, and create an account.
 
-An account retains its email and full name in Firebase Authentication, and the browser keeps the sign-in session across visits. The site does not save peer-support messages, chatbot conversations, or other feature activity to an account; peer-support messages remain in the current tab's memory. Do not enter sensitive personal information into these previews.
+An account retains its email and full name in Firebase Authentication, and the browser keeps the sign-in session across visits. Peer support uses a separate anonymous Firebase session and does not attach messages to an optional email account. Peer-support messages are shared through Firestore and can be read by anyone who joins a room; do not enter sensitive personal information. Chatbot conversations are not saved to an account.
+
+## Peer-Support Firebase Setup
+
+The peer-support page needs Cloud Firestore and Firebase Authentication's **Anonymous** sign-in provider enabled in the configured Firebase project. After installing and signing in to the Firebase CLI, deploy the repository-root rules and indexes with `firebase deploy --only firestore:rules,firestore:indexes --project gbv-project-5b344`. Configure a Firestore TTL policy on the `expiresAt` field in the `peerSupportMessages` collection group; expired messages are hidden by the page query and TTL schedules their stored documents for deletion. Firebase TTL deletion can be delayed, so do not promise exact deletion timing. Optional email/password accounts continue to use the default Firebase app; peer support uses its own named app and session.
 
 ## Peer-Support Preview Limits
 
-The community page is available at `/community-chat.html` when serving the `frontend/` directory, or `/frontend/community-chat.html` when serving the repository root. Users must choose a temporary alias or generate a suggestion and confirm it before composing a message.
+The community page is available at `/community-chat.html` when serving the `frontend/` directory, or `/frontend/community-chat.html` when serving the repository root. Users must choose a temporary alias or generate a suggestion and confirm it before composing a message. Messages sync in real time to the selected room.
 
-The page is a frontend prototype only. It does not connect people to a shared room, transmit reports to moderators, or provide server-side message filtering, crisis response, or IP-log controls. Before entering, the alias prompt warns users not to share names, contact details, or location information and explains that peer support is not counselling or confidential service. It includes an Exit peer support action, and Quick Exit remains available in the sticky page header. Messages and mute choices exist only in the current page memory and are cleared when the page is refreshed or exited. Client-side personal-information masking is best-effort and can miss identifying details. A production service requires a reviewed backend, privacy-preserving operational logging, moderation and escalation coverage, retention limits, and security testing before it is appropriate for sensitive peer support.
+This shared room is not monitored, counselling, or a confidential service. The alias prompt warns users not to share names, contact details, or location information. Client-side personal-information masking is best-effort and can miss identifying details. Reports and mutes remain local to the current tab; messages are shared with all room participants and retained in Firestore until TTL cleanup. A production service for sensitive peer support still requires moderation and escalation coverage, privacy review, operational logging review, and security testing.

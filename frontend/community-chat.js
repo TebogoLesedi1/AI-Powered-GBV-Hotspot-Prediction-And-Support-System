@@ -1,33 +1,9 @@
 const aliasWords = ['QuietHarbor', 'KindSky', 'HopefulRiver', 'SoftMorning', 'BraveBloom', 'OpenWindow', 'CalmForest', 'BrightPath'];
 const roomContent = {
-  general: {
-    title: 'General peer support',
-    messages: [
-      ['QuietHarbor_42', 'Some days I just need someone to listen. You do not have to have the perfect words for someone else.', '10:14'],
-      ['KindSky_08', 'That makes sense. Taking things one step at a time is enough for today.', '10:18']
-    ]
-  },
-  resources: {
-    title: 'Resources & guidance',
-    messages: [
-      ['BrightPath_31', 'It can help to ask a trusted local organisation about current shelter and counseling availability before traveling.', '09:42'],
-      ['OpenWindow_16', 'The Resources page has national support contacts. Check service hours directly when it is safe to do so.', '09:49']
-    ]
-  },
-  healing: {
-    title: 'Healing & wellness',
-    messages: [
-      ['SoftMorning_27', 'A small grounding step that helps me: notice three things I can see and one thing that feels steady.', '11:06'],
-      ['CalmForest_53', 'Rest is not something you have to earn. Go at the pace that feels manageable for you.', '11:12']
-    ]
-  },
-  questions: {
-    title: 'Anonymous questions',
-    messages: [
-      ['BraveBloom_09', 'You can ask a general question without sharing a personal story or identifying details.', '08:36'],
-      ['QuietHarbor_42', 'For advice about your own situation, a qualified local service may be able to talk through options privately.', '08:41']
-    ]
-  }
+  general: { title: 'General peer support' },
+  resources: { title: 'Resources & guidance' },
+  healing: { title: 'Healing & wellness' },
+  questions: { title: 'Anonymous questions' }
 };
 
 const feed = document.querySelector('#message-feed');
@@ -38,9 +14,13 @@ const aliasDialog = document.querySelector('#alias-dialog');
 const aliasInput = document.querySelector('#alias-input');
 const announcement = document.querySelector('#live-announcement');
 const crisisDialog = document.querySelector('#crisis-dialog');
-const localMessages = Object.fromEntries(Object.keys(roomContent).map(room => [room, []]));
+const sharedMessages = Object.fromEntries(Object.keys(roomContent).map(room => [room, []]));
 const blockedAliases = new Set();
-const ownAliases = new Set();
+let peerAuth;
+let messagesCollection;
+let authUid = '';
+let unsubscribeMessages;
+let isConnected = false;
 let activeRoom = 'general';
 let alias = '';
 let announcementTimer;
@@ -90,34 +70,35 @@ function renderRoom() {
   feed.replaceChildren();
   const marker = document.createElement('div');
   marker.className = 'day-marker';
-  marker.textContent = 'Sample conversation · local preview';
+  marker.textContent = 'Recent messages';
   feed.append(marker);
 
-  const previewMessages = room.messages
-    .filter(([sender]) => !blockedAliases.has(sender))
-    .map(([sender, text, time]) => ({ sender, text, time, sample: true }));
-  const messages = [...previewMessages, ...localMessages[activeRoom]]
+  const messages = sharedMessages[activeRoom]
     .filter(message => !blockedAliases.has(message.sender));
 
   if (!messages.length) {
     const empty = document.createElement('p');
     empty.className = 'empty-room';
-    empty.textContent = 'No messages in this local preview yet. You can add a message using your alias.';
+    empty.textContent = 'No recent messages in this room yet.';
     feed.append(empty);
   }
 
   messages.forEach(message => {
     const item = document.createElement('article');
-    const own = ownAliases.has(message.sender);
+    const own = Boolean(authUid && message.uid === authUid);
     item.className = `chat-message${own ? ' own-message' : ''}`;
-    item.innerHTML = `<div class="message-meta"><strong>${escapeHtml(message.sender)}</strong>${message.sample ? '<span class="sample-tag">Sample</span>' : ''}<time>${escapeHtml(message.time)}</time></div><p>${escapeHtml(message.text)}</p><div class="message-actions">${own ? '<button type="button" data-action="remove">Remove</button>' : `<button type="button" data-action="report" data-sender="${escapeHtml(message.sender)}">Report</button><button type="button" data-action="block" data-sender="${escapeHtml(message.sender)}">Mute alias</button>`}</div>`;
+    item.innerHTML = `<div class="message-meta"><strong>${escapeHtml(message.sender)}</strong><time>${escapeHtml(message.time)}</time></div><p>${escapeHtml(message.text)}</p><div class="message-actions">${own ? '<button type="button" data-action="remove">Remove</button>' : `<button type="button" data-action="report" data-sender="${escapeHtml(message.sender)}">Report</button><button type="button" data-action="block" data-sender="${escapeHtml(message.sender)}">Mute alias</button>`}</div>`;
     item.querySelector('[data-action="remove"]')?.addEventListener('click', () => {
-      localMessages[activeRoom] = localMessages[activeRoom].filter(entry => entry !== message);
-      renderRoom();
-      announce('Your local message was removed.');
+      if (!message.id || !messagesCollection) return;
+      messagesCollection.doc(message.id).delete().then(() => {
+        announce('Your message was removed.');
+      }).catch(error => {
+        console.error('Could not remove peer-support message.', error);
+        announce('Could not remove your message. Please try again.');
+      });
     });
     item.querySelector('[data-action="report"]')?.addEventListener('click', event => {
-      announce(`Report noted for ${event.currentTarget.dataset.sender}. In this preview, it is not sent to a moderator.`);
+      announce(`Report noted for ${event.currentTarget.dataset.sender}. No moderator was notified.`);
     });
     item.querySelector('[data-action="block"]')?.addEventListener('click', event => {
       const sender = event.currentTarget.dataset.sender;
@@ -133,7 +114,77 @@ function renderRoom() {
 document.querySelectorAll('.room-option').forEach(button => button.addEventListener('click', () => {
   activeRoom = button.dataset.room;
   renderRoom();
+  subscribeToRoom();
 }));
+
+function setConnectionStatus(label, connected = false) {
+  const status = document.querySelector('#connection-label');
+  isConnected = connected;
+  status.lastChild.textContent = ` ${label}`;
+  status.classList.toggle('is-live', connected);
+  status.classList.toggle('is-offline', !connected && label === 'Offline');
+  const canSend = connected && Boolean(alias);
+  document.querySelector('.send-button').disabled = !canSend;
+  document.querySelectorAll('[data-reaction]').forEach(button => { button.disabled = !canSend; });
+}
+
+function subscribeToRoom() {
+  if (!messagesCollection || !authUid) return;
+  unsubscribeMessages?.();
+  setConnectionStatus('Connecting');
+  const cutoff = window.firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 60 * 1000));
+  unsubscribeMessages = messagesCollection
+    .where('room', '==', activeRoom)
+    .where('expiresAt', '>', cutoff)
+    .orderBy('expiresAt', 'desc')
+    .limit(100)
+    .onSnapshot(snapshot => {
+      sharedMessages[activeRoom] = snapshot.docs.map(document => {
+        const data = document.data();
+        return {
+          id: document.id,
+          uid: data.uid,
+          sender: data.alias,
+          text: data.text,
+          time: data.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || 'Sending…',
+          sortTime: data.createdAt?.toMillis() || 0
+        };
+      }).sort((first, second) => first.sortTime - second.sortTime);
+      setConnectionStatus('Live', true);
+      renderRoom();
+    }, error => {
+      console.error('Could not load shared peer-support messages.', error);
+      setConnectionStatus('Offline');
+      announce('Shared messages are unavailable. Check the Firebase room setup and connection.');
+    });
+}
+
+async function connectSharedRoom() {
+  const config = window.FIREBASE_CONFIG;
+  try {
+    if (!config || !window.firebase?.auth || !window.firebase?.firestore) {
+      throw new Error('Firebase services are not configured.');
+    }
+    let app = window.firebase.apps.find(existing => existing.name === 'peer-support');
+    if (!app) app = window.firebase.initializeApp(config, 'peer-support');
+    peerAuth = app.auth();
+    await peerAuth.setPersistence(window.firebase.auth.Auth.Persistence.SESSION);
+    const credential = peerAuth.currentUser
+      ? { user: peerAuth.currentUser }
+      : await peerAuth.signInAnonymously();
+    authUid = credential.user.uid;
+    messagesCollection = app.firestore().collection('peerSupportMessages');
+    peerAuth.onAuthStateChanged(user => {
+      authUid = user?.uid || '';
+      if (user) subscribeToRoom();
+      else setConnectionStatus('Offline');
+    });
+    subscribeToRoom();
+  } catch (error) {
+    console.error('Could not connect to peer-support rooms.', error);
+    setConnectionStatus('Offline');
+  }
+}
 
 function openAliasDialog() {
   aliasInput.value = alias;
@@ -150,12 +201,10 @@ document.querySelector('#alias-form').addEventListener('submit', event => {
   event.preventDefault();
   if (!aliasInput.reportValidity()) return;
   alias = aliasInput.value.trim();
-  ownAliases.add(alias);
   aliasLabel.textContent = alias;
   composerAlias.textContent = alias;
   input.disabled = false;
-  document.querySelector('.send-button').disabled = false;
-  document.querySelectorAll('[data-reaction]').forEach(button => { button.disabled = false; });
+  setConnectionStatus(isConnected ? 'Live' : 'Connecting', isConnected);
   aliasDialog.close();
   input.placeholder = 'Share only what feels safe. Avoid identifying details.';
   input.focus();
@@ -186,21 +235,37 @@ document.querySelector('#message-form').addEventListener('submit', event => {
   if (hasCrisisSignal(draft)) crisisDialog.showModal();
   const clean = sanitizeMessage(draft);
   if (!clean) return;
-  localMessages[activeRoom].push({ sender: alias, text: clean, time: new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(new Date()) });
-  input.value = '';
-  document.querySelector('#character-count').textContent = '0 / 600';
-  renderRoom();
-  if (clean !== draft) announce('Some possible contact details were hidden. Please review your message.');
+  if (!messagesCollection || !authUid) {
+    announce('The shared room is offline, so your message was not sent.');
+    return;
+  }
+  const sendButton = document.querySelector('.send-button');
+  sendButton.disabled = true;
+  messagesCollection.add({
+    uid: authUid,
+    alias,
+    room: activeRoom,
+    text: clean,
+    createdAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+    expiresAt: window.firebase.firestore.Timestamp.fromDate(new Date(Date.now() + 24 * 60 * 60 * 1000))
+  }).then(() => {
+    input.value = '';
+    document.querySelector('#character-count').textContent = '0 / 600';
+    if (clean !== draft) announce('Some possible contact details were hidden. Please review your message.');
+  }).catch(error => {
+    console.error('Could not send peer-support message.', error);
+    announce('Your message was not sent. Check the Firebase room setup and connection.');
+  }).finally(() => {
+    sendButton.disabled = !alias || !authUid || !isConnected;
+  });
 });
 
 document.querySelector('#continue-message').addEventListener('click', () => crisisDialog.close());
 
 function exitPeerSupport() {
-  Object.values(localMessages).forEach(messages => messages.splice(0));
   blockedAliases.clear();
   input.value = '';
   alias = '';
-  ownAliases.clear();
   const homePage = new URL('index.html', window.location.href);
   window.location.replace(homePage.href);
 }
@@ -226,4 +291,5 @@ document.addEventListener('keydown', event => { if (event.key === 'Escape') clos
 document.querySelector('#quick-exit').addEventListener('click', exitPeerSupport);
 document.querySelector('#alias-exit').addEventListener('click', exitPeerSupport);
 
+connectSharedRoom();
 aliasDialog.showModal();
